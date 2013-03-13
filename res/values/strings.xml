@@ -1,0 +1,65 @@
+<resources>
+<!-- Copyright (C) 2013 GooUpdater
+
+     Licensed under the Apache License, Version 2.0 (the "License");
+     you may not use this file except in compliance with the License.
+     You may obtain a copy of the License at
+
+          http://www.apache.org/licenses/LICENSE-2.0
+
+     Unless required by applicable law or agreed to in writing, software
+     distributed under the License is distributed on an "AS IS" BASIS,
+     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+     See the License for the specific language governing permissions and
+     limitations under the License.
+-->
+
+    <string name="app_name">GooUpdater</string>
+    <string name="not_available">N/A</string>
+    <string name="checking">Checking for new version</string>
+    <string name="rom_header">ROM:</string>
+    <string name="developer_header">Developer:</string>
+    <string name="version_header">Version:</string>
+    <string name="remoteversion_header">Remote version:</string>
+    <string name="check_rom_updates">Check for ROM updates</string>
+    <string name="check_rom_updates_error">Error checking for ROM updates</string>
+    <string name="check_rom_updates_no_new">No ROM updates found</string>
+    <string name="new_rom_found_title">New ROM version found</string>
+    <string name="new_rom_found_summary">A new version of your ROM has been found. Do you want to download it now?\n\n%1$s\n%2$s\n</string>
+    <string name="new_rom_name">%1$s</string>
+    <string name="downloading">Downloading</string>
+    <string name="downloading_complete">Download complete</string>
+    <string name="downloading_error">Error downloading file</string>
+    <string name="downloading_interrupted">Download interrupted</string>
+    <string name="downloading_nospace">Error downloading file: no space available</string>
+    <string name="download_alert_title">Downloads path</string>
+    <string name="download_alert_summary">Specify the path to save the downloads</string>
+    <string name="download_alert_error">Please specify the path to save the downloads</string>
+    <string name="alert_md5_loading">Generating MD5 sum&#8230;</string>
+    <string name="alert_md5_match">The specified MD5 sum is correct</string>
+    <string name="alert_md5_no_match">The MD5 sums does not match:\nSpecified: %1$s\nGenerated: %2$s</string>
+    <string name="goo_browse">Browse Goo.im</string>
+    <string name="goo_browse_all_compatible">Browse compatible ROMs</string>
+    <string name="goo_browse_all">Browse all files</string>
+    <string name="goo_browse_error">Error browsing files</string>
+    <string name="goo_browse_searching">Searching&#8230;</string>
+    <string name="goo_category_title">Browsing %1$s</string>
+    <string name="goo_download_title">Download</string>
+    <string name="goo_download_summary">Do you want to download this file now?\n\n%1$s\n%2$s\n</string>
+    <string name="menu_settings">Settings</string>
+    <string name="settings_interface">Interface</string>
+    <string name="settings_theme_title">Use dark theme</string>
+    <string name="settings_theme_summary">Use dark them instead of Holo</string>
+    <string name="settings_update">Updates</string>
+    <string name="download_path">Download path</string>
+    <string name="time_notifications_title">Notifications time</string>
+    <string name="time_notifications_summary">Time between each search for ROM updates</string>
+    <string name="time_notifications_half_an_hour">Half an hour</string>
+    <string name="time_notifications_an_hour">An hour</string>
+    <string name="time_notifications_two_hours">Two hours</string>
+    <string name="time_notifications_five_hours">Five hours</string>
+    <string name="time_notifications_twentyfour_hours">Twenty four hours</string>
+    <string name="checktime_title">Update check frequency</string>
+    <string name="checktime_summary">Specofy the time between each update check</string>
+
+</resources>
