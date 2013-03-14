@@ -60,6 +60,6 @@
     <string name="time_notifications_five_hours">Five hours</string>
     <string name="time_notifications_twentyfour_hours">Twenty four hours</string>
     <string name="checktime_title">Update check frequency</string>
-    <string name="checktime_summary">Specofy the time between each update check</string>
+    <string name="checktime_summary">Specify the time between each update check</string>
 
 </resources>
