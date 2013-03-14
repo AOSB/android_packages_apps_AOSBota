@@ -92,40 +92,42 @@ public class GooUpdater implements Updater {
             String device = getDevice();
             mScanning--;
             JSONObject object = (JSONObject) new JSONTokener(buffer).nextValue();
-            JSONArray list = object.getJSONArray("list");
-            for (int i = 0; i < list.length(); i++) {
-                JSONObject result = list.getJSONObject(i);
-                String fileName = result.optString("filename");
-                if (fileName != null && !"".equals(fileName.trim())) {
-                    RomInfo info = new RomInfo();
-                    info.developerid = result.optString("ro_developerid");
-                    info.board = result.optString("ro_board");
-                    info.rom = result.optString("ro_rom");
-                    info.version = result.optInt("ro_version");
-                    if (!developerId.equals(info.developerid) || !romName.equals(info.rom)
-                            || !device.equals(info.board) || info.version <= 0) {
-                        continue;
+            if (!object.isNull("list")) {
+                JSONArray list = object.getJSONArray("list");
+                for (int i = 0; i < list.length(); i++) {
+                    JSONObject result = list.getJSONObject(i);
+                    String fileName = result.optString("filename");
+                    if (fileName != null && !"".equals(fileName.trim())) {
+                        RomInfo info = new RomInfo();
+                        info.developerid = result.optString("ro_developerid");
+                        info.board = result.optString("ro_board");
+                        info.rom = result.optString("ro_rom");
+                        info.version = result.optInt("ro_version");
+                        if (!developerId.equals(info.developerid) || !romName.equals(info.rom)
+                                || !device.equals(info.board) || info.version <= 0) {
+                            continue;
+                        }
+                        info.id = result.optInt("id");
+                        info.filename = result.optString("filename");
+                        info.path = "http://goo.im" + result.optString("path");
+                        info.folder = result.optString("folder");
+                        info.md5 = result.optString("md5");
+                        info.type = result.optString("type");
+                        info.description = result.optString("description");
+                        info.is_flashable = result.optInt("is_flashable");
+                        info.modified = result.optLong("modified");
+                        info.downloads = result.optInt("downloads");
+                        info.status = result.optInt("status");
+                        info.additional_info = result.optString("additional_info");
+                        info.short_url = result.optString("short_url");
+                        info.developer_id = result.optInt("developer_id");
+                        info.gapps_package = result.optInt("gapps_package");
+                        info.incremental_file = result.optInt("incremental_file");
+                        mFoundRoms.add(info);
+                    } else {
+                        String folder = result.getString("folder");
+                        searchGoo(folder);
                     }
-                    info.id = result.optInt("id");
-                    info.filename = result.optString("filename");
-                    info.path = "http://goo.im" + result.optString("path");
-                    info.folder = result.optString("folder");
-                    info.md5 = result.optString("md5");
-                    info.type = result.optString("type");
-                    info.description = result.optString("description");
-                    info.is_flashable = result.optInt("is_flashable");
-                    info.modified = result.optLong("modified");
-                    info.downloads = result.optInt("downloads");
-                    info.status = result.optInt("status");
-                    info.additional_info = result.optString("additional_info");
-                    info.short_url = result.optString("short_url");
-                    info.developer_id = result.optInt("developer_id");
-                    info.gapps_package = result.optInt("gapps_package");
-                    info.incremental_file = result.optInt("incremental_file");
-                    mFoundRoms.add(info);
-                } else {
-                    String folder = result.getString("folder");
-                    searchGoo(folder);
                 }
             }
             if (mScanning == 0) {
