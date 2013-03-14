@@ -20,6 +20,7 @@ import android.os.Bundle;
 import android.preference.CheckBoxPreference;
 import android.preference.ListPreference;
 import android.preference.Preference;
+import android.preference.Preference.OnPreferenceChangeListener;
 import android.preference.PreferenceActivity;
 import android.preference.PreferenceScreen;
 
@@ -27,7 +28,7 @@ import com.beerbong.gooupdater.manager.ManagerFactory;
 import com.beerbong.gooupdater.manager.PreferencesManager;
 import com.beerbong.gooupdater.util.Constants;
 
-public class SettingsActivity extends PreferenceActivity {
+public class SettingsActivity extends PreferenceActivity implements OnPreferenceChangeListener {
 
 //    private CheckBoxPreference mDarkTheme;
     private ListPreference mCheckTime;
@@ -70,13 +71,21 @@ public class SettingsActivity extends PreferenceActivity {
             ManagerFactory.getFileManager().selectDownloadPath(this);
             updateSummaries();
 
-        } else if (Constants.PREFERENCE_SETTINGS_CHECK_TIME.equals(key)) {
-
-            pManager.setTimeNotifications(Long.parseLong(((ListPreference)preference).getValue()));
-
         }
 
         return true;
+    }
+
+    @Override
+    public boolean onPreferenceChange(Preference preference, Object newValue) {
+        String key = preference.getKey();
+        
+        if (Constants.PREFERENCE_SETTINGS_CHECK_TIME.equals(key)) {
+
+            ManagerFactory.getPreferencesManager().setTimeNotifications(Long.parseLong(((ListPreference)preference).getValue()));
+
+        }
+        return false;
     }
 
     private void updateSummaries() {
