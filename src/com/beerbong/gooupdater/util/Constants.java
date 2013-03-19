@@ -19,11 +19,6 @@ package com.beerbong.gooupdater.util;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 
-import com.beerbong.gooupdater.MainActivity;
-import com.beerbong.gooupdater.R;
-import com.beerbong.gooupdater.Service;
-import com.beerbong.gooupdater.updater.Updater.PackageInfo;
-
 import android.app.Activity;
 import android.app.Notification;
 import android.app.NotificationManager;
@@ -32,6 +27,11 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.res.Resources;
 import android.widget.Toast;
+
+import com.beerbong.gooupdater.MainActivity;
+import com.beerbong.gooupdater.R;
+import com.beerbong.gooupdater.Service;
+import com.beerbong.gooupdater.updater.Updater.PackageInfo;
 
 public class Constants {
 

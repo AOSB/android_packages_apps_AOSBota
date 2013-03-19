@@ -47,9 +47,10 @@ public class Service extends android.app.Service {
                             mFirstRun = false;
                         }
                         try {
-                            
-                            long sleepTime = ManagerFactory.getPreferencesManager(Service.this).getTimeNotifications();
-                            
+
+                            long sleepTime = ManagerFactory.getPreferencesManager(Service.this)
+                                    .getTimeNotifications();
+
                             sleep(mFirstRun ? 1000 * 30 : sleepTime);
                         } catch (Exception ex) {
                         }

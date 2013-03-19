@@ -88,8 +88,8 @@ public class FileManager extends Manager {
 
         Intent intent = new Intent(context, MainActivity.class);
         intent.putExtra("NOTIFICATION_ID", notificationId);
-        final PendingIntent pendingIntent = PendingIntent.getActivity(context, notificationId, intent,
-                PendingIntent.FLAG_UPDATE_CURRENT);
+        final PendingIntent pendingIntent = PendingIntent.getActivity(context, notificationId,
+                intent, PendingIntent.FLAG_UPDATE_CURRENT);
 
         Notification.Builder notification = new Notification.Builder(context)
                 .setContentTitle(resources.getString(R.string.downloading))
@@ -100,11 +100,13 @@ public class FileManager extends Manager {
 
         switch (notificationId) {
             case Constants.DOWNLOADROM_NOTIFICATION_ID:
-                mDownloadRom = new DownloadTask(notification, notificationId, context, url, fileName, md5);
+                mDownloadRom = new DownloadTask(notification, notificationId, context, url,
+                        fileName, md5);
                 mDownloadRom.execute();
                 break;
             case Constants.DOWNLOADGAPPS_NOTIFICATION_ID:
-                mDownloadGapps = new DownloadTask(notification, notificationId, context, url, fileName, md5);
+                mDownloadGapps = new DownloadTask(notification, notificationId, context, url,
+                        fileName, md5);
                 mDownloadGapps.execute();
                 break;
         }

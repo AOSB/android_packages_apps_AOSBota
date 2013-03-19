@@ -136,19 +136,21 @@ public class RomUpdater implements Updater.UpdaterListener {
                     new AlertDialog.Builder(mContext)
                             .setTitle(R.string.new_rom_found_title)
                             .setMessage(
-                                    mContext.getResources().getString(R.string.new_rom_found_summary,
+                                    mContext.getResources().getString(
+                                            R.string.new_rom_found_summary,
                                             new Object[] { info.filename, info.folder }))
                             .setPositiveButton(android.R.string.ok,
                                     new DialogInterface.OnClickListener() {
-    
+
                                         public void onClick(DialogInterface dialog, int whichButton) {
                                             dialog.dismiss();
-    
+
                                             ((Activity) mContext).runOnUiThread(new Runnable() {
-    
+
                                                 public void run() {
-                                                    ManagerFactory.getFileManager().download(mContext,
-                                                            info.path, info.filename, info.md5,
+                                                    ManagerFactory.getFileManager().download(
+                                                            mContext, info.path, info.filename,
+                                                            info.md5,
                                                             Constants.DOWNLOADROM_NOTIFICATION_ID);
                                                 }
                                             });
@@ -156,7 +158,7 @@ public class RomUpdater implements Updater.UpdaterListener {
                                     })
                             .setNegativeButton(android.R.string.cancel,
                                     new DialogInterface.OnClickListener() {
-    
+
                                         public void onClick(DialogInterface dialog, int whichButton) {
                                             dialog.dismiss();
                                         }

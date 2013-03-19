@@ -16,14 +16,14 @@
 
 package com.beerbong.gooupdater;
 
-import com.beerbong.gooupdater.manager.ManagerFactory;
-import com.beerbong.gooupdater.ui.UI;
-
 import android.app.Fragment;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+
+import com.beerbong.gooupdater.manager.ManagerFactory;
+import com.beerbong.gooupdater.ui.UI;
 
 public class GooFragment extends Fragment {
 
@@ -35,7 +35,7 @@ public class GooFragment extends Fragment {
         super.onCreate(savedInstanceState);
 
         ManagerFactory.start(getActivity());
-        
+
         setHasOptionsMenu(true);
     }
 

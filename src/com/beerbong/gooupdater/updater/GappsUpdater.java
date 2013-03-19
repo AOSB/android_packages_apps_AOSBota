@@ -54,7 +54,7 @@ public class GappsUpdater implements Updater, Updater.UpdaterListener {
         mContext = context;
         mListener = listener;
         mFromService = fromService;
-        
+
         File file = new File("/system/etc/g.prop");
         mCanUpdate = file.exists();
         if (mCanUpdate) {
@@ -89,7 +89,7 @@ public class GappsUpdater implements Updater, Updater.UpdaterListener {
                 JSONObject result = (JSONObject) new JSONTokener(buffer).nextValue();
                 info = new GooPackage(result);
             }
-            
+
             versionFound(info);
         } catch (Exception ex) {
             System.out.println(buffer);
@@ -149,8 +149,8 @@ public class GappsUpdater implements Updater, Updater.UpdaterListener {
             } else {
                 if (ManagerFactory.getPreferencesManager().isAcceptNotifications()) {
                     Constants.showNotification(mContext, info,
-                            Constants.NEWGAPPSVERSION_NOTIFICATION_ID, R.string.new_gapps_found_title,
-                            R.string.new_package_name);
+                            Constants.NEWGAPPSVERSION_NOTIFICATION_ID,
+                            R.string.new_gapps_found_title, R.string.new_package_name);
                 }
             }
         } else {
@@ -173,9 +173,9 @@ public class GappsUpdater implements Updater, Updater.UpdaterListener {
         mScanning = false;
         if (!mFromService) {
             if (error != null) {
-                Constants.showToastOnUiThread(mContext, mContext.getResources().getString(
-                        R.string.check_gapps_updates_error)
-                        + ": " + error);
+                Constants.showToastOnUiThread(mContext,
+                        mContext.getResources().getString(R.string.check_gapps_updates_error)
+                                + ": " + error);
             } else {
                 Constants.showToastOnUiThread(mContext, R.string.check_gapps_updates_error);
             }
@@ -198,26 +198,33 @@ public class GappsUpdater implements Updater, Updater.UpdaterListener {
                     new AlertDialog.Builder(mContext)
                             .setTitle(R.string.new_gapps_found_title)
                             .setMessage(
-                                    mContext.getResources().getString(R.string.new_gapps_found_summary,
+                                    mContext.getResources().getString(
+                                            R.string.new_gapps_found_summary,
                                             new Object[] { info.filename, info.folder }))
                             .setPositiveButton(android.R.string.ok,
                                     new DialogInterface.OnClickListener() {
-    
+
                                         public void onClick(DialogInterface dialog, int whichButton) {
                                             dialog.dismiss();
-    
+
                                             ((Activity) mContext).runOnUiThread(new Runnable() {
-    
+
                                                 public void run() {
-                                                    ManagerFactory.getFileManager().download(mContext,
-                                                            info.path, info.filename, info.md5, Constants.DOWNLOADGAPPS_NOTIFICATION_ID);
+                                                    ManagerFactory
+                                                            .getFileManager()
+                                                            .download(
+                                                                    mContext,
+                                                                    info.path,
+                                                                    info.filename,
+                                                                    info.md5,
+                                                                    Constants.DOWNLOADGAPPS_NOTIFICATION_ID);
                                                 }
                                             });
                                         }
                                     })
                             .setNegativeButton(android.R.string.cancel,
                                     new DialogInterface.OnClickListener() {
-    
+
                                         public void onClick(DialogInterface dialog, int whichButton) {
                                             dialog.dismiss();
                                         }

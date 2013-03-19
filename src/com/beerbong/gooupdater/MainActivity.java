@@ -35,9 +35,6 @@ public class MainActivity extends FragmentActivity {
         super.onCreate(savedInstanceState);
 
         ManagerFactory.start(this);
-        
-        Intent serviceIntent = new Intent(this, com.beerbong.gooupdater.Service.class);
-        startService(serviceIntent);
     }
 
     @Override

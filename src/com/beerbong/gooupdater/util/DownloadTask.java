@@ -53,8 +53,8 @@ public class DownloadTask extends AsyncTask<Void, Integer, Integer> {
     private boolean mDone = false;
 
     @SuppressWarnings("deprecation")
-    public DownloadTask(Notification.Builder notification, int notificationId, Context context, String url,
-            String fileName, String md5) {
+    public DownloadTask(Notification.Builder notification, int notificationId, Context context,
+            String url, String fileName, String md5) {
         this.attach(notification, notificationId, context);
 
         File dPath = new File(ManagerFactory.getPreferencesManager().getDownloadPath());
