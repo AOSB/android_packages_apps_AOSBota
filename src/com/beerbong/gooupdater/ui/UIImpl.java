@@ -123,9 +123,7 @@ public class UIImpl extends UI implements RomUpdater.RomUpdaterListener,
             }
         });
 
-        if (mFirstAttempt) {
-            checkRom(false);
-        }
+        mFirstAttempt = false;
     }
 
     private void checkRom(boolean showProgress) {
@@ -136,9 +134,7 @@ public class UIImpl extends UI implements RomUpdater.RomUpdaterListener,
             mRemoteVersionHeader.setText(R.string.checking);
             mButtonCheckRom.setEnabled(false);
         }
-        if (!mRomUpdater.check() && mFirstAttempt) {
-            checkGapps(false);
-        }
+        mRomUpdater.check();
     }
 
     private void checkGapps(boolean showProgress) {
@@ -154,8 +150,7 @@ public class UIImpl extends UI implements RomUpdater.RomUpdaterListener,
     @Override
     public void onNewIntent(Context context, Intent intent) {
 
-        int notificationId = Integer.parseInt(intent.getExtras().get("NOTIFICATION_ID")
-                .toString());
+        int notificationId = Integer.parseInt(intent.getExtras().get("NOTIFICATION_ID").toString());
         if (notificationId == Constants.NEWROMVERSION_NOTIFICATION_ID
                 || notificationId == Constants.NEWGAPPSVERSION_NOTIFICATION_ID) {
             String url = intent.getExtras().getString("URL");
@@ -167,8 +162,8 @@ public class UIImpl extends UI implements RomUpdater.RomUpdaterListener,
             } else {
                 notificationId = Constants.DOWNLOADGAPPS_NOTIFICATION_ID;
             }
-            ManagerFactory.getFileManager(context).download(context, url, name, md5,
-                    notificationId);
+            ManagerFactory.getFileManager(context)
+                    .download(context, url, name, md5, notificationId);
         } else if (notificationId == Constants.DOWNLOADROM_NOTIFICATION_ID
                 || notificationId == Constants.DOWNLOADGAPPS_NOTIFICATION_ID) {
             ManagerFactory.getFileManager().cancelDownload(notificationId);
@@ -188,11 +183,6 @@ public class UIImpl extends UI implements RomUpdater.RomUpdaterListener,
         mRemoteVersionHeader.setText(String.valueOf(mNewRomVersion));
 
         mButtonCheckRom.setEnabled(mRomUpdater.canUpdate());
-
-        if (mFirstAttempt) {
-            mFirstAttempt = false;
-            checkGapps(false);
-        }
     }
 
     @Override

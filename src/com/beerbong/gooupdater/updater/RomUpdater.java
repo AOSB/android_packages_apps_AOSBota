@@ -61,12 +61,11 @@ public class RomUpdater implements Updater.UpdaterListener {
         return false;
     }
 
-    public boolean check() {
+    public void check() {
         if (!canUpdate() || mUpdater.isScanning()) {
-            return false;
+            return;
         }
         mUpdater.searchVersion();
-        return true;
     }
 
     public String getDeveloperId() {
