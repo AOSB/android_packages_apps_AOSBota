@@ -100,6 +100,17 @@ public class GappsUpdater implements Updater, Updater.UpdaterListener {
 
     @Override
     public void onReadError(Exception ex) {
+        if (!mFromService) {
+            Constants.showToastOnUiThread(mContext, R.string.check_gapps_updates_error);
+        }
+        if (mListener != null) {
+            ((Activity) mContext).runOnUiThread(new Runnable() {
+
+                public void run() {
+                    mListener.checkGappsCompleted(-1);
+                }
+            });
+        }
     }
 
     @Override
