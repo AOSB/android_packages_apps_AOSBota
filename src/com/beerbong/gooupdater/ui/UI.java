@@ -17,6 +17,8 @@
 package com.beerbong.gooupdater.ui;
 
 import android.app.Activity;
+import android.content.Context;
+import android.content.Intent;
 import android.view.Menu;
 import android.view.MenuItem;
 
@@ -41,4 +43,6 @@ public abstract class UI {
     public abstract boolean onCreateOptionsMenu(Menu menu);
 
     public abstract boolean onOptionsItemSelected(MenuItem item);
+
+    public abstract void onNewIntent(Context context, Intent intent);
 }

@@ -18,6 +18,7 @@ package com.beerbong.gooupdater.ui;
 
 import android.app.Activity;
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.Intent;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -31,16 +32,24 @@ import com.beerbong.gooupdater.GooActivity;
 import com.beerbong.gooupdater.R;
 import com.beerbong.gooupdater.SettingsActivity;
 import com.beerbong.gooupdater.manager.ManagerFactory;
+import com.beerbong.gooupdater.updater.GappsUpdater;
 import com.beerbong.gooupdater.updater.RomUpdater;
 import com.beerbong.gooupdater.util.Constants;
 
-public class UIImpl extends UI implements RomUpdater.RomUpdaterListener {
+public class UIImpl extends UI implements RomUpdater.RomUpdaterListener,
+        GappsUpdater.GappsUpdaterListener {
+
+    private static long mNewRomVersion = -1L;
+    private static boolean mFirstAttempt = true;
 
     private Activity mActivity;
-    private RomUpdater mUpdater;
-    private ProgressDialog mProgress;
-    private Button mButtonCheck;
-    private boolean mCanUpdate;
+    private RomUpdater mRomUpdater;
+    private GappsUpdater mGappsUpdater;
+    private ProgressDialog mProgressRom;
+    private ProgressDialog mProgressGapps;
+    private TextView mRemoteVersionHeader;
+    private Button mButtonCheckRom;
+    private Button mButtonCheckGapps;
 
     protected UIImpl(Activity activity) {
 
@@ -57,29 +66,50 @@ public class UIImpl extends UI implements RomUpdater.RomUpdaterListener {
 
         mActivity.setContentView(R.layout.main_activity);
 
-        mUpdater = new RomUpdater(mActivity, this, false);
+        mRomUpdater = new RomUpdater(mActivity, this, false);
 
-        mCanUpdate = mUpdater.canUpdate();
+        mGappsUpdater = new GappsUpdater(mActivity, this, false);
+
+        boolean romCanUpdate = mRomUpdater.canUpdate();
 
         TextView romHeader = (TextView) mActivity.findViewById(R.id.rom_header);
-        romHeader.setText(mCanUpdate ? mUpdater.getRomName() : mActivity.getResources().getString(
-                R.string.not_available));
+        romHeader.setText(romCanUpdate ? mRomUpdater.getRomName() : mActivity.getResources()
+                .getString(R.string.not_available));
 
         TextView devHeader = (TextView) mActivity.findViewById(R.id.developer_header);
-        devHeader.setText(mCanUpdate ? mUpdater.getDeveloperId() : mActivity.getResources()
+        devHeader.setText(romCanUpdate ? mRomUpdater.getDeveloperId() : mActivity.getResources()
                 .getString(R.string.not_available));
 
         TextView versionHeader = (TextView) mActivity.findViewById(R.id.version_header);
-        versionHeader.setText(mCanUpdate ? String.valueOf(mUpdater.getRomVersion()) : mActivity
-                .getResources().getString(R.string.not_available));
+        versionHeader.setText(romCanUpdate ? String.valueOf(mRomUpdater.getRomVersion())
+                : mActivity.getResources().getString(R.string.not_available));
 
-        mButtonCheck = (Button) mActivity.findViewById(R.id.button_checkupdates);
-        mButtonCheck.setEnabled(mCanUpdate);
-        mButtonCheck.setOnClickListener(new OnClickListener() {
+        mRemoteVersionHeader = (TextView) mActivity.findViewById(R.id.remoteversion_header);
+        if (mNewRomVersion >= 0) {
+            mRemoteVersionHeader.setText(String.valueOf(mNewRomVersion));
+        }
+
+        mButtonCheckRom = (Button) mActivity.findViewById(R.id.button_checkupdates);
+        mButtonCheckRom.setEnabled(romCanUpdate);
+        mButtonCheckRom.setOnClickListener(new OnClickListener() {
 
             @Override
             public void onClick(View v) {
-                check(true);
+                checkRom(true);
+            }
+        });
+
+        mButtonCheckGapps = (Button) mActivity.findViewById(R.id.button_checkupdatesgapps);
+        if (mFirstAttempt) {
+            mButtonCheckGapps.setEnabled(false);
+        } else {
+            mButtonCheckGapps.setEnabled(mGappsUpdater.canUpdate());
+        }
+        mButtonCheckGapps.setOnClickListener(new OnClickListener() {
+
+            @Override
+            public void onClick(View v) {
+                checkGapps(true);
             }
         });
 
@@ -93,46 +123,86 @@ public class UIImpl extends UI implements RomUpdater.RomUpdaterListener {
             }
         });
 
-        Intent intent = activity.getIntent();
-
-        if (intent.getExtras() != null && intent.getExtras().containsKey("NOTIFICATION_ID")) {
-            if (Integer.parseInt(intent.getExtras().get("NOTIFICATION_ID").toString()) == Constants.NEWVERSION_NOTIFICATION_ID) {
-                String url = intent.getExtras().getString("URL");
-                String md5 = intent.getStringExtra("MD5");
-                String name = intent.getStringExtra("ZIP_NAME");
-
-                ManagerFactory.getFileManager(activity).download(activity, url, name, md5);
-            } else if (Integer.parseInt(intent.getExtras().get("NOTIFICATION_ID").toString()) == Constants.DOWNLOAD_NOTIFICATION_ID) {
-                ManagerFactory.getFileManager().cancelDownload();
-            }
-        } else {
-            check(false);
+        if (mFirstAttempt) {
+            checkRom(false);
         }
     }
 
-    private void check(boolean showProgress) {
+    private void checkRom(boolean showProgress) {
         if (showProgress) {
-            mProgress = ProgressDialog.show(mActivity, null,
+            mProgressRom = ProgressDialog.show(mActivity, null,
                     mActivity.getResources().getString(R.string.checking), true, false);
         } else {
-            TextView remoteVersionHeader = (TextView) mActivity
-                    .findViewById(R.id.remoteversion_header);
-            remoteVersionHeader.setText(R.string.checking);
-            mButtonCheck.setEnabled(false);
+            mRemoteVersionHeader.setText(R.string.checking);
+            mButtonCheckRom.setEnabled(false);
         }
-        mUpdater.check();
+        if (!mRomUpdater.check() && mFirstAttempt) {
+            checkGapps(false);
+        }
+    }
+
+    private void checkGapps(boolean showProgress) {
+        if (showProgress) {
+            mProgressGapps = ProgressDialog.show(mActivity, null, mActivity.getResources()
+                    .getString(R.string.checking), true, false);
+        } else {
+            mButtonCheckGapps.setEnabled(false);
+        }
+        mGappsUpdater.check();
     }
 
     @Override
-    public void checkCompleted(long newVersion) {
-        if (mProgress != null) {
-            mProgress.dismiss();
+    public void onNewIntent(Context context, Intent intent) {
+
+        int notificationId = Integer.parseInt(intent.getExtras().get("NOTIFICATION_ID")
+                .toString());
+        if (notificationId == Constants.NEWROMVERSION_NOTIFICATION_ID
+                || notificationId == Constants.NEWGAPPSVERSION_NOTIFICATION_ID) {
+            String url = intent.getExtras().getString("URL");
+            String md5 = intent.getStringExtra("MD5");
+            String name = intent.getStringExtra("ZIP_NAME");
+
+            if (notificationId == Constants.NEWROMVERSION_NOTIFICATION_ID) {
+                notificationId = Constants.DOWNLOADROM_NOTIFICATION_ID;
+            } else {
+                notificationId = Constants.DOWNLOADGAPPS_NOTIFICATION_ID;
+            }
+            ManagerFactory.getFileManager(context).download(context, url, name, md5,
+                    notificationId);
+        } else if (notificationId == Constants.DOWNLOADROM_NOTIFICATION_ID
+                || notificationId == Constants.DOWNLOADGAPPS_NOTIFICATION_ID) {
+            ManagerFactory.getFileManager().cancelDownload(notificationId);
         }
 
-        TextView remoteVersionHeader = (TextView) mActivity.findViewById(R.id.remoteversion_header);
-        remoteVersionHeader.setText(String.valueOf(newVersion));
-        
-        mButtonCheck.setEnabled(mCanUpdate);
+    }
+
+    @Override
+    public void checkRomCompleted(long newVersion) {
+        if (mProgressRom != null) {
+            mProgressRom.dismiss();
+            mProgressRom = null;
+        }
+
+        mNewRomVersion = newVersion;
+
+        mRemoteVersionHeader.setText(String.valueOf(mNewRomVersion));
+
+        mButtonCheckRom.setEnabled(mRomUpdater.canUpdate());
+
+        if (mFirstAttempt) {
+            mFirstAttempt = false;
+            checkGapps(false);
+        }
+    }
+
+    @Override
+    public void checkGappsCompleted(long newVersion) {
+        if (mProgressGapps != null) {
+            mProgressGapps.dismiss();
+            mProgressGapps = null;
+        }
+
+        mButtonCheckGapps.setEnabled(mGappsUpdater.canUpdate());
     }
 
     @Override

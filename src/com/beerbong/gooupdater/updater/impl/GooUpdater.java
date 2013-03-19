@@ -23,6 +23,7 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 import org.json.JSONTokener;
 
+import com.beerbong.gooupdater.updater.GooPackage;
 import com.beerbong.gooupdater.updater.Updater;
 import com.beerbong.gooupdater.util.Constants;
 import com.beerbong.gooupdater.util.URLStringReader;
@@ -34,7 +35,7 @@ public class GooUpdater implements Updater {
     public static final String PROPERTY_GOO_VERSION = "ro.goo.version";
 
     private UpdaterListener mListener;
-    private List<RomInfo> mFoundRoms;
+    private List<PackageInfo> mFoundRoms;
     private int mScanning = 0;
 
     public GooUpdater(UpdaterListener listener) {
@@ -46,12 +47,12 @@ public class GooUpdater implements Updater {
     }
 
     @Override
-    public String getRomName() {
+    public String getName() {
         return Constants.getProperty(PROPERTY_GOO_ROM);
     }
 
     @Override
-    public int getRomVersion() {
+    public int getVersion() {
         String version = Constants.getProperty(PROPERTY_GOO_VERSION);
         if (version != null) {
             try {
@@ -65,7 +66,7 @@ public class GooUpdater implements Updater {
     @Override
     public void searchVersion() {
         mScanning = 0;
-        mFoundRoms = new ArrayList<RomInfo>();
+        mFoundRoms = new ArrayList<PackageInfo>();
         searchGoo("/devs/" + getDeveloperId());
     }
 
@@ -88,7 +89,7 @@ public class GooUpdater implements Updater {
     public void onReadEnd(String buffer) {
         try {
             String developerId = getDeveloperId();
-            String romName = getRomName();
+            String romName = getName();
             String device = getDevice();
             mScanning--;
             JSONObject object = (JSONObject) new JSONTokener(buffer).nextValue();
@@ -98,32 +99,15 @@ public class GooUpdater implements Updater {
                     JSONObject result = list.getJSONObject(i);
                     String fileName = result.optString("filename");
                     if (fileName != null && !"".equals(fileName.trim())) {
-                        RomInfo info = new RomInfo();
-                        info.developerid = result.optString("ro_developerid");
-                        info.board = result.optString("ro_board");
-                        info.rom = result.optString("ro_rom");
-                        info.version = result.optInt("ro_version");
-                        if (!developerId.equals(info.developerid) || !romName.equals(info.rom)
-                                || !device.equals(info.board) || info.version <= 0) {
+                        String developerid = result.optString("ro_developerid");
+                        String board = result.optString("ro_board");
+                        String rom = result.optString("ro_rom");
+                        int version = result.optInt("ro_version");
+                        if (!developerId.equals(developerid) || !romName.equals(rom)
+                                || !device.equals(board) || version <= 0) {
                             continue;
                         }
-                        info.id = result.optInt("id");
-                        info.filename = result.optString("filename");
-                        info.path = "http://goo.im" + result.optString("path");
-                        info.folder = result.optString("folder");
-                        info.md5 = result.optString("md5");
-                        info.type = result.optString("type");
-                        info.description = result.optString("description");
-                        info.is_flashable = result.optInt("is_flashable");
-                        info.modified = result.optLong("modified");
-                        info.downloads = result.optInt("downloads");
-                        info.status = result.optInt("status");
-                        info.additional_info = result.optString("additional_info");
-                        info.short_url = result.optString("short_url");
-                        info.developer_id = result.optInt("developer_id");
-                        info.gapps_package = result.optInt("gapps_package");
-                        info.incremental_file = result.optInt("incremental_file");
-                        mFoundRoms.add(info);
+                        mFoundRoms.add(new GooPackage(result));
                     } else {
                         String folder = result.getString("folder");
                         searchGoo(folder);
@@ -132,9 +116,9 @@ public class GooUpdater implements Updater {
             }
             if (mScanning == 0) {
                 long newVersion = -2;
-                RomInfo newRom = null;
+                PackageInfo newRom = null;
                 for (int i = 0; i < mFoundRoms.size(); i++) {
-                    RomInfo info = mFoundRoms.get(i);
+                    PackageInfo info = mFoundRoms.get(i);
                     if (info.version > newVersion) {
                         newRom = info;
                     }
@@ -144,7 +128,7 @@ public class GooUpdater implements Updater {
             }
         } catch (Exception ex) {
             mScanning = 0;
-            mFoundRoms = new ArrayList<RomInfo>();
+            mFoundRoms = new ArrayList<PackageInfo>();
             ex.printStackTrace();
             mListener.versionError(null);
         }

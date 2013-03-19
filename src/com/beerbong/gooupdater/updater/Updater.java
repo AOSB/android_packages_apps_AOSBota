@@ -21,44 +21,29 @@ import com.beerbong.gooupdater.util.URLStringReader.URLStringReaderListener;
 
 public interface Updater extends URLStringReaderListener, HttpStringReaderListener {
 
-    public class RomInfo {
+    public abstract class PackageInfo {
 
-        public int id;
+        public String md5;
         public String filename;
         public String path;
         public String folder;
-        public String md5;
-        public String type;
-        public String description;
-        public int is_flashable;
-        public long modified;
-        public int downloads;
-        public int status;
-        public String additional_info;
-        public String short_url;
-        public int developer_id;
-        public String developerid;
-        public String board;
-        public String rom;
         public long version;
-        public int gapps_package;
-        public int incremental_file;
     }
 
     public static final String PROPERTY_DEVICE = "ro.product.device";
 
     public static interface UpdaterListener {
 
-        public void versionFound(RomInfo info);
+        public void versionFound(PackageInfo info);
 
         public void versionError(String error);
     }
 
     public String getDeveloperId();
 
-    public String getRomName();
+    public String getName();
 
-    public int getRomVersion();
+    public int getVersion();
 
     public void searchVersion();
 

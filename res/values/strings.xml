@@ -26,7 +26,12 @@
     <string name="check_rom_updates_no_new">No ROM updates found</string>
     <string name="new_rom_found_title">New ROM version found</string>
     <string name="new_rom_found_summary">A new version of your ROM has been found. Do you want to download it now?\n\n%1$s\n%2$s\n</string>
-    <string name="new_rom_name">%1$s</string>
+    <string name="new_package_name">%1$s</string>
+    <string name="check_gapps_updates">Check for GApps updates</string>
+    <string name="check_gapps_updates_no_new">No GApps updates found</string>
+    <string name="check_gapps_updates_error">Error checking for GApps updates</string>
+    <string name="new_gapps_found_title">New GApps package found</string>
+    <string name="new_gapps_found_summary">A new version of the GApps package has been found. Do you want to download it now?\n\n%1$s\n%2$s\n</string>
     <string name="downloading">Downloading</string>
     <string name="downloading_complete">Download complete</string>
     <string name="downloading_error">Error downloading file</string>
@@ -35,6 +40,8 @@
     <string name="download_alert_title">Downloads path</string>
     <string name="download_alert_summary">Specify the path to save the downloads</string>
     <string name="download_alert_error">Please specify the path to save the downloads</string>
+    <string name="download_cancel_title">Cancel download</string>
+    <string name="download_cancel_message">Do you want to cancel the current download?</string>
     <string name="alert_md5_loading">Generating MD5 sum&#8230;</string>
     <string name="alert_md5_match">The specified MD5 sum is correct</string>
     <string name="alert_md5_no_match">The MD5 sums does not match:\nSpecified: %1$s\nGenerated: %2$s</string>

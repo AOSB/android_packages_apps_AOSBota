@@ -16,6 +16,7 @@
 
 package com.beerbong.gooupdater;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.view.Menu;
@@ -34,6 +35,15 @@ public class MainActivity extends FragmentActivity {
         super.onCreate(savedInstanceState);
 
         ManagerFactory.start(this);
+        
+        Intent serviceIntent = new Intent(this, com.beerbong.gooupdater.Service.class);
+        startService(serviceIntent);
+    }
+
+    @Override
+    protected void onNewIntent(Intent intent) {
+
+        UI.getInstance().onNewIntent(this, intent);
     }
 
     @Override

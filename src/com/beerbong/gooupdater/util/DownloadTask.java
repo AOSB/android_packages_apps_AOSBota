@@ -48,13 +48,14 @@ public class DownloadTask extends AsyncTask<Void, Integer, Integer> {
     private String mFileName;
     private String mMd5;
     private final WakeLock mWakeLock;
+    private int mNotificationId;
 
     private boolean mDone = false;
 
     @SuppressWarnings("deprecation")
-    public DownloadTask(Notification.Builder notification, Context context, String url,
+    public DownloadTask(Notification.Builder notification, int notificationId, Context context, String url,
             String fileName, String md5) {
-        this.attach(notification, context);
+        this.attach(notification, notificationId, context);
 
         File dPath = new File(ManagerFactory.getPreferencesManager().getDownloadPath());
         dPath.mkdirs();
@@ -67,8 +68,9 @@ public class DownloadTask extends AsyncTask<Void, Integer, Integer> {
         mWakeLock = pm.newWakeLock(PowerManager.SCREEN_DIM_WAKE_LOCK, MainActivity.class.getName());
     }
 
-    public void attach(Notification.Builder notification, Context context) {
+    public void attach(Notification.Builder notification, int notificationId, Context context) {
         mNotification = notification;
+        mNotificationId = notificationId;
         mContext = context;
     }
 
@@ -86,7 +88,7 @@ public class DownloadTask extends AsyncTask<Void, Integer, Integer> {
         mDone = false;
         mNotificationManager = (NotificationManager) mContext
                 .getSystemService(Context.NOTIFICATION_SERVICE);
-        mNotificationManager.notify(0, mNotification.build());
+        mNotificationManager.notify(mNotificationId, mNotification.build());
         mWakeLock.acquire();
     }
 
@@ -224,7 +226,7 @@ public class DownloadTask extends AsyncTask<Void, Integer, Integer> {
         }
         mNotification.setContentTitle(mContext.getResources().getText(resource)).setProgress(0, 0,
                 false);
-        mNotificationManager.notify(0, mNotification.build());
+        mNotificationManager.notify(mNotificationId, mNotification.build());
     }
 
     @Override
@@ -253,7 +255,7 @@ public class DownloadTask extends AsyncTask<Void, Integer, Integer> {
         }
         mNotification.setContentTitle(mContext.getResources().getText(resource)).setProgress(0, 0,
                 false);
-        mNotificationManager.notify(0, mNotification.build());
+        mNotificationManager.notify(mNotificationId, mNotification.build());
     }
 
     @Override
@@ -268,9 +270,8 @@ public class DownloadTask extends AsyncTask<Void, Integer, Integer> {
             return;
         mNotification.setProgress(100, values[0] / mScale, false);
         if (values.length > 0) {
-            System.out.println((values[1] / mScale) + ", " + (values[0] / mScale));
             mNotification.setProgress(values[1] / mScale, values[0] / mScale, false);
-            mNotificationManager.notify(0, mNotification.build());
+            mNotificationManager.notify(mNotificationId, mNotification.build());
         }
     }
 }

@@ -35,8 +35,9 @@ import android.preference.PreferenceScreen;
 import android.widget.Toast;
 
 import com.beerbong.gooupdater.manager.ManagerFactory;
+import com.beerbong.gooupdater.updater.GooPackage;
 import com.beerbong.gooupdater.updater.Updater;
-import com.beerbong.gooupdater.updater.Updater.RomInfo;
+import com.beerbong.gooupdater.updater.Updater.PackageInfo;
 import com.beerbong.gooupdater.util.Constants;
 import com.beerbong.gooupdater.util.URLStringReader;
 import com.beerbong.gooupdater.util.URLStringReader.URLStringReaderListener;
@@ -49,7 +50,7 @@ public class GooActivity extends PreferenceActivity implements URLStringReaderLi
     private static String CURRENT_FOLDER;
     private static boolean BROWSING_ALL;
 
-    private Map<String, RomInfo> mInfos;
+    private Map<String, PackageInfo> mInfos;
     private String mDevice = Constants.getProperty(Updater.PROPERTY_DEVICE);
 
     @SuppressWarnings("deprecation")
@@ -64,7 +65,7 @@ public class GooActivity extends PreferenceActivity implements URLStringReaderLi
         addPreferencesFromResource(R.layout.empty_pref_screen);
 
         PreferenceScreen pScreen = getPreferenceScreen();
-        mInfos = new HashMap<String, RomInfo>();
+        mInfos = new HashMap<String, PackageInfo>();
 
         if (CURRENT_NAVIGATION == null) {
 
@@ -111,27 +112,7 @@ public class GooActivity extends PreferenceActivity implements URLStringReaderLi
                             continue;
                         }
 
-                        RomInfo info = new RomInfo();
-                        info.developerid = result.optString("ro_developerid");
-                        info.board = result.optString("ro_board");
-                        info.rom = result.optString("ro_rom");
-                        info.version = result.optInt("ro_version");
-                        info.id = result.optInt("id");
-                        info.filename = result.optString("filename");
-                        info.path = "http://goo.im" + path;
-                        info.folder = result.optString("folder");
-                        info.md5 = result.optString("md5");
-                        info.type = result.optString("type");
-                        info.description = result.optString("description");
-                        info.is_flashable = result.optInt("is_flashable");
-                        info.modified = result.optLong("modified");
-                        info.downloads = result.optInt("downloads");
-                        info.status = result.optInt("status");
-                        info.additional_info = result.optString("additional_info");
-                        info.short_url = result.optString("short_url");
-                        info.developer_id = result.optInt("developer_id");
-                        info.gapps_package = result.optInt("gapps_package");
-                        info.incremental_file = result.optInt("incremental_file");
+                        GooPackage info = new GooPackage(result);
                         mInfos.put(path, info);
 
                         Preference preference = new Preference(this);
@@ -186,7 +167,7 @@ public class GooActivity extends PreferenceActivity implements URLStringReaderLi
 
         } else {
 
-            final RomInfo info = mInfos.get(key);
+            final PackageInfo info = mInfos.get(key);
 
             runOnUiThread(new Runnable() {
 
@@ -210,7 +191,7 @@ public class GooActivity extends PreferenceActivity implements URLStringReaderLi
                                                     Intent intent = new Intent(GooActivity.this,
                                                             MainActivity.class);
                                                     intent.putExtra("NOTIFICATION_ID",
-                                                            Constants.NEWVERSION_NOTIFICATION_ID);
+                                                            Constants.NEWROMVERSION_NOTIFICATION_ID);
                                                     intent.putExtra("URL", info.path);
                                                     intent.putExtra("ZIP_NAME", info.filename);
                                                     intent.putExtra("MD5", info.md5);

@@ -42,7 +42,8 @@ import com.beerbong.gooupdater.util.DownloadTask;
 
 public class FileManager extends Manager {
 
-    private static DownloadTask mDownloadFile;
+    private static DownloadTask mDownloadRom;
+    private static DownloadTask mDownloadGapps;
 
     protected FileManager(Context context) {
         super(context);
@@ -80,30 +81,65 @@ public class FileManager extends Manager {
                 }).show();
     }
 
-    public void download(Context context, String url, String fileName, String md5) {
+    public void download(Context context, String url, String fileName, String md5,
+            int notificationId) {
 
         Resources resources = context.getResources();
 
         Intent intent = new Intent(context, MainActivity.class);
-        intent.putExtra("NOTIFICATION_ID", Constants.DOWNLOAD_NOTIFICATION_ID);
-        final PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, intent,
+        intent.putExtra("NOTIFICATION_ID", notificationId);
+        final PendingIntent pendingIntent = PendingIntent.getActivity(context, notificationId, intent,
                 PendingIntent.FLAG_UPDATE_CURRENT);
 
         Notification.Builder notification = new Notification.Builder(context)
                 .setContentTitle(resources.getString(R.string.downloading))
                 .setContentText(
-                        resources.getString(R.string.new_rom_name, new Object[] { fileName }))
+                        resources.getString(R.string.new_package_name, new Object[] { fileName }))
                 .setSmallIcon(R.drawable.ic_launcher).setContentIntent(pendingIntent)
                 .setProgress(100, 0, true);
 
-        mDownloadFile = new DownloadTask(notification, context, url, fileName, md5);
-        mDownloadFile.execute();
+        switch (notificationId) {
+            case Constants.DOWNLOADROM_NOTIFICATION_ID:
+                mDownloadRom = new DownloadTask(notification, notificationId, context, url, fileName, md5);
+                mDownloadRom.execute();
+                break;
+            case Constants.DOWNLOADGAPPS_NOTIFICATION_ID:
+                mDownloadGapps = new DownloadTask(notification, notificationId, context, url, fileName, md5);
+                mDownloadGapps.execute();
+                break;
+        }
     }
 
-    public void cancelDownload() {
-        if (mDownloadFile != null && mDownloadFile.getStatus() != Status.FINISHED) {
-            mDownloadFile.cancel(true);
-        }
+    public void cancelDownload(final int notificationId) {
+        new AlertDialog.Builder(mContext)
+                .setTitle(R.string.download_cancel_title)
+                .setMessage(R.string.download_cancel_message)
+                .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+
+                    public void onClick(DialogInterface dialog, int whichButton) {
+                        dialog.dismiss();
+                        switch (notificationId) {
+                            case Constants.DOWNLOADROM_NOTIFICATION_ID:
+                                if (mDownloadRom != null
+                                        && mDownloadRom.getStatus() != Status.FINISHED) {
+                                    mDownloadRom.cancel(true);
+                                }
+                                break;
+                            case Constants.DOWNLOADGAPPS_NOTIFICATION_ID:
+                                if (mDownloadGapps != null
+                                        && mDownloadGapps.getStatus() != Status.FINISHED) {
+                                    mDownloadGapps.cancel(true);
+                                }
+                                break;
+                        }
+                    }
+                })
+                .setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
+
+                    public void onClick(DialogInterface dialog, int whichButton) {
+                        dialog.dismiss();
+                    }
+                }).show();
     }
 
     public boolean recursiveDelete(File f) {

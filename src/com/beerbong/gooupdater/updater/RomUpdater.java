@@ -18,20 +18,12 @@ package com.beerbong.gooupdater.updater;
 
 import android.app.Activity;
 import android.app.AlertDialog;
-import android.app.Notification;
-import android.app.NotificationManager;
-import android.app.PendingIntent;
 import android.content.Context;
 import android.content.DialogInterface;
-import android.content.Intent;
-import android.content.res.Resources;
-import android.widget.Toast;
 
-import com.beerbong.gooupdater.MainActivity;
 import com.beerbong.gooupdater.R;
-import com.beerbong.gooupdater.Service;
 import com.beerbong.gooupdater.manager.ManagerFactory;
-import com.beerbong.gooupdater.updater.Updater.RomInfo;
+import com.beerbong.gooupdater.updater.Updater.PackageInfo;
 import com.beerbong.gooupdater.updater.impl.GooUpdater;
 import com.beerbong.gooupdater.util.Constants;
 
@@ -46,7 +38,7 @@ public class RomUpdater implements Updater.UpdaterListener {
 
     public interface RomUpdaterListener {
 
-        public void checkCompleted(long newVersion);
+        public void checkRomCompleted(long newVersion);
     }
 
     public RomUpdater(Context context, RomUpdaterListener listener, boolean fromService) {
@@ -58,8 +50,8 @@ public class RomUpdater implements Updater.UpdaterListener {
 
         mListener = listener;
 
-        mRomName = mUpdater.getRomName();
-        mRomVersion = mUpdater.getRomVersion();
+        mRomName = mUpdater.getName();
+        mRomVersion = mUpdater.getVersion();
     }
 
     public boolean canUpdate() {
@@ -69,11 +61,12 @@ public class RomUpdater implements Updater.UpdaterListener {
         return false;
     }
 
-    public void check() {
+    public boolean check() {
         if (!canUpdate() || mUpdater.isScanning()) {
-            return;
+            return false;
         }
         mUpdater.searchVersion();
+        return true;
     }
 
     public String getDeveloperId() {
@@ -81,33 +74,35 @@ public class RomUpdater implements Updater.UpdaterListener {
     }
 
     public String getRomName() {
-        return mUpdater.getRomName();
+        return mUpdater.getName();
     }
 
     public int getRomVersion() {
-        return mUpdater.getRomVersion();
+        return mUpdater.getVersion();
     }
 
     @Override
-    public void versionFound(final RomInfo info) {
+    public void versionFound(final PackageInfo info) {
         if (info != null && info.version > mRomVersion) {
             if (!mFromService) {
                 showNewRomFound(info);
             } else {
                 if (ManagerFactory.getPreferencesManager().isAcceptNotifications()) {
-                    showNotification(info);
+                    Constants.showNotification(mContext, info,
+                            Constants.NEWROMVERSION_NOTIFICATION_ID, R.string.new_rom_found_title,
+                            R.string.new_package_name);
                 }
             }
         } else {
             if (!mFromService) {
-                showToastOnUiThread(R.string.check_rom_updates_no_new);
+                Constants.showToastOnUiThread(mContext, R.string.check_rom_updates_no_new);
             }
         }
         if (mListener != null) {
             ((Activity) mContext).runOnUiThread(new Runnable() {
 
                 public void run() {
-                    mListener.checkCompleted(info.version);
+                    mListener.checkRomCompleted(info.version);
                 }
             });
         }
@@ -117,91 +112,61 @@ public class RomUpdater implements Updater.UpdaterListener {
     public void versionError(String error) {
         if (!mFromService) {
             if (error != null) {
-                showToastOnUiThread(mContext.getResources().getString(
-                        R.string.check_rom_updates_error)
-                        + ": " + error);
+                Constants.showToastOnUiThread(mContext,
+                        mContext.getResources().getString(R.string.check_rom_updates_error) + ": "
+                                + error);
             } else {
-                showToastOnUiThread(R.string.check_rom_updates_error);
+                Constants.showToastOnUiThread(mContext, R.string.check_rom_updates_error);
             }
+        }
+        if (mListener != null) {
+            ((Activity) mContext).runOnUiThread(new Runnable() {
+
+                public void run() {
+                    mListener.checkRomCompleted(-1);
+                }
+            });
         }
     }
 
-    private void showToastOnUiThread(final int resourceId) {
+    private void showNewRomFound(final PackageInfo info) {
         ((Activity) mContext).runOnUiThread(new Runnable() {
 
             public void run() {
-                Toast.makeText(mContext, resourceId, Toast.LENGTH_LONG).show();
+                try {
+                    new AlertDialog.Builder(mContext)
+                            .setTitle(R.string.new_rom_found_title)
+                            .setMessage(
+                                    mContext.getResources().getString(R.string.new_rom_found_summary,
+                                            new Object[] { info.filename, info.folder }))
+                            .setPositiveButton(android.R.string.ok,
+                                    new DialogInterface.OnClickListener() {
+    
+                                        public void onClick(DialogInterface dialog, int whichButton) {
+                                            dialog.dismiss();
+    
+                                            ((Activity) mContext).runOnUiThread(new Runnable() {
+    
+                                                public void run() {
+                                                    ManagerFactory.getFileManager().download(mContext,
+                                                            info.path, info.filename, info.md5,
+                                                            Constants.DOWNLOADROM_NOTIFICATION_ID);
+                                                }
+                                            });
+                                        }
+                                    })
+                            .setNegativeButton(android.R.string.cancel,
+                                    new DialogInterface.OnClickListener() {
+    
+                                        public void onClick(DialogInterface dialog, int whichButton) {
+                                            dialog.dismiss();
+                                        }
+                                    }).show();
+                } catch (Exception ex) {
+                    // app closed?
+                }
             }
         });
-    }
-
-    private void showToastOnUiThread(final String string) {
-        ((Activity) mContext).runOnUiThread(new Runnable() {
-
-            public void run() {
-                Toast.makeText(mContext, string, Toast.LENGTH_LONG).show();
-            }
-        });
-    }
-
-    private void showNewRomFound(final RomInfo info) {
-        ((Activity) mContext).runOnUiThread(new Runnable() {
-
-            public void run() {
-                new AlertDialog.Builder(mContext)
-                        .setTitle(R.string.new_rom_found_title)
-                        .setMessage(
-                                mContext.getResources().getString(R.string.new_rom_found_summary,
-                                        new Object[] { info.filename, info.folder }))
-                        .setPositiveButton(android.R.string.ok,
-                                new DialogInterface.OnClickListener() {
-
-                                    public void onClick(DialogInterface dialog, int whichButton) {
-                                        dialog.dismiss();
-
-                                        ((Activity) mContext).runOnUiThread(new Runnable() {
-
-                                            public void run() {
-                                                ManagerFactory.getFileManager().download(mContext,
-                                                        info.path, info.filename, info.md5);
-                                            }
-                                        });
-                                    }
-                                })
-                        .setNegativeButton(android.R.string.cancel,
-                                new DialogInterface.OnClickListener() {
-
-                                    public void onClick(DialogInterface dialog, int whichButton) {
-                                        dialog.dismiss();
-                                    }
-                                }).show();
-            }
-        });
-    }
-
-    private void showNotification(RomInfo info) {
-        Resources resources = mContext.getResources();
-
-        Intent intent = new Intent(mContext, MainActivity.class);
-        intent.putExtra("NOTIFICATION_ID", Constants.NEWVERSION_NOTIFICATION_ID);
-        intent.putExtra("URL", info.path);
-        intent.putExtra("ZIP_NAME", info.filename);
-        intent.putExtra("MD5", info.md5);
-        PendingIntent pIntent = PendingIntent.getActivity(mContext, 0, intent,
-                PendingIntent.FLAG_UPDATE_CURRENT);
-
-        Notification noti = new Notification.Builder(mContext)
-                .setContentTitle(resources.getString(R.string.new_rom_found_title))
-                .setContentText(
-                        resources.getString(R.string.new_rom_name, new Object[] { info.filename }))
-                .setSmallIcon(R.drawable.ic_launcher).setContentIntent(pIntent).build();
-
-        NotificationManager notificationManager = (NotificationManager) mContext
-                .getSystemService(Service.NOTIFICATION_SERVICE);
-
-        noti.flags |= Notification.FLAG_AUTO_CANCEL;
-
-        notificationManager.notify(Constants.NEWVERSION_NOTIFICATION_ID, noti);
     }
 
     private Updater getUpdater() {

@@ -24,6 +24,7 @@ import android.os.Binder;
 import android.os.IBinder;
 
 import com.beerbong.gooupdater.manager.ManagerFactory;
+import com.beerbong.gooupdater.updater.GappsUpdater;
 import com.beerbong.gooupdater.updater.RomUpdater;
 
 public class Service extends android.app.Service {
@@ -42,6 +43,7 @@ public class Service extends android.app.Service {
                     if (ManagerFactory.getPreferencesManager(Service.this).isAcceptNotifications()) {
                         if (isNetworkAvailable()) {
                             mRomUpdater.check();
+                            mGappsUpdater.check();
                             mFirstRun = false;
                         }
                         try {
@@ -73,6 +75,7 @@ public class Service extends android.app.Service {
     private final IBinder mBinder = new LocalBinder();
 
     private RomUpdater mRomUpdater;
+    private GappsUpdater mGappsUpdater;
     private ServiceRunnable mServiceThread;
 
     @Override
@@ -80,6 +83,7 @@ public class Service extends android.app.Service {
         super.onCreate();
 
         mRomUpdater = new RomUpdater(this, null, true);
+        mGappsUpdater = new GappsUpdater(this, null, true);
         mServiceThread = new ServiceRunnable();
     }
 

@@ -76,6 +76,13 @@
         </Button>
 
         <Button 
+            android:text="@string/check_gapps_updates" 
+            android:id="@+id/button_checkupdatesgapps"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+        </Button>
+
+        <Button 
             android:text="@string/goo_browse" 
             android:id="@+id/button_browse"
             android:layout_width="match_parent"
