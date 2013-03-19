@@ -40,7 +40,6 @@ public class UIImpl extends UI implements RomUpdater.RomUpdaterListener,
         GappsUpdater.GappsUpdaterListener {
 
     private static long mNewRomVersion = -1L;
-    private static boolean mFirstAttempt = true;
 
     private Activity mActivity;
     private RomUpdater mRomUpdater;
@@ -100,11 +99,7 @@ public class UIImpl extends UI implements RomUpdater.RomUpdaterListener,
         });
 
         mButtonCheckGapps = (Button) mActivity.findViewById(R.id.button_checkupdatesgapps);
-        if (mFirstAttempt) {
-            mButtonCheckGapps.setEnabled(false);
-        } else {
-            mButtonCheckGapps.setEnabled(mGappsUpdater.canUpdate());
-        }
+        mButtonCheckGapps.setEnabled(mGappsUpdater.canUpdate());
         mButtonCheckGapps.setOnClickListener(new OnClickListener() {
 
             @Override
@@ -122,8 +117,6 @@ public class UIImpl extends UI implements RomUpdater.RomUpdaterListener,
                 mActivity.startActivity(new Intent(mActivity, GooActivity.class));
             }
         });
-
-        mFirstAttempt = false;
     }
 
     private void checkRom(boolean showProgress) {
