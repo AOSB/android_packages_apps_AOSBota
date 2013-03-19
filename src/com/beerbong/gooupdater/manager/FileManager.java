@@ -25,18 +25,21 @@ import java.io.InputStreamReader;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Notification;
+import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.Resources;
 import android.os.AsyncTask.Status;
+import android.os.Bundle;
 import android.text.TextUtils;
 import android.widget.EditText;
 import android.widget.Toast;
 
 import com.beerbong.gooupdater.MainActivity;
 import com.beerbong.gooupdater.R;
+import com.beerbong.gooupdater.updater.TWRPUpdater;
 import com.beerbong.gooupdater.util.Constants;
 import com.beerbong.gooupdater.util.DownloadTask;
 
@@ -44,6 +47,7 @@ public class FileManager extends Manager {
 
     private static DownloadTask mDownloadRom;
     private static DownloadTask mDownloadGapps;
+    private static DownloadTask mDownloadTWRP;
 
     protected FileManager(Context context) {
         super(context);
@@ -88,6 +92,11 @@ public class FileManager extends Manager {
 
         Intent intent = new Intent(context, MainActivity.class);
         intent.putExtra("NOTIFICATION_ID", notificationId);
+        intent.putExtra("MD5", md5);
+        if (notificationId == Constants.DOWNLOADTWRP_NOTIFICATION_ID) {
+            mDownloadTWRP = new DownloadTask(null, notificationId, context, url, fileName, md5);
+            intent.putExtra("DESTINATION_FILE", mDownloadTWRP.getDestinationFile());
+        }
         final PendingIntent pendingIntent = PendingIntent.getActivity(context, notificationId,
                 intent, PendingIntent.FLAG_UPDATE_CURRENT);
 
@@ -109,39 +118,92 @@ public class FileManager extends Manager {
                         fileName, md5);
                 mDownloadGapps.execute();
                 break;
+            case Constants.DOWNLOADTWRP_NOTIFICATION_ID:
+                mDownloadTWRP.attach(notification, notificationId, context);
+                mDownloadTWRP.execute();
+                break;
         }
     }
 
-    public void cancelDownload(final int notificationId) {
-        new AlertDialog.Builder(mContext)
-                .setTitle(R.string.download_cancel_title)
-                .setMessage(R.string.download_cancel_message)
-                .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+    public void cancelDownload(final int notificationId, final Bundle extras) {
+        if (notificationId == Constants.DOWNLOADTWRP_NOTIFICATION_ID && mDownloadTWRP != null
+                && mDownloadTWRP.getStatus() == Status.FINISHED) {
+            NotificationManager nMgr = (NotificationManager) mContext
+                    .getSystemService(Context.NOTIFICATION_SERVICE);
+            nMgr.cancel(notificationId);
+            new AlertDialog.Builder(mContext)
+                    .setTitle(R.string.install_twrp_title)
+                    .setMessage(R.string.install_twrp_summary)
+                    .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
 
-                    public void onClick(DialogInterface dialog, int whichButton) {
-                        dialog.dismiss();
-                        switch (notificationId) {
-                            case Constants.DOWNLOADROM_NOTIFICATION_ID:
-                                if (mDownloadRom != null
-                                        && mDownloadRom.getStatus() != Status.FINISHED) {
-                                    mDownloadRom.cancel(true);
-                                }
-                                break;
-                            case Constants.DOWNLOADGAPPS_NOTIFICATION_ID:
-                                if (mDownloadGapps != null
-                                        && mDownloadGapps.getStatus() != Status.FINISHED) {
-                                    mDownloadGapps.cancel(true);
-                                }
-                                break;
+                        public void onClick(DialogInterface dialog, int whichButton) {
+                            dialog.dismiss();
+                            installTWRP(extras);
                         }
-                    }
-                })
-                .setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
+                    })
+                    .setNegativeButton(android.R.string.cancel,
+                            new DialogInterface.OnClickListener() {
 
-                    public void onClick(DialogInterface dialog, int whichButton) {
-                        dialog.dismiss();
-                    }
-                }).show();
+                                public void onClick(DialogInterface dialog, int whichButton) {
+                                    dialog.dismiss();
+                                }
+                            }).show();
+        } else {
+            new AlertDialog.Builder(mContext)
+                    .setTitle(R.string.download_cancel_title)
+                    .setMessage(R.string.download_cancel_message)
+                    .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+
+                        public void onClick(DialogInterface dialog, int whichButton) {
+                            dialog.dismiss();
+                            NotificationManager nMgr = (NotificationManager) mContext
+                                    .getSystemService(Context.NOTIFICATION_SERVICE);
+                            nMgr.cancel(notificationId);
+                            switch (notificationId) {
+                                case Constants.DOWNLOADROM_NOTIFICATION_ID:
+                                    if (mDownloadRom != null
+                                            && mDownloadRom.getStatus() != Status.FINISHED) {
+                                        mDownloadRom.cancel(true);
+                                    }
+                                    break;
+                                case Constants.DOWNLOADGAPPS_NOTIFICATION_ID:
+                                    if (mDownloadGapps != null
+                                            && mDownloadGapps.getStatus() != Status.FINISHED) {
+                                        mDownloadGapps.cancel(true);
+                                    }
+                                    break;
+                                case Constants.DOWNLOADTWRP_NOTIFICATION_ID:
+                                    if (mDownloadTWRP != null
+                                            && mDownloadTWRP.getStatus() != Status.FINISHED) {
+                                        mDownloadTWRP.cancel(true);
+                                    }
+                                    break;
+                            }
+                        }
+                    })
+                    .setNegativeButton(android.R.string.cancel,
+                            new DialogInterface.OnClickListener() {
+
+                                public void onClick(DialogInterface dialog, int whichButton) {
+                                    dialog.dismiss();
+                                }
+                            }).show();
+        }
+    }
+
+    private void installTWRP(Bundle extras) {
+        File file = (File) extras.get("DESTINATION_FILE");
+        if (file == null || !file.exists()) {
+            Constants.showToastOnUiThread(mContext, R.string.check_twrp_updates_error);
+            return;
+        }
+        String fileMd5 = Constants.md5(file);
+        String md5 = extras.getString("MD5");
+        if (!fileMd5.equals(md5)) {
+            Constants.showToastOnUiThread(mContext, R.string.check_twrp_error_md5);
+            return;
+        }
+        new TWRPUpdater(mContext, null).installTWRP(file);
     }
 
     public boolean recursiveDelete(File f) {

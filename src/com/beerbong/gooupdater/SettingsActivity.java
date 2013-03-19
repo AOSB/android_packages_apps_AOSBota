@@ -30,7 +30,7 @@ import com.beerbong.gooupdater.util.Constants;
 
 public class SettingsActivity extends PreferenceActivity implements OnPreferenceChangeListener {
 
-//    private CheckBoxPreference mDarkTheme;
+    // private CheckBoxPreference mDarkTheme;
     private ListPreference mCheckTime;
     private Preference mDownloadPath;
 
@@ -42,15 +42,15 @@ public class SettingsActivity extends PreferenceActivity implements OnPreference
 
         addPreferencesFromResource(R.layout.settings);
 
-//        mDarkTheme = (CheckBoxPreference) findPreference(Constants.PREFERENCE_SETTINGS_DARK_THEME);
+        // mDarkTheme = (CheckBoxPreference) findPreference(Constants.PREFERENCE_SETTINGS_DARK_THEME);
         mDownloadPath = findPreference(Constants.PREFERENCE_SETTINGS_DOWNLOAD_PATH);
-        mCheckTime = (ListPreference)findPreference(Constants.PREFERENCE_SETTINGS_CHECK_TIME);
+        mCheckTime = (ListPreference) findPreference(Constants.PREFERENCE_SETTINGS_CHECK_TIME);
 
         PreferencesManager pManager = ManagerFactory.getPreferencesManager();
-        
+
         mCheckTime.setValue(String.valueOf(pManager.getTimeNotifications()));
 
-//        mDarkTheme.setChecked(pManager.isDarkTheme());
+        // mDarkTheme.setChecked(pManager.isDarkTheme());
 
         updateSummaries();
     }
@@ -79,10 +79,11 @@ public class SettingsActivity extends PreferenceActivity implements OnPreference
     @Override
     public boolean onPreferenceChange(Preference preference, Object newValue) {
         String key = preference.getKey();
-        
+
         if (Constants.PREFERENCE_SETTINGS_CHECK_TIME.equals(key)) {
 
-            ManagerFactory.getPreferencesManager().setTimeNotifications(Long.parseLong(((ListPreference)preference).getValue()));
+            ManagerFactory.getPreferencesManager().setTimeNotifications(
+                    Long.parseLong(((ListPreference) preference).getValue()));
 
         }
         return false;

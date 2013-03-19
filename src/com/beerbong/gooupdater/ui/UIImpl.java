@@ -17,6 +17,7 @@
 package com.beerbong.gooupdater.ui;
 
 import android.app.Activity;
+import android.app.NotificationManager;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
@@ -34,21 +35,23 @@ import com.beerbong.gooupdater.SettingsActivity;
 import com.beerbong.gooupdater.manager.ManagerFactory;
 import com.beerbong.gooupdater.updater.GappsUpdater;
 import com.beerbong.gooupdater.updater.RomUpdater;
+import com.beerbong.gooupdater.updater.TWRPUpdater;
 import com.beerbong.gooupdater.util.Constants;
 
 public class UIImpl extends UI implements RomUpdater.RomUpdaterListener,
-        GappsUpdater.GappsUpdaterListener {
+        GappsUpdater.GappsUpdaterListener, TWRPUpdater.TWRPUpdaterListener {
 
     private static long mNewRomVersion = -1L;
 
     private Activity mActivity;
     private RomUpdater mRomUpdater;
     private GappsUpdater mGappsUpdater;
-    private ProgressDialog mProgressRom;
-    private ProgressDialog mProgressGapps;
+    private TWRPUpdater mTwrpUpdater;
+    private ProgressDialog mProgress;
     private TextView mRemoteVersionHeader;
     private Button mButtonCheckRom;
     private Button mButtonCheckGapps;
+    private Button mButtonCheckTwrp;
 
     protected UIImpl(Activity activity) {
 
@@ -68,6 +71,8 @@ public class UIImpl extends UI implements RomUpdater.RomUpdaterListener,
         mRomUpdater = new RomUpdater(mActivity, this, false);
 
         mGappsUpdater = new GappsUpdater(mActivity, this, false);
+
+        mTwrpUpdater = new TWRPUpdater(mActivity, this);
 
         boolean romCanUpdate = mRomUpdater.canUpdate();
 
@@ -94,7 +99,7 @@ public class UIImpl extends UI implements RomUpdater.RomUpdaterListener,
 
             @Override
             public void onClick(View v) {
-                checkRom(true);
+                checkRom();
             }
         });
 
@@ -104,7 +109,16 @@ public class UIImpl extends UI implements RomUpdater.RomUpdaterListener,
 
             @Override
             public void onClick(View v) {
-                checkGapps(true);
+                checkGapps();
+            }
+        });
+
+        mButtonCheckTwrp = (Button) mActivity.findViewById(R.id.button_checkupdatestwrp);
+        mButtonCheckTwrp.setOnClickListener(new OnClickListener() {
+
+            @Override
+            public void onClick(View v) {
+                checkTwrp();
             }
         });
 
@@ -119,25 +133,22 @@ public class UIImpl extends UI implements RomUpdater.RomUpdaterListener,
         });
     }
 
-    private void checkRom(boolean showProgress) {
-        if (showProgress) {
-            mProgressRom = ProgressDialog.show(mActivity, null,
-                    mActivity.getResources().getString(R.string.checking), true, false);
-        } else {
-            mRemoteVersionHeader.setText(R.string.checking);
-            mButtonCheckRom.setEnabled(false);
-        }
+    private void checkRom() {
+        mProgress = ProgressDialog.show(mActivity, null,
+                mActivity.getResources().getString(R.string.checking), true, false);
         mRomUpdater.check();
     }
 
-    private void checkGapps(boolean showProgress) {
-        if (showProgress) {
-            mProgressGapps = ProgressDialog.show(mActivity, null, mActivity.getResources()
-                    .getString(R.string.checking), true, false);
-        } else {
-            mButtonCheckGapps.setEnabled(false);
-        }
+    private void checkGapps() {
+        mProgress = ProgressDialog.show(mActivity, null,
+                mActivity.getResources().getString(R.string.checking), true, false);
         mGappsUpdater.check();
+    }
+
+    private void checkTwrp() {
+        mProgress = ProgressDialog.show(mActivity, null,
+                mActivity.getResources().getString(R.string.checking_twrp), true, false);
+        mTwrpUpdater.check();
     }
 
     @Override
@@ -150,6 +161,10 @@ public class UIImpl extends UI implements RomUpdater.RomUpdaterListener,
             String md5 = intent.getStringExtra("MD5");
             String name = intent.getStringExtra("ZIP_NAME");
 
+            NotificationManager nMgr = (NotificationManager) mActivity
+                    .getSystemService(Context.NOTIFICATION_SERVICE);
+            nMgr.cancel(notificationId);
+
             if (notificationId == Constants.NEWROMVERSION_NOTIFICATION_ID) {
                 notificationId = Constants.DOWNLOADROM_NOTIFICATION_ID;
             } else {
@@ -158,17 +173,18 @@ public class UIImpl extends UI implements RomUpdater.RomUpdaterListener,
             ManagerFactory.getFileManager(context)
                     .download(context, url, name, md5, notificationId);
         } else if (notificationId == Constants.DOWNLOADROM_NOTIFICATION_ID
-                || notificationId == Constants.DOWNLOADGAPPS_NOTIFICATION_ID) {
-            ManagerFactory.getFileManager().cancelDownload(notificationId);
+                || notificationId == Constants.DOWNLOADGAPPS_NOTIFICATION_ID
+                || notificationId == Constants.DOWNLOADTWRP_NOTIFICATION_ID) {
+            ManagerFactory.getFileManager().cancelDownload(notificationId, intent.getExtras());
         }
 
     }
 
     @Override
     public void checkRomCompleted(long newVersion) {
-        if (mProgressRom != null) {
-            mProgressRom.dismiss();
-            mProgressRom = null;
+        if (mProgress != null) {
+            mProgress.dismiss();
+            mProgress = null;
         }
 
         mNewRomVersion = newVersion;
@@ -180,12 +196,20 @@ public class UIImpl extends UI implements RomUpdater.RomUpdaterListener,
 
     @Override
     public void checkGappsCompleted(long newVersion) {
-        if (mProgressGapps != null) {
-            mProgressGapps.dismiss();
-            mProgressGapps = null;
+        if (mProgress != null) {
+            mProgress.dismiss();
+            mProgress = null;
         }
 
         mButtonCheckGapps.setEnabled(mGappsUpdater.canUpdate());
+    }
+
+    @Override
+    public void checkTWRPCompleted(long newVersion) {
+        if (mProgress != null) {
+            mProgress.dismiss();
+            mProgress = null;
+        }
     }
 
     @Override

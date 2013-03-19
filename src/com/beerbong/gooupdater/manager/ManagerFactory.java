@@ -23,11 +23,13 @@ public class ManagerFactory {
 
     private static FileManager mFileManager;
     private static PreferencesManager mPreferencesManager;
+    private static SUManager mSUManager;
 
     public static void start(Activity mActivity) {
         mFileManager = new FileManager(mActivity);
         if (mPreferencesManager == null)
             mPreferencesManager = new PreferencesManager(mActivity);
+        mSUManager = new SUManager(mActivity);
     }
 
     public static FileManager getFileManager() {
@@ -48,5 +50,9 @@ public class ManagerFactory {
         if (mPreferencesManager == null)
             mPreferencesManager = new PreferencesManager(context);
         return mPreferencesManager;
+    }
+
+    public static SUManager getSUManager() {
+        return mSUManager;
     }
 }

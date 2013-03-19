@@ -83,6 +83,13 @@
         </Button>
 
         <Button 
+            android:text="@string/check_twrp_updates" 
+            android:id="@+id/button_checkupdatestwrp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+        </Button>
+
+        <Button 
             android:text="@string/goo_browse" 
             android:id="@+id/button_browse"
             android:layout_width="match_parent"

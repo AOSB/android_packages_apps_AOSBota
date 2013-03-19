@@ -17,7 +17,12 @@
 package com.beerbong.gooupdater.util;
 
 import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.math.BigInteger;
+import java.security.MessageDigest;
 
 import android.app.Activity;
 import android.app.Notification;
@@ -39,6 +44,7 @@ public class Constants {
     public static final int DOWNLOADROM_NOTIFICATION_ID = 122303223;
     public static final int NEWGAPPSVERSION_NOTIFICATION_ID = 122303224;
     public static final int DOWNLOADGAPPS_NOTIFICATION_ID = 122303225;
+    public static final int DOWNLOADTWRP_NOTIFICATION_ID = 122303226;
 
     public static final String PREFERENCE_SETTINGS_DARK_THEME = "darktheme";
     public static final String PREFERENCE_SETTINGS_DOWNLOAD_PATH = "downloadpath";
@@ -99,5 +105,32 @@ public class Constants {
         noti.flags |= Notification.FLAG_AUTO_CANCEL;
 
         notificationManager.notify(notificationId, noti);
+    }
+
+    public static String md5(File file) {
+        InputStream is = null;
+        try {
+            is = new FileInputStream(file);
+            MessageDigest digest = MessageDigest.getInstance("MD5");
+            byte[] buffer = new byte[8192];
+            int read = 0;
+            while ((read = is.read(buffer)) > 0) {
+                digest.update(buffer, 0, read);
+            }
+            byte[] md5sum = digest.digest();
+            BigInteger bigInt = new BigInteger(1, md5sum);
+            String md5 = bigInt.toString(16);
+            while (md5.length() < 32) {
+                md5 = "0" + md5;
+            }
+            return md5;
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        } finally {
+            try {
+                is.close();
+            } catch (Exception e) {
+            }
+        }
     }
 }

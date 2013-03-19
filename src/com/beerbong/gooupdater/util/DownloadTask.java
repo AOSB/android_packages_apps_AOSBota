@@ -44,6 +44,7 @@ public class DownloadTask extends AsyncTask<Void, Integer, Integer> {
     private NotificationManager mNotificationManager;
     private Notification.Builder mNotification = null;
     private Context mContext;
+    private File mDestFile;
     private String mUrl;
     private String mFileName;
     private String mMd5;
@@ -57,12 +58,24 @@ public class DownloadTask extends AsyncTask<Void, Integer, Integer> {
             String url, String fileName, String md5) {
         this.attach(notification, notificationId, context);
 
-        File dPath = new File(ManagerFactory.getPreferencesManager().getDownloadPath());
+        PreferencesManager pManager = ManagerFactory.getPreferencesManager();
+
+        File dPath = new File(pManager.getDownloadPath());
         dPath.mkdirs();
 
         mUrl = url;
         mFileName = fileName;
         mMd5 = md5;
+
+        mDestFile = new File(pManager.getDownloadPath(), mFileName);
+        String extension = mFileName.substring(mFileName.lastIndexOf("."));
+        String name = mFileName.substring(0, mFileName.lastIndexOf("."));
+        int i = 0;
+        while (mDestFile.exists()) {
+            i++;
+            mFileName = name + "(" + i + ")" + extension;
+            mDestFile = new File(pManager.getDownloadPath(), mFileName);
+        }
 
         PowerManager pm = (PowerManager) mContext.getSystemService(Context.POWER_SERVICE);
         mWakeLock = pm.newWakeLock(PowerManager.SCREEN_DIM_WAKE_LOCK, MainActivity.class.getName());
@@ -83,6 +96,14 @@ public class DownloadTask extends AsyncTask<Void, Integer, Integer> {
         return mDone;
     }
 
+    public File getDestinationFile() {
+        return mDestFile;
+    }
+
+    public String getMd5() {
+        return mMd5;
+    }
+
     @Override
     protected void onPreExecute() {
         mDone = false;
@@ -99,16 +120,6 @@ public class DownloadTask extends AsyncTask<Void, Integer, Integer> {
     @Override
     protected Integer doInBackground(Void... params) {
         PreferencesManager pManager = ManagerFactory.getPreferencesManager();
-        File destFile = new File(pManager.getDownloadPath(), mFileName);
-
-        String extension = mFileName.substring(mFileName.lastIndexOf("."));
-        String name = mFileName.substring(0, mFileName.lastIndexOf("."));
-        int i = 0;
-        while (destFile.exists()) {
-            i++;
-            mFileName = name + "(" + i + ")" + extension;
-            destFile = new File(pManager.getDownloadPath(), mFileName);
-        }
 
         if (mMd5 != null) {
             FileOutputStream fos = null;
@@ -135,7 +146,7 @@ public class DownloadTask extends AsyncTask<Void, Integer, Integer> {
                 conn.connect();
                 publishProgress(-1);
                 is = new BufferedInputStream(conn.getInputStream());
-                os = new FileOutputStream(destFile);
+                os = new FileOutputStream(mDestFile);
                 byte[] buf = new byte[4096];
                 int nRead = -1;
                 while ((nRead = is.read(buf)) != -1) {
@@ -154,7 +165,7 @@ public class DownloadTask extends AsyncTask<Void, Integer, Integer> {
             StatFs stat = new StatFs(pManager.getDownloadPath());
             long availSpace = ((long) stat.getAvailableBlocks()) * ((long) stat.getBlockSize());
             if (lengthOfFile >= availSpace) {
-                destFile.delete();
+                mDestFile.delete();
                 return 3;
             }
             if (lengthOfFile < 10000000)
@@ -162,7 +173,7 @@ public class DownloadTask extends AsyncTask<Void, Integer, Integer> {
             publishProgress(0, lengthOfFile);
             conn.connect();
             is = new BufferedInputStream(conn.getInputStream());
-            os = new FileOutputStream(destFile);
+            os = new FileOutputStream(mDestFile);
             byte[] buf = new byte[4096];
             int nRead = -1;
             int totalRead = 0;
@@ -175,14 +186,14 @@ public class DownloadTask extends AsyncTask<Void, Integer, Integer> {
             }
 
             if (isCancelled()) {
-                destFile.delete();
+                mDestFile.delete();
                 return 2;
             }
 
             return 0;
         } catch (Exception e) {
             e.printStackTrace();
-            destFile.delete();
+            mDestFile.delete();
         } finally {
             if (is != null) {
                 try {

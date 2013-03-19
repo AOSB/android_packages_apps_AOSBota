@@ -1,5 +1,7 @@
 <resources>
-<!-- Copyright (C) 2013 GooUpdater
+
+    <!--
+     Copyright (C) 2013 GooUpdater
 
      Licensed under the Apache License, Version 2.0 (the "License");
      you may not use this file except in compliance with the License.
@@ -11,13 +13,14 @@
      distributed under the License is distributed on an "AS IS" BASIS,
      WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
      See the License for the specific language governing permissions and
-     limitations under the License.
--->
+     limitations under the License.
+    -->
 
     <string name="app_name">GooUpdater</string>
     <string name="rom_info">Installed ROM info</string>
     <string name="not_available">N/A</string>
     <string name="checking">Checking for new version</string>
+    <string name="checking_twrp">Checking for TWRP</string>
     <string name="rom_header">ROM:</string>
     <string name="developer_header">Developer:</string>
     <string name="version_header">Version:</string>
@@ -33,6 +36,14 @@
     <string name="check_gapps_updates_error">Error checking for GApps updates</string>
     <string name="new_gapps_found_title">New GApps package found</string>
     <string name="new_gapps_found_summary">A new version of the GApps package has been found. Do you want to download it now?\n\n%1$s\n%2$s\n</string>
+    <string name="check_twrp_updates">Install OpenRecoveryScript</string>
+    <string name="new_twrp_found_title">Download TWRP</string>
+    <string name="new_twrp_found_summary">This will download TWRP recovery in your device. Do you want to continue?</string>
+    <string name="check_twrp_updates_error">Error checking for TWRP</string>
+    <string name="check_twrp_error_md5">Error checking TWRP. MD5 not match</string>
+    <string name="check_twrp_updates_no_new">No recovery found for your device</string>
+    <string name="install_twrp_title">Install TWRP</string>
+    <string name="install_twrp_summary">This will install TWRP recovery in your device. Do you want to continue?</string>
     <string name="downloading">Downloading</string>
     <string name="downloading_complete">Download complete</string>
     <string name="downloading_error">Error downloading file</string>
