@@ -21,16 +21,18 @@ import android.content.Context;
 import android.content.Intent;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 
 public abstract class UI {
 
     private static UI instance = null;
 
-    public static synchronized void create(Activity activity) {
+    public static synchronized View create(Activity activity, boolean fromFragment) {
         if (instance == null) {
-            instance = new UIImpl(activity);
+            instance = new UIImpl(activity, fromFragment);
+            return ((UIImpl)instance).getView();
         } else {
-            instance.redraw(activity);
+            return instance.redraw(activity, fromFragment);
         }
     }
 
@@ -38,7 +40,7 @@ public abstract class UI {
         return instance;
     }
 
-    public abstract void redraw(Activity activity);
+    public abstract View redraw(Activity activity, boolean fromFragment);
 
     public abstract boolean onCreateOptionsMenu(Menu menu);
 

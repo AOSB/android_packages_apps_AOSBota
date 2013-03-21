@@ -18,9 +18,12 @@ package com.beerbong.gooupdater;
 
 import android.app.Fragment;
 import android.os.Bundle;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.View;
+import android.view.ViewGroup;
 
 import com.beerbong.gooupdater.manager.ManagerFactory;
 import com.beerbong.gooupdater.ui.UI;
@@ -28,15 +31,15 @@ import com.beerbong.gooupdater.ui.UI;
 public class GooFragment extends Fragment {
 
     @Override
-    public void onCreate(Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
-        UI.create(getActivity());
-
-        super.onCreate(savedInstanceState);
+        View view = UI.create(getActivity(), true);
 
         ManagerFactory.start(getActivity());
 
         setHasOptionsMenu(true);
+        
+        return view;
     }
 
     @Override
