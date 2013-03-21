@@ -70,8 +70,6 @@ public class SettingsActivity extends PreferenceActivity implements OnPreference
             boolean darkTheme = ((CheckBoxPreference) preference).isChecked();
             pManager.setDarkTheme(darkTheme);
 
-            UI.getInstance().requestRestart();
-
         } else if (Constants.PREFERENCE_SETTINGS_DOWNLOAD_PATH.equals(key)) {
 
             ManagerFactory.getFileManager().selectDownloadPath(this);
