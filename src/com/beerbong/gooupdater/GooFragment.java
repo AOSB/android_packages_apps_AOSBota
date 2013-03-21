@@ -33,7 +33,7 @@ public class GooFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
-        View view = UI.create(getActivity(), true);
+        View view = UI.create(getActivity(), this);
 
         ManagerFactory.start(getActivity());
         
@@ -54,4 +54,7 @@ public class GooFragment extends Fragment {
 
     }
 
+    public Class<?> getGooActivityClass() {
+        return GooActivity.class;
+    }
 }

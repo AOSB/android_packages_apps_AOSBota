@@ -17,6 +17,7 @@
 package com.beerbong.gooupdater.ui;
 
 import android.app.Activity;
+import android.app.Fragment;
 import android.app.NotificationManager;
 import android.app.ProgressDialog;
 import android.content.Context;
@@ -31,6 +32,7 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import com.beerbong.gooupdater.GooActivity;
+import com.beerbong.gooupdater.GooFragment;
 import com.beerbong.gooupdater.R;
 import com.beerbong.gooupdater.SettingsActivity;
 import com.beerbong.gooupdater.manager.ManagerFactory;
@@ -55,13 +57,13 @@ public class UIImpl extends UI implements RomUpdater.RomUpdaterListener,
     private Button mButtonCheckGapps;
     private Button mButtonCheckTwrp;
 
-    protected UIImpl(Activity activity, boolean fromFragment) {
+    protected UIImpl(Activity activity, Fragment fragment) {
 
-        redraw(activity, fromFragment);
+        redraw(activity, fragment);
     }
 
     @Override
-    public View redraw(Activity activity, boolean fromFragment) {
+    public View redraw(Activity activity, final Fragment fragment) {
 
         boolean useDarkTheme = ManagerFactory.getPreferencesManager(activity).isDarkTheme();
         activity.setTheme(useDarkTheme ? R.style.Theme_Dark : R.style.Theme_Light);
@@ -73,7 +75,7 @@ public class UIImpl extends UI implements RomUpdater.RomUpdaterListener,
         TextView versionHeader = null;
         Button buttonGoo = null;
         
-        if (fromFragment) {
+        if (fragment != null) {
             LayoutInflater inflater = (LayoutInflater)mActivity.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
             mView = inflater.inflate(R.layout.main_activity, null);
         } else {
@@ -88,7 +90,7 @@ public class UIImpl extends UI implements RomUpdater.RomUpdaterListener,
 
         boolean romCanUpdate = mRomUpdater.canUpdate();
 
-        if (fromFragment) {
+        if (fragment != null) {
             romHeader = (TextView) mView.findViewById(R.id.rom_header);
             devHeader = (TextView) mView.findViewById(R.id.developer_header);
             versionHeader = (TextView) mView.findViewById(R.id.version_header);
@@ -152,7 +154,11 @@ public class UIImpl extends UI implements RomUpdater.RomUpdaterListener,
             @Override
             public void onClick(View v) {
                 GooActivity.CURRENT_NAVIGATION = null;
-                mActivity.startActivity(new Intent(mActivity, GooActivity.class));
+                if (fragment instanceof GooFragment) {
+                    mActivity.startActivity(new Intent(mActivity, ((GooFragment)fragment).getGooActivityClass()));
+                } else {
+                    mActivity.startActivity(new Intent(mActivity, GooActivity.class));
+                }
             }
         });
         

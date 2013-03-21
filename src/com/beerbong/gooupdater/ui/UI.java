@@ -17,6 +17,7 @@
 package com.beerbong.gooupdater.ui;
 
 import android.app.Activity;
+import android.app.Fragment;
 import android.content.Context;
 import android.content.Intent;
 import android.view.Menu;
@@ -27,12 +28,12 @@ public abstract class UI {
 
     private static UI instance = null;
 
-    public static synchronized View create(Activity activity, boolean fromFragment) {
+    public static synchronized View create(Activity activity, Fragment fragment) {
         if (instance == null) {
-            instance = new UIImpl(activity, fromFragment);
+            instance = new UIImpl(activity, fragment);
             return ((UIImpl)instance).getView();
         } else {
-            return instance.redraw(activity, fromFragment);
+            return instance.redraw(activity, fragment);
         }
     }
 
@@ -40,7 +41,7 @@ public abstract class UI {
         return instance;
     }
 
-    public abstract View redraw(Activity activity, boolean fromFragment);
+    public abstract View redraw(Activity activity, Fragment fragment);
 
     public abstract boolean onCreateOptionsMenu(Menu menu);
 
