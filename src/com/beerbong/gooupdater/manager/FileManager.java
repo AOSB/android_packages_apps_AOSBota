@@ -104,7 +104,7 @@ public class FileManager extends Manager {
                 .setContentTitle(resources.getString(R.string.downloading))
                 .setContentText(
                         resources.getString(R.string.new_package_name, new Object[] { fileName }))
-                .setSmallIcon(R.drawable.ic_launcher).setContentIntent(pendingIntent)
+                .setSmallIcon(R.drawable.ic_launcher_goo).setContentIntent(pendingIntent)
                 .setProgress(100, 0, true);
 
         switch (notificationId) {

@@ -97,7 +97,7 @@ public class Constants {
         Notification noti = new Notification.Builder(context)
                 .setContentTitle(resources.getString(resourceTitle))
                 .setContentText(resources.getString(resourceText, new Object[] { info.filename }))
-                .setSmallIcon(R.drawable.ic_launcher).setContentIntent(pIntent).build();
+                .setSmallIcon(R.drawable.ic_launcher_goo).setContentIntent(pIntent).build();
 
         NotificationManager notificationManager = (NotificationManager) context
                 .getSystemService(Service.NOTIFICATION_SERVICE);
