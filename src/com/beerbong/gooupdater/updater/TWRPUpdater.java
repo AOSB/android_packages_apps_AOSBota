@@ -30,6 +30,7 @@ import com.beerbong.gooupdater.R;
 import com.beerbong.gooupdater.manager.ManagerFactory;
 import com.beerbong.gooupdater.util.Constants;
 import com.beerbong.gooupdater.util.HttpStringReader;
+import com.beerbong.gooupdater.util.DownloadTask.DownloadTaskListener;
 import com.beerbong.gooupdater.util.HttpStringReader.HttpStringReaderListener;
 import com.beerbong.gooupdater.util.URLStringReader;
 
@@ -218,7 +219,22 @@ public class TWRPUpdater implements Updater, Updater.UpdaterListener {
                                                     ManagerFactory.getFileManager().download(
                                                             mContext, info.path, info.filename,
                                                             info.md5,
-                                                            Constants.DOWNLOADTWRP_NOTIFICATION_ID);
+                                                            Constants.DOWNLOADTWRP_NOTIFICATION_ID, new DownloadTaskListener() {
+
+                                                                @Override
+                                                                public void downloadComplete(int status, File file) {
+
+                                                                    if (status == 0) {
+                                                                        String fileMd5 = Constants.md5(file);
+                                                                        if (!fileMd5.equals(info.md5)) {
+                                                                            Constants.showToastOnUiThread(mContext, R.string.check_twrp_error_md5);
+                                                                            return;
+                                                                        }
+                                                                        installTWRP(file);
+                                                                    }
+                                                                }
+                                                                
+                                                            });
                                                 }
                                             });
                                         }

@@ -39,9 +39,9 @@ import android.widget.Toast;
 
 import com.beerbong.gooupdater.MainActivity;
 import com.beerbong.gooupdater.R;
-import com.beerbong.gooupdater.updater.TWRPUpdater;
 import com.beerbong.gooupdater.util.Constants;
 import com.beerbong.gooupdater.util.DownloadTask;
+import com.beerbong.gooupdater.util.DownloadTask.DownloadTaskListener;
 
 public class FileManager extends Manager {
 
@@ -87,6 +87,11 @@ public class FileManager extends Manager {
 
     public void download(Context context, String url, String fileName, String md5,
             int notificationId) {
+        download(context, url, fileName, md5, notificationId, null);
+    }
+
+    public void download(Context context, String url, String fileName, String md5,
+            int notificationId, DownloadTaskListener listener) {
 
         Resources resources = context.getResources();
 
@@ -95,6 +100,7 @@ public class FileManager extends Manager {
         intent.putExtra("MD5", md5);
         if (notificationId == Constants.DOWNLOADTWRP_NOTIFICATION_ID) {
             mDownloadTWRP = new DownloadTask(null, notificationId, context, url, fileName, md5);
+            mDownloadTWRP.setDownloadTaskListener(listener);
             intent.putExtra("DESTINATION_FILE", mDownloadTWRP.getDestinationFile());
         }
         final PendingIntent pendingIntent = PendingIntent.getActivity(context, notificationId,
@@ -119,6 +125,7 @@ public class FileManager extends Manager {
                 mDownloadGapps.execute();
                 break;
             case Constants.DOWNLOADTWRP_NOTIFICATION_ID:
+                notification.setAutoCancel(true);
                 mDownloadTWRP.attach(notification, notificationId, context);
                 mDownloadTWRP.execute();
                 break;
@@ -126,84 +133,45 @@ public class FileManager extends Manager {
     }
 
     public void cancelDownload(final int notificationId, final Bundle extras) {
-        if (notificationId == Constants.DOWNLOADTWRP_NOTIFICATION_ID && mDownloadTWRP != null
-                && mDownloadTWRP.getStatus() == Status.FINISHED) {
-            NotificationManager nMgr = (NotificationManager) mContext
-                    .getSystemService(Context.NOTIFICATION_SERVICE);
-            nMgr.cancel(notificationId);
-            new AlertDialog.Builder(mContext)
-                    .setTitle(R.string.install_twrp_title)
-                    .setMessage(R.string.install_twrp_summary)
-                    .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+        new AlertDialog.Builder(mContext)
+                .setTitle(R.string.download_cancel_title)
+                .setMessage(R.string.download_cancel_message)
+                .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
 
-                        public void onClick(DialogInterface dialog, int whichButton) {
-                            dialog.dismiss();
-                            installTWRP(extras);
-                        }
-                    })
-                    .setNegativeButton(android.R.string.cancel,
-                            new DialogInterface.OnClickListener() {
-
-                                public void onClick(DialogInterface dialog, int whichButton) {
-                                    dialog.dismiss();
+                    public void onClick(DialogInterface dialog, int whichButton) {
+                        dialog.dismiss();
+                        NotificationManager nMgr = (NotificationManager) mContext
+                                .getSystemService(Context.NOTIFICATION_SERVICE);
+                        nMgr.cancel(notificationId);
+                        switch (notificationId) {
+                            case Constants.DOWNLOADROM_NOTIFICATION_ID:
+                                if (mDownloadRom != null
+                                        && mDownloadRom.getStatus() != Status.FINISHED) {
+                                    mDownloadRom.cancel(true);
                                 }
-                            }).show();
-        } else {
-            new AlertDialog.Builder(mContext)
-                    .setTitle(R.string.download_cancel_title)
-                    .setMessage(R.string.download_cancel_message)
-                    .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+                                break;
+                            case Constants.DOWNLOADGAPPS_NOTIFICATION_ID:
+                                if (mDownloadGapps != null
+                                        && mDownloadGapps.getStatus() != Status.FINISHED) {
+                                    mDownloadGapps.cancel(true);
+                                }
+                                break;
+                            case Constants.DOWNLOADTWRP_NOTIFICATION_ID:
+                                if (mDownloadTWRP != null
+                                        && mDownloadTWRP.getStatus() != Status.FINISHED) {
+                                    mDownloadTWRP.cancel(true);
+                                }
+                                break;
+                        }
+                    }
+                })
+                .setNegativeButton(android.R.string.cancel,
+                        new DialogInterface.OnClickListener() {
 
-                        public void onClick(DialogInterface dialog, int whichButton) {
-                            dialog.dismiss();
-                            NotificationManager nMgr = (NotificationManager) mContext
-                                    .getSystemService(Context.NOTIFICATION_SERVICE);
-                            nMgr.cancel(notificationId);
-                            switch (notificationId) {
-                                case Constants.DOWNLOADROM_NOTIFICATION_ID:
-                                    if (mDownloadRom != null
-                                            && mDownloadRom.getStatus() != Status.FINISHED) {
-                                        mDownloadRom.cancel(true);
-                                    }
-                                    break;
-                                case Constants.DOWNLOADGAPPS_NOTIFICATION_ID:
-                                    if (mDownloadGapps != null
-                                            && mDownloadGapps.getStatus() != Status.FINISHED) {
-                                        mDownloadGapps.cancel(true);
-                                    }
-                                    break;
-                                case Constants.DOWNLOADTWRP_NOTIFICATION_ID:
-                                    if (mDownloadTWRP != null
-                                            && mDownloadTWRP.getStatus() != Status.FINISHED) {
-                                        mDownloadTWRP.cancel(true);
-                                    }
-                                    break;
+                            public void onClick(DialogInterface dialog, int whichButton) {
+                                dialog.dismiss();
                             }
-                        }
-                    })
-                    .setNegativeButton(android.R.string.cancel,
-                            new DialogInterface.OnClickListener() {
-
-                                public void onClick(DialogInterface dialog, int whichButton) {
-                                    dialog.dismiss();
-                                }
-                            }).show();
-        }
-    }
-
-    private void installTWRP(Bundle extras) {
-        File file = (File) extras.get("DESTINATION_FILE");
-        if (file == null || !file.exists()) {
-            Constants.showToastOnUiThread(mContext, R.string.check_twrp_updates_error);
-            return;
-        }
-        String fileMd5 = Constants.md5(file);
-        String md5 = extras.getString("MD5");
-        if (!fileMd5.equals(md5)) {
-            Constants.showToastOnUiThread(mContext, R.string.check_twrp_error_md5);
-            return;
-        }
-        new TWRPUpdater(mContext, null).installTWRP(file);
+                        }).show();
     }
 
     public boolean recursiveDelete(File f) {

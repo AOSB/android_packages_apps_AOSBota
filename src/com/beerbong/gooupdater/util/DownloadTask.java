@@ -39,8 +39,13 @@ import com.beerbong.gooupdater.manager.PreferencesManager;
 
 public class DownloadTask extends AsyncTask<Void, Integer, Integer> {
 
+    public interface DownloadTaskListener {
+        public void downloadComplete(int status, File file);
+    }
+
     private int mScale = 1048576;
 
+    private DownloadTaskListener mListener;
     private NotificationManager mNotificationManager;
     private Notification.Builder mNotification = null;
     private Context mContext;
@@ -102,6 +107,10 @@ public class DownloadTask extends AsyncTask<Void, Integer, Integer> {
 
     public String getMd5() {
         return mMd5;
+    }
+
+    public void setDownloadTaskListener(DownloadTaskListener listener) {
+        this.mListener = listener;
     }
 
     @Override
@@ -166,6 +175,9 @@ public class DownloadTask extends AsyncTask<Void, Integer, Integer> {
             long availSpace = ((long) stat.getAvailableBlocks()) * ((long) stat.getBlockSize());
             if (lengthOfFile >= availSpace) {
                 mDestFile.delete();
+                if (mListener != null) {
+                    mListener.downloadComplete(3, null);
+                }
                 return 3;
             }
             if (lengthOfFile < 10000000)
@@ -187,9 +199,15 @@ public class DownloadTask extends AsyncTask<Void, Integer, Integer> {
 
             if (isCancelled()) {
                 mDestFile.delete();
+                if (mListener != null) {
+                    mListener.downloadComplete(2, null);
+                }
                 return 2;
             }
 
+            if (mListener != null) {
+                mListener.downloadComplete(0, mDestFile);
+            }
             return 0;
         } catch (Exception e) {
             e.printStackTrace();
@@ -208,6 +226,9 @@ public class DownloadTask extends AsyncTask<Void, Integer, Integer> {
                 } catch (Exception e) {
                 }
             }
+        }
+        if (mListener != null) {
+            mListener.downloadComplete(-1, null);
         }
         return -1;
     }
