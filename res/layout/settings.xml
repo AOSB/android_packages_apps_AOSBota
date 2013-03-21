@@ -16,13 +16,13 @@
 -->
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android" >
 
-    <!--PreferenceCategory android:title="@string/settings_interface" >
+    <PreferenceCategory android:title="@string/settings_interface" >
 
         <CheckBoxPreference
             android:key="darktheme"
             android:summary="@string/settings_theme_summary"
             android:title="@string/settings_theme_title" />
-    </PreferenceCategory-->
+    </PreferenceCategory>
 
     <PreferenceCategory
         android:key="settings_update"

@@ -26,11 +26,12 @@ import android.preference.PreferenceScreen;
 
 import com.beerbong.gooupdater.manager.ManagerFactory;
 import com.beerbong.gooupdater.manager.PreferencesManager;
+import com.beerbong.gooupdater.ui.UI;
 import com.beerbong.gooupdater.util.Constants;
 
 public class SettingsActivity extends PreferenceActivity implements OnPreferenceChangeListener {
 
-    // private CheckBoxPreference mDarkTheme;
+    private CheckBoxPreference mDarkTheme;
     private ListPreference mCheckTime;
     private Preference mDownloadPath;
 
@@ -38,11 +39,14 @@ public class SettingsActivity extends PreferenceActivity implements OnPreference
     @SuppressWarnings("deprecation")
     protected void onCreate(Bundle savedInstanceState) {
 
+        boolean useDarkTheme = ManagerFactory.getPreferencesManager().isDarkTheme();
+        setTheme(useDarkTheme ? R.style.Theme_Dark : R.style.Theme_Light);
+
         super.onCreate(savedInstanceState);
 
         addPreferencesFromResource(R.layout.settings);
 
-        // mDarkTheme = (CheckBoxPreference) findPreference(Constants.PREFERENCE_SETTINGS_DARK_THEME);
+        mDarkTheme = (CheckBoxPreference) findPreference(Constants.PREFERENCE_SETTINGS_DARK_THEME);
         mDownloadPath = findPreference(Constants.PREFERENCE_SETTINGS_DOWNLOAD_PATH);
         mCheckTime = (ListPreference) findPreference(Constants.PREFERENCE_SETTINGS_CHECK_TIME);
 
@@ -50,7 +54,7 @@ public class SettingsActivity extends PreferenceActivity implements OnPreference
 
         mCheckTime.setValue(String.valueOf(pManager.getTimeNotifications()));
 
-        // mDarkTheme.setChecked(pManager.isDarkTheme());
+        mDarkTheme.setChecked(pManager.isDarkTheme());
 
         updateSummaries();
     }
@@ -65,6 +69,8 @@ public class SettingsActivity extends PreferenceActivity implements OnPreference
 
             boolean darkTheme = ((CheckBoxPreference) preference).isChecked();
             pManager.setDarkTheme(darkTheme);
+
+            UI.getInstance().requestRestart();
 
         } else if (Constants.PREFERENCE_SETTINGS_DOWNLOAD_PATH.equals(key)) {
 
