@@ -36,8 +36,6 @@ public class GooFragment extends Fragment {
         View view = UI.create(getActivity(), true);
 
         ManagerFactory.start(getActivity());
-
-        setHasOptionsMenu(true);
         
         return view;
     }
