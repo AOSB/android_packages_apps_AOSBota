@@ -218,7 +218,7 @@ public class GooActivity extends PreferenceActivity implements URLStringReaderLi
     @Override
     public void onReadEnd(String buffer) {
         CURRENT_NAVIGATION = buffer;
-        startActivity(new Intent(this, GooActivity.class));
+        startActivity(new Intent(this, this.getClass()));
     }
 
     @Override
