@@ -225,7 +225,7 @@ public class UIImpl extends UI implements RomUpdater.RomUpdaterListener,
 
         mNewRomVersion = newVersion;
 
-        mRemoteVersionHeader.setText(String.valueOf(mNewRomVersion));
+        mRemoteVersionHeader.setText(newVersion == -1 ? "" : String.valueOf(mNewRomVersion));
 
         mButtonCheckRom.setEnabled(mRomUpdater.canUpdate());
     }
