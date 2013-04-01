@@ -257,7 +257,7 @@ public class DownloadTask extends AsyncTask<Void, Integer, Integer> {
             }
         }
         mNotification.setContentTitle(mContext.getResources().getText(resource)).setProgress(0, 0,
-                false);
+                false).setContentInfo("");
         mNotificationManager.notify(mNotificationId, mNotification.build());
     }
 
@@ -286,7 +286,7 @@ public class DownloadTask extends AsyncTask<Void, Integer, Integer> {
             }
         }
         mNotification.setContentTitle(mContext.getResources().getText(resource)).setProgress(0, 0,
-                false);
+                false).setContentInfo("");
         mNotificationManager.notify(mNotificationId, mNotification.build());
     }
 
@@ -300,9 +300,12 @@ public class DownloadTask extends AsyncTask<Void, Integer, Integer> {
         }
         if (values.length == 0)
             return;
-        mNotification.setProgress(100, values[0] / mScale, false);
+        int progress = values[0] / mScale;
+        mNotification.setProgress(100, progress, false);
         if (values.length > 0) {
-            mNotification.setProgress(values[1] / mScale, values[0] / mScale, false);
+            int total = values[1] / mScale;
+            mNotification.setProgress(total, progress, false);
+            mNotification.setContentInfo(String.valueOf(progress * 100 / total) + "%");
             mNotificationManager.notify(mNotificationId, mNotification.build());
         }
     }
