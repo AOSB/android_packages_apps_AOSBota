@@ -26,7 +26,6 @@ import android.preference.PreferenceScreen;
 
 import com.beerbong.gooupdater.manager.ManagerFactory;
 import com.beerbong.gooupdater.manager.PreferencesManager;
-import com.beerbong.gooupdater.ui.UI;
 import com.beerbong.gooupdater.util.Constants;
 
 public class SettingsActivity extends PreferenceActivity implements OnPreferenceChangeListener {
@@ -53,6 +52,7 @@ public class SettingsActivity extends PreferenceActivity implements OnPreference
         PreferencesManager pManager = ManagerFactory.getPreferencesManager();
 
         mCheckTime.setValue(String.valueOf(pManager.getTimeNotifications()));
+        mCheckTime.setOnPreferenceChangeListener(this);
 
         mDarkTheme.setChecked(pManager.isDarkTheme());
 
@@ -87,7 +87,8 @@ public class SettingsActivity extends PreferenceActivity implements OnPreference
         if (Constants.PREFERENCE_SETTINGS_CHECK_TIME.equals(key)) {
 
             ManagerFactory.getPreferencesManager().setTimeNotifications(
-                    Long.parseLong(((ListPreference) preference).getValue()));
+                    Long.parseLong(newValue.toString()));
+            mCheckTime.setValue(newValue.toString());
 
         }
         return false;
