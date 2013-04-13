@@ -176,19 +176,19 @@ public class UIImpl extends UI implements RomUpdater.RomUpdaterListener,
 
     private void checkRom() {
         mProgress = ProgressDialog.show(mActivity, null,
-                mActivity.getResources().getString(R.string.checking), true, false);
+                mActivity.getResources().getString(R.string.checking), true, true);
         mRomUpdater.check();
     }
 
     private void checkGapps() {
         mProgress = ProgressDialog.show(mActivity, null,
-                mActivity.getResources().getString(R.string.checking), true, false);
+                mActivity.getResources().getString(R.string.checking), true, true);
         mGappsUpdater.check();
     }
 
     private void checkTwrp() {
         mProgress = ProgressDialog.show(mActivity, null,
-                mActivity.getResources().getString(R.string.checking_twrp), true, false);
+                mActivity.getResources().getString(R.string.checking_twrp), true, true);
         mTwrpUpdater.check();
     }
 

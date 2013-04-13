@@ -234,8 +234,8 @@ public class GooActivity extends PreferenceActivity implements URLStringReaderLi
         DIALOG = new ProgressDialog(this);
         DIALOG.setIndeterminate(true);
         DIALOG.setMessage(getResources().getString(R.string.goo_browse_searching));
-        DIALOG.setCancelable(false);
-        DIALOG.setCanceledOnTouchOutside(false);
+        DIALOG.setCancelable(true);
+        DIALOG.setCanceledOnTouchOutside(true);
         DIALOG.show();
 
         new URLStringReader(this).execute(path);
