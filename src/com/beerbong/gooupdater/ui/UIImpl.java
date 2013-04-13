@@ -162,6 +162,11 @@ public class UIImpl extends UI implements RomUpdater.RomUpdaterListener,
             }
         });
         
+        Intent intent = mActivity.getIntent();
+        if (intent != null && intent.getExtras() != null && intent.getExtras().get("NOTIFICATION_ID") != null){
+            onNewIntent(mActivity, intent);
+        }
+
         return mView;
     }
     
