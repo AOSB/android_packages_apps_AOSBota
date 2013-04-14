@@ -39,19 +39,19 @@ public class Service extends android.app.Service {
         @Override
         public void run() {
             while (running) {
+                long sleepTime = ManagerFactory.getPreferencesManager(Service.this)
+                        .getTimeNotifications();
                 if (running) {
                     if (ManagerFactory.getPreferencesManager(Service.this).isAcceptNotifications()) {
                         if (isNetworkAvailable()) {
-                            mRomUpdater.check();
-                            mGappsUpdater.check();
+                            if (sleepTime > 0) {
+                                mRomUpdater.check();
+                                mGappsUpdater.check();
+                            }
                             mFirstRun = false;
                         }
                         try {
-
-                            long sleepTime = ManagerFactory.getPreferencesManager(Service.this)
-                                    .getTimeNotifications();
-
-                            sleep(mFirstRun ? 1000 * 30 : sleepTime);
+                            sleep(mFirstRun ? 1000 * 30 : sleepTime > 0 ? sleepTime : 1000 * 60 * 60);
                         } catch (Exception ex) {
                         }
                         if (mFirstRun) {
