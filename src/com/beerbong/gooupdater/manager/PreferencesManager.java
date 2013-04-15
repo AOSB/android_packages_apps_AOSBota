@@ -24,7 +24,6 @@ public class PreferencesManager extends Manager {
 
     private static final String SDCARD = "sdcard";
 
-    public static final String PROPERTY_ENABLE_NOTIFICATIONS = "enable_notifications";
     public static final String PROPERTY_TIME_NOTIFICATIONS = "time_notifications";
 
     private static final String DEFAULT_TIME_NOTIFICATIONS = "3600000"; // an hour
@@ -32,7 +31,6 @@ public class PreferencesManager extends Manager {
     private static final String PROPERTY_DOWNLOAD_PATH = "download_path";
 
     private static final boolean DEFAULT_DARK_THEME = true;
-    private static final boolean DEFAULT_ENABLE_NOTIFICATIONS = true;
     private static final String DEFAULT_DOWNLOAD_PATH = "/" + SDCARD + "/download/";
 
     private SharedPreferences settings;
@@ -48,14 +46,6 @@ public class PreferencesManager extends Manager {
 
     public void setDarkTheme(boolean value) {
         savePreference(PROPERTY_DARK_THEME, value);
-    }
-
-    public boolean isAcceptNotifications() {
-        return settings.getBoolean(PROPERTY_ENABLE_NOTIFICATIONS, DEFAULT_ENABLE_NOTIFICATIONS);
-    }
-
-    public void setAcceptNotifications(boolean value) {
-        savePreference(PROPERTY_ENABLE_NOTIFICATIONS, value);
     }
 
     public long getTimeNotifications() {

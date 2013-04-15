@@ -158,11 +158,9 @@ public class GappsUpdater implements Updater, Updater.UpdaterListener {
             if (!mFromService) {
                 showNewGappsFound(info);
             } else {
-                if (ManagerFactory.getPreferencesManager().isAcceptNotifications()) {
-                    Constants.showNotification(mContext, info,
-                            Constants.NEWGAPPSVERSION_NOTIFICATION_ID,
-                            R.string.new_gapps_found_title, R.string.new_package_name);
-                }
+                Constants.showNotification(mContext, info,
+                        Constants.NEWGAPPSVERSION_NOTIFICATION_ID,
+                        R.string.new_gapps_found_title, R.string.new_package_name);
             }
         } else {
             if (!mFromService) {

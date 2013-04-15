@@ -86,11 +86,9 @@ public class RomUpdater implements Updater.UpdaterListener {
             if (!mFromService) {
                 showNewRomFound(info);
             } else {
-                if (ManagerFactory.getPreferencesManager().isAcceptNotifications()) {
-                    Constants.showNotification(mContext, info,
-                            Constants.NEWROMVERSION_NOTIFICATION_ID, R.string.new_rom_found_title,
-                            R.string.new_package_name);
-                }
+                Constants.showNotification(mContext, info,
+                        Constants.NEWROMVERSION_NOTIFICATION_ID, R.string.new_rom_found_title,
+                        R.string.new_package_name);
             }
         } else {
             if (!mFromService) {
