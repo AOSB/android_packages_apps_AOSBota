@@ -30,11 +30,6 @@
         </activity>
         <activity android:name="com.beerbong.gooupdater.GooActivity" />
         <activity android:name="com.beerbong.gooupdater.SettingsActivity" />
-        <activity android:name="com.beerbong.gooupdater.test.TestActivity" >
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-            </intent-filter>
-        </activity>
 
         <service android:name="com.beerbong.gooupdater.Service" >
         </service>

@@ -17,12 +17,10 @@
 package com.beerbong.gooupdater.ui;
 
 import android.app.Activity;
-import android.app.Fragment;
 import android.app.NotificationManager;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
-import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -32,7 +30,6 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import com.beerbong.gooupdater.GooActivity;
-import com.beerbong.gooupdater.GooFragment;
 import com.beerbong.gooupdater.R;
 import com.beerbong.gooupdater.SettingsActivity;
 import com.beerbong.gooupdater.manager.ManagerFactory;
@@ -47,7 +44,6 @@ public class UIImpl extends UI implements RomUpdater.RomUpdaterListener,
     private static long mNewRomVersion = -1L;
 
     private Activity mActivity;
-    private View mView;
     private RomUpdater mRomUpdater;
     private GappsUpdater mGappsUpdater;
     private TWRPUpdater mTwrpUpdater;
@@ -57,13 +53,13 @@ public class UIImpl extends UI implements RomUpdater.RomUpdaterListener,
     private Button mButtonCheckGapps;
     private Button mButtonCheckTwrp;
 
-    protected UIImpl(Activity activity, Fragment fragment) {
+    protected UIImpl(Activity activity) {
 
-        redraw(activity, fragment);
+        redraw(activity);
     }
 
     @Override
-    public View redraw(Activity activity, final Fragment fragment) {
+    public void redraw(Activity activity) {
 
         boolean useDarkTheme = ManagerFactory.getPreferencesManager(activity).isDarkTheme();
         activity.setTheme(useDarkTheme ? R.style.Theme_Dark : R.style.Theme_Light);
@@ -75,12 +71,7 @@ public class UIImpl extends UI implements RomUpdater.RomUpdaterListener,
         TextView versionHeader = null;
         Button buttonGoo = null;
         
-        if (fragment != null) {
-            LayoutInflater inflater = (LayoutInflater)mActivity.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-            mView = inflater.inflate(R.layout.main_activity, null);
-        } else {
-            mActivity.setContentView(R.layout.main_activity);
-        }
+        mActivity.setContentView(R.layout.main_activity);
 
         mRomUpdater = new RomUpdater(mActivity, this, false);
 
@@ -90,25 +81,14 @@ public class UIImpl extends UI implements RomUpdater.RomUpdaterListener,
 
         boolean romCanUpdate = mRomUpdater.canUpdate();
 
-        if (fragment != null) {
-            romHeader = (TextView) mView.findViewById(R.id.rom_header);
-            devHeader = (TextView) mView.findViewById(R.id.developer_header);
-            versionHeader = (TextView) mView.findViewById(R.id.version_header);
-            mRemoteVersionHeader = (TextView) mView.findViewById(R.id.remoteversion_header);
-            mButtonCheckRom = (Button) mView.findViewById(R.id.button_checkupdates);
-            mButtonCheckGapps = (Button) mView.findViewById(R.id.button_checkupdatesgapps);
-            mButtonCheckTwrp = (Button) mView.findViewById(R.id.button_checkupdatestwrp);
-            buttonGoo = (Button) mView.findViewById(R.id.button_browse);
-        } else {
-            romHeader = (TextView) mActivity.findViewById(R.id.rom_header);
-            devHeader = (TextView) mActivity.findViewById(R.id.developer_header);
-            versionHeader = (TextView) mActivity.findViewById(R.id.version_header);
-            mRemoteVersionHeader = (TextView) mActivity.findViewById(R.id.remoteversion_header);
-            mButtonCheckRom = (Button) mActivity.findViewById(R.id.button_checkupdates);
-            mButtonCheckGapps = (Button) mActivity.findViewById(R.id.button_checkupdatesgapps);
-            mButtonCheckTwrp = (Button) mActivity.findViewById(R.id.button_checkupdatestwrp);
-            buttonGoo = (Button) mActivity.findViewById(R.id.button_browse);
-        }
+        romHeader = (TextView) mActivity.findViewById(R.id.rom_header);
+        devHeader = (TextView) mActivity.findViewById(R.id.developer_header);
+        versionHeader = (TextView) mActivity.findViewById(R.id.version_header);
+        mRemoteVersionHeader = (TextView) mActivity.findViewById(R.id.remoteversion_header);
+        mButtonCheckRom = (Button) mActivity.findViewById(R.id.button_checkupdates);
+        mButtonCheckGapps = (Button) mActivity.findViewById(R.id.button_checkupdatesgapps);
+        mButtonCheckTwrp = (Button) mActivity.findViewById(R.id.button_checkupdatestwrp);
+        buttonGoo = (Button) mActivity.findViewById(R.id.button_browse);
 
         romHeader.setText(romCanUpdate ? mRomUpdater.getRomName() : mActivity.getResources()
                 .getString(R.string.not_available));
@@ -154,11 +134,7 @@ public class UIImpl extends UI implements RomUpdater.RomUpdaterListener,
             @Override
             public void onClick(View v) {
                 GooActivity.CURRENT_NAVIGATION = null;
-                if (fragment instanceof GooFragment) {
-                    mActivity.startActivity(new Intent(mActivity, ((GooFragment)fragment).getGooActivityClass()));
-                } else {
-                    mActivity.startActivity(new Intent(mActivity, GooActivity.class));
-                }
+                mActivity.startActivity(new Intent(mActivity, GooActivity.class));
             }
         });
         
@@ -166,12 +142,6 @@ public class UIImpl extends UI implements RomUpdater.RomUpdaterListener,
         if (intent != null && intent.getExtras() != null && intent.getExtras().get("NOTIFICATION_ID") != null){
             onNewIntent(mActivity, intent);
         }
-
-        return mView;
-    }
-    
-    protected View getView() {
-        return mView;
     }
 
     private void checkRom() {

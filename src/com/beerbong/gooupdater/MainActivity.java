@@ -30,7 +30,7 @@ public class MainActivity extends FragmentActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
-        UI.create(this, null);
+        UI.create(this);
 
         super.onCreate(savedInstanceState);
 
