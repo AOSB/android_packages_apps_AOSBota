@@ -24,14 +24,14 @@ public class PreferencesManager extends Manager {
 
     private static final String SDCARD = "sdcard";
 
-    public static final String PROPERTY_TIME_NOTIFICATIONS = "time_notifications";
-
-    private static final String DEFAULT_TIME_NOTIFICATIONS = "3600000"; // an hour
     private static final String PROPERTY_DARK_THEME = "dark-theme";
     private static final String PROPERTY_DOWNLOAD_PATH = "download_path";
+    private static final String PROPERTY_TIME_NOTIFICATIONS = "time_notifications";
+    private static final String PROPERTY_LOGIN = "login";
 
-    private static final boolean DEFAULT_DARK_THEME = true;
+    private static final String DEFAULT_TIME_NOTIFICATIONS = "3600000"; // an hour
     private static final String DEFAULT_DOWNLOAD_PATH = "/" + SDCARD + "/download/";
+    private static final boolean DEFAULT_DARK_THEME = true;
 
     private SharedPreferences settings;
 
@@ -65,6 +65,14 @@ public class PreferencesManager extends Manager {
         if (!value.endsWith("/"))
             value = value + "/";
         savePreference(PROPERTY_DOWNLOAD_PATH, value);
+    }
+
+    public String getLogin() {
+        return settings.getString(PROPERTY_LOGIN, "");
+    }
+
+    public void setLogin(String value) {
+        savePreference(PROPERTY_LOGIN, value);
     }
 
     private void savePreference(String preference, String value) {

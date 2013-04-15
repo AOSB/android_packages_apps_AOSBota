@@ -130,6 +130,12 @@ public class DownloadTask extends AsyncTask<Void, Integer, Integer> {
     protected Integer doInBackground(Void... params) {
         PreferencesManager pManager = ManagerFactory.getPreferencesManager();
 
+        String login = pManager.getLogin();
+        String url = mUrl;
+        if (login != null && !"".equals(login)) {
+            url = url + "&hash=" + login;
+        }
+
         if (mMd5 != null) {
             FileOutputStream fos = null;
             try {
@@ -149,9 +155,9 @@ public class DownloadTask extends AsyncTask<Void, Integer, Integer> {
         InputStream is = null;
         OutputStream os = null;
         try {
-            URL getUrl = new URL(mUrl);
+            URL getUrl = new URL(url);
             URLConnection conn = getUrl.openConnection();
-            if (getUrl.toString().contains("goo.im")) {
+            if (getUrl.toString().contains("goo.im") && (login == null || "".equals(login))) {
                 conn.connect();
                 publishProgress(-1);
                 is = new BufferedInputStream(conn.getInputStream());
@@ -167,7 +173,7 @@ public class DownloadTask extends AsyncTask<Void, Integer, Integer> {
                     Thread.sleep(10500);
                 } catch (InterruptedException e) {
                 }
-                getUrl = new URL(mUrl);
+                getUrl = new URL(url);
                 conn = getUrl.openConnection();
             }
             final int lengthOfFile = conn.getContentLength();

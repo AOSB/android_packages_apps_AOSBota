@@ -30,6 +30,7 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import com.beerbong.gooupdater.GooActivity;
+import com.beerbong.gooupdater.LoginActivity;
 import com.beerbong.gooupdater.R;
 import com.beerbong.gooupdater.SettingsActivity;
 import com.beerbong.gooupdater.manager.ManagerFactory;
@@ -238,6 +239,9 @@ public class UIImpl extends UI implements RomUpdater.RomUpdaterListener,
         switch (item.getItemId()) {
             case R.id.settings:
                 mActivity.startActivity(new Intent(mActivity, SettingsActivity.class));
+                break;
+            case R.id.login:
+                mActivity.startActivity(new Intent(mActivity, LoginActivity.class));
                 break;
         }
 

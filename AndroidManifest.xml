@@ -29,6 +29,7 @@
             </intent-filter>
         </activity>
         <activity android:name="com.beerbong.gooupdater.GooActivity" />
+        <activity android:name="com.beerbong.gooupdater.LoginActivity" />
         <activity android:name="com.beerbong.gooupdater.SettingsActivity" />
 
         <service android:name="com.beerbong.gooupdater.Service" >
