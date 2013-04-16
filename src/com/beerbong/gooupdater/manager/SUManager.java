@@ -16,8 +16,9 @@
 
 package com.beerbong.gooupdater.manager;
 
-import java.io.DataInputStream;
+import java.io.BufferedReader;
 import java.io.DataOutputStream;
+import java.io.InputStreamReader;
 
 import android.content.Context;
 
@@ -32,15 +33,15 @@ public class SUManager extends Manager {
 
         try {
             Process p = Runtime.getRuntime().exec("su");
-            DataInputStream in = new DataInputStream(p.getInputStream());
             DataOutputStream out = new DataOutputStream(p.getOutputStream());
             out.writeBytes(command + "\n");
             out.flush();
             out.close();
-            StringBuffer buffer = new StringBuffer();
 
+            StringBuffer buffer = new StringBuffer();
+            BufferedReader reader = new BufferedReader(new InputStreamReader(p.getInputStream()));
             while (true) {
-                String line = in.readLine();
+                String line = reader.readLine();
                 result = null;
                 if (line == null) {
                     p.waitFor();

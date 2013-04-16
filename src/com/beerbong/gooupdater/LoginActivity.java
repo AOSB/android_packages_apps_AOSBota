@@ -16,6 +16,7 @@
 
 package com.beerbong.gooupdater;
 
+import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 
 import android.app.Activity;
@@ -51,8 +52,12 @@ public class LoginActivity extends Activity implements URLStringReader.URLString
             public void onClick(View v) {
                 String username = mUsername.getText() == null ? "" : mUsername.getText().toString();
                 String password = mPassword.getText() == null ? "" : mPassword.getText().toString();
-                new URLStringReader(LoginActivity.this).execute(URL + "&username="
-                        + URLEncoder.encode(username) + "&password=" + URLEncoder.encode(password));
+                try {
+                    new URLStringReader(LoginActivity.this).execute(URL + "&username="
+                            + URLEncoder.encode(username, "UTF-8") + "&password=" + URLEncoder.encode(password, "UTF-8"));
+                } catch (UnsupportedEncodingException ex) {
+                    // should never get here
+                }
             }
         });
 
