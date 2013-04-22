@@ -133,6 +133,23 @@ public class FileManager extends Manager {
     }
 
     public void cancelDownload(final int notificationId, final Bundle extras) {
+        switch (notificationId) {
+            case Constants.DOWNLOADROM_NOTIFICATION_ID:
+                if (mDownloadRom != null && mDownloadRom.getStatus() == Status.FINISHED) {
+                    return;
+                }
+                break;
+            case Constants.DOWNLOADGAPPS_NOTIFICATION_ID:
+                if (mDownloadGapps != null && mDownloadGapps.getStatus() == Status.FINISHED) {
+                    return;
+                }
+                break;
+            case Constants.DOWNLOADTWRP_NOTIFICATION_ID:
+                if (mDownloadTWRP != null && mDownloadTWRP.getStatus() == Status.FINISHED) {
+                    return;
+                }
+                break;
+        }
         new AlertDialog.Builder(mContext)
                 .setTitle(R.string.download_cancel_title)
                 .setMessage(R.string.download_cancel_message)
