@@ -206,7 +206,7 @@ public class TWRPUpdater implements Updater, Updater.UpdaterListener {
                             .setMessage(
                                     mContext.getResources().getString(
                                             R.string.new_twrp_found_summary,
-                                            new Object[] { info.filename, info.folder }))
+                                            new Object[] { info.filename }))
                             .setPositiveButton(android.R.string.ok,
                                     new DialogInterface.OnClickListener() {
 
