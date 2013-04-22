@@ -166,7 +166,9 @@ public class UIImpl extends UI implements RomUpdater.RomUpdaterListener,
     @Override
     public void onNewIntent(Context context, Intent intent) {
 
-        int notificationId = Integer.parseInt(intent.getExtras().get("NOTIFICATION_ID").toString());
+        int notificationId = intent.getExtras() != null
+                && intent.getExtras().get("NOTIFICATION_ID") != null ? Integer.parseInt(intent
+                .getExtras().get("NOTIFICATION_ID").toString()) : -1;
         if (notificationId == Constants.NEWROMVERSION_NOTIFICATION_ID
                 || notificationId == Constants.NEWGAPPSVERSION_NOTIFICATION_ID) {
             String url = intent.getExtras().getString("URL");
