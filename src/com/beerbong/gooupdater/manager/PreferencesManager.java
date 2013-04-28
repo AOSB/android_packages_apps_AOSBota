@@ -28,6 +28,7 @@ public class PreferencesManager extends Manager {
     private static final String PROPERTY_DOWNLOAD_PATH = "download_path";
     private static final String PROPERTY_TIME_NOTIFICATIONS = "time_notifications";
     private static final String PROPERTY_LOGIN = "login";
+    private static final String PROPERTY_WATCHLIST = "watchlist";
 
     private static final String DEFAULT_TIME_NOTIFICATIONS = "3600000"; // an hour
     private static final String DEFAULT_DOWNLOAD_PATH = "/" + SDCARD + "/download/";
@@ -73,6 +74,14 @@ public class PreferencesManager extends Manager {
 
     public void setLogin(String value) {
         savePreference(PROPERTY_LOGIN, value);
+    }
+
+    public String getWatchlist() {
+        return settings.getString(PROPERTY_WATCHLIST, "");
+    }
+
+    public void setWatchlist(String value) {
+        savePreference(PROPERTY_WATCHLIST, value);
     }
 
     private void savePreference(String preference, String value) {

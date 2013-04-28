@@ -39,6 +39,7 @@ import com.beerbong.gooupdater.updater.GooPackage;
 import com.beerbong.gooupdater.updater.Updater;
 import com.beerbong.gooupdater.updater.Updater.PackageInfo;
 import com.beerbong.gooupdater.util.Constants;
+import com.beerbong.gooupdater.util.FolderPreference;
 import com.beerbong.gooupdater.util.URLStringReader;
 import com.beerbong.gooupdater.util.URLStringReader.URLStringReaderListener;
 
@@ -87,64 +88,82 @@ public class GooActivity extends PreferenceActivity implements URLStringReaderLi
             preference.setTitle(R.string.goo_browse_all);
             pScreen.addPreference(preference);
 
+            preference = new Preference(this);
+            preference.getExtras().putBoolean("BROWSING_ALL", false);
+            preference.getExtras().putBoolean("FOLDER", false);
+            preference.getExtras().putString("PATH", "");
+            preference.setKey("watchlist");
+            preference.setTitle(R.string.goo_browse_watchlist);
+            pScreen.addPreference(preference);
+
         } else {
 
-            PreferenceCategory category = new PreferenceCategory(this);
-            category.setTitle(getResources().getString(R.string.goo_category_title,
-                    new Object[] { CURRENT_FOLDER }));
-            pScreen.addPreference(category);
+            if ("watchlist".equals(CURRENT_FOLDER)) {
 
-            try {
+                PreferenceCategory category = new PreferenceCategory(this);
+                category.setKey("category");
+                category.setTitle(getResources().getString(R.string.goo_category_title,
+                        new Object[] { CURRENT_FOLDER }));
+                pScreen.addPreference(category);
+                refreshWatchlist();
+            } else {
 
-                JSONObject object = (JSONObject) new JSONTokener(CURRENT_NAVIGATION).nextValue();
-                JSONArray list = object.getJSONArray("list");
+                PreferenceCategory category = new PreferenceCategory(this);
+                category.setTitle(getResources().getString(R.string.goo_category_title,
+                        new Object[] { CURRENT_FOLDER }));
+                pScreen.addPreference(category);
+                try {
 
-                for (int i = 0; i < list.length(); i++) {
+                    JSONObject object = (JSONObject) new JSONTokener(CURRENT_NAVIGATION).nextValue();
+                    JSONArray list = object.getJSONArray("list");
 
-                    JSONObject result = list.getJSONObject(i);
-                    String fileName = result.optString("filename");
+                    for (int i = 0; i < list.length(); i++) {
 
-                    if (fileName != null && !"".equals(fileName.trim())) {
+                        JSONObject result = list.getJSONObject(i);
+                        String fileName = result.optString("filename");
 
-                        String path = result.optString("path");
+                        if (fileName != null && !"".equals(fileName.trim())) {
 
-                        if (!BROWSING_ALL && !mDevice.equals(result.optString("ro_board"))) {
-                            continue;
-                        }
+                            String path = result.optString("path");
 
-                        GooPackage info = new GooPackage(result);
-                        mInfos.put(path, info);
+                            if (!BROWSING_ALL && !mDevice.equals(result.optString("ro_board"))) {
+                                continue;
+                            }
 
-                        Preference preference = new Preference(this);
-                        preference.getExtras().putBoolean("FOLDER", false);
-                        preference.setKey(path);
-                        preference.setTitle(fileName);
-                        preference.setSummary(path);
-                        category.addPreference(preference);
+                            GooPackage info = new GooPackage(result);
+                            mInfos.put(path, info);
 
-                    } else {
+                            Preference preference = new Preference(this);
+                            preference.getExtras().putBoolean("FOLDER", false);
+                            preference.setKey(path);
+                            preference.setTitle(fileName);
+                            preference.setSummary(path);
+                            category.addPreference(preference);
 
-                        String folder = result.optString("folder");
-                        String folderName = folder.substring(folder.lastIndexOf("/") + 1);
-
-                        Preference preference = new Preference(this);
-                        preference.getExtras().putBoolean("BROWSING_ALL", BROWSING_ALL);
-                        preference.getExtras().putBoolean("FOLDER", true);
-                        preference.getExtras().putString("PATH", folder);
-                        if (!BROWSING_ALL) {
-                            preference.setKey("http://goo.im/json2&path=" + folder + "&ro_board="
-                                    + mDevice);
                         } else {
-                            preference.setKey("http://goo.im/json2&path=" + folder);
+
+                            String folder = result.optString("folder");
+                            String folderName = folder.substring(folder.lastIndexOf("/") + 1);
+
+                            Preference preference = new FolderPreference(this, folder, false);
+                            preference.getExtras().putBoolean("BROWSING_ALL", BROWSING_ALL);
+                            preference.getExtras().putBoolean("FOLDER", true);
+                            preference.getExtras().putString("PATH", folder);
+                            if (!BROWSING_ALL) {
+                                preference.setKey("http://goo.im/json2&path=" + folder + "&ro_board="
+                                        + mDevice);
+                            } else {
+                                preference.setKey("http://goo.im/json2&path=" + folder);
+                            }
+                            preference.setTitle(folderName);
+                            preference.setSummary(folder);
+                            category.addPreference(preference);
                         }
-                        preference.setTitle(folderName);
-                        preference.setSummary(folder);
-                        category.addPreference(preference);
                     }
+                } catch (Exception ex) {
+                    ex.printStackTrace();
+                    Toast.makeText(this, R.string.goo_browse_error, Toast.LENGTH_LONG).show();
                 }
-            } catch (Exception ex) {
-                ex.printStackTrace();
-                Toast.makeText(this, R.string.goo_browse_error, Toast.LENGTH_LONG).show();
             }
         }
         if (DIALOG != null)
@@ -153,66 +172,72 @@ public class GooActivity extends PreferenceActivity implements URLStringReaderLi
         DIALOG = null;
     }
 
-    @SuppressWarnings("deprecation")
     @Override
     public boolean onPreferenceTreeClick(PreferenceScreen preferenceScreen, Preference preference) {
         String key = preference.getKey();
         boolean folder = preference.getExtras().getBoolean("FOLDER");
 
-        if (folder) {
+        if ("watchlist".equals(key)) {
 
-            CURRENT_FOLDER = preference.getExtras().getString("PATH");
-            BROWSING_ALL = preference.getExtras().getBoolean("BROWSING_ALL");
-            search(key);
-
+            CURRENT_FOLDER = "watchlist";
+            CURRENT_NAVIGATION = "watchlist";
+            startActivity(new Intent(this, this.getClass()));
         } else {
 
-            final PackageInfo info = mInfos.get(key);
+            if (folder) {
 
-            runOnUiThread(new Runnable() {
+                CURRENT_FOLDER = preference.getExtras().getString("PATH");
+                BROWSING_ALL = preference.getExtras().getBoolean("BROWSING_ALL");
+                search(key);
 
-                public void run() {
-                    new AlertDialog.Builder(GooActivity.this)
-                            .setTitle(R.string.goo_download_title)
-                            .setMessage(
-                                    GooActivity.this.getResources().getString(
-                                            R.string.goo_download_summary,
-                                            new Object[] { info.filename, info.folder }))
-                            .setPositiveButton(android.R.string.ok,
-                                    new DialogInterface.OnClickListener() {
+            } else {
 
-                                        public void onClick(DialogInterface dialog, int whichButton) {
-                                            dialog.dismiss();
+                final PackageInfo info = mInfos.get(key);
 
-                                            GooActivity.this.runOnUiThread(new Runnable() {
+                runOnUiThread(new Runnable() {
 
-                                                public void run() {
+                    public void run() {
+                        new AlertDialog.Builder(GooActivity.this)
+                                .setTitle(R.string.goo_download_title)
+                                .setMessage(
+                                        GooActivity.this.getResources().getString(
+                                                R.string.goo_download_summary,
+                                                new Object[] { info.filename, info.folder }))
+                                .setPositiveButton(android.R.string.ok,
+                                        new DialogInterface.OnClickListener() {
 
-                                                    Intent intent = new Intent(GooActivity.this,
-                                                            MainActivity.class);
-                                                    intent.putExtra("NOTIFICATION_ID",
-                                                            Constants.NEWROMVERSION_NOTIFICATION_ID);
-                                                    intent.putExtra("URL", info.path);
-                                                    intent.putExtra("ZIP_NAME", info.filename);
-                                                    intent.putExtra("MD5", info.md5);
-                                                    startActivity(intent);
-                                                }
-                                            });
-                                        }
-                                    })
-                            .setNegativeButton(android.R.string.cancel,
-                                    new DialogInterface.OnClickListener() {
+                                            public void onClick(DialogInterface dialog, int whichButton) {
+                                                dialog.dismiss();
 
-                                        public void onClick(DialogInterface dialog, int whichButton) {
-                                            dialog.dismiss();
-                                        }
-                                    }).show();
-                }
-            });
+                                                GooActivity.this.runOnUiThread(new Runnable() {
 
+                                                    public void run() {
+
+                                                        Intent intent = new Intent(GooActivity.this,
+                                                                MainActivity.class);
+                                                        intent.putExtra("NOTIFICATION_ID",
+                                                                Constants.NEWROMVERSION_NOTIFICATION_ID);
+                                                        intent.putExtra("URL", info.path);
+                                                        intent.putExtra("ZIP_NAME", info.filename);
+                                                        intent.putExtra("MD5", info.md5);
+                                                        startActivity(intent);
+                                                    }
+                                                });
+                                            }
+                                        })
+                                .setNegativeButton(android.R.string.cancel,
+                                        new DialogInterface.OnClickListener() {
+    
+                                            public void onClick(DialogInterface dialog, int whichButton) {
+                                                dialog.dismiss();
+                                            }
+                                        }).show();
+                    }
+                });
+            }
         }
 
-        return super.onPreferenceTreeClick(preferenceScreen, preference);
+        return true;
     }
 
     @Override
@@ -239,5 +264,29 @@ public class GooActivity extends PreferenceActivity implements URLStringReaderLi
         DIALOG.show();
 
         new URLStringReader(this).execute(path);
+    }
+
+    private String[] getWatchlist() {
+        String str = ManagerFactory.getPreferencesManager().getWatchlist();
+        return str.split("#-#");
+    }
+
+    @SuppressWarnings("deprecation")
+    public void refreshWatchlist() {
+        PreferenceCategory category = (PreferenceCategory)getPreferenceScreen().findPreference("category");
+        category.removeAll();
+        String[] watchlist = getWatchlist();
+        for (String folder : watchlist) {
+            if (!"".equals(folder)) {
+                Preference preference = new FolderPreference(this, folder, true);
+                preference.getExtras().putBoolean("BROWSING_ALL", true);
+                preference.getExtras().putBoolean("FOLDER", true);
+                preference.getExtras().putString("PATH", folder);
+                preference.setKey("http://goo.im/json2&path=" + folder);
+                preference.setTitle(folder);
+                preference.setSummary(folder);
+                category.addPreference(preference);
+            }
+        }
     }
 }
