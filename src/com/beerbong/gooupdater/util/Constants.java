@@ -156,6 +156,8 @@ public class Constants {
 
         AlarmManager am = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
         am.cancel(pi);
-        am.setInexactRepeating(AlarmManager.RTC_WAKEUP, trigger ? current : current + time, time, pi);
+        if (time > 0) {
+            am.setInexactRepeating(AlarmManager.RTC_WAKEUP, trigger ? current : current + time, time, pi);
+        }
     }
 }
