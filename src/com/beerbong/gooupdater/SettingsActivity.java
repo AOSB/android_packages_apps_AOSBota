@@ -86,8 +86,9 @@ public class SettingsActivity extends PreferenceActivity implements OnPreference
 
         if (Constants.PREFERENCE_SETTINGS_CHECK_TIME.equals(key)) {
 
-            ManagerFactory.getPreferencesManager().setTimeNotifications(
-                    Long.parseLong(newValue.toString()));
+            long time = Long.parseLong(newValue.toString());
+            ManagerFactory.getPreferencesManager().setTimeNotifications(time);
+            Constants.setAlarm(this, time, false);
             mCheckTime.setValue(newValue.toString());
 
         }

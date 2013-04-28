@@ -34,17 +34,17 @@ public class RomUpdater implements Updater.UpdaterListener {
     private RomUpdaterListener mListener;
     private String mRomName;
     private int mRomVersion = -1;
-    private boolean mFromService;
+    private boolean mFromAlarm;
 
     public interface RomUpdaterListener {
 
         public void checkRomCompleted(long newVersion);
     }
 
-    public RomUpdater(Context context, RomUpdaterListener listener, boolean fromService) {
+    public RomUpdater(Context context, RomUpdaterListener listener, boolean fromAlarm) {
 
         mContext = context;
-        mFromService = fromService;
+        mFromAlarm = fromAlarm;
 
         mUpdater = getUpdater();
 
@@ -83,7 +83,7 @@ public class RomUpdater implements Updater.UpdaterListener {
     @Override
     public void versionFound(final PackageInfo info) {
         if (info != null && info.version > mRomVersion) {
-            if (!mFromService) {
+            if (!mFromAlarm) {
                 showNewRomFound(info);
             } else {
                 Constants.showNotification(mContext, info,
@@ -91,7 +91,7 @@ public class RomUpdater implements Updater.UpdaterListener {
                         R.string.new_package_name);
             }
         } else {
-            if (!mFromService) {
+            if (!mFromAlarm) {
                 Constants.showToastOnUiThread(mContext, R.string.check_rom_updates_no_new);
             }
         }
@@ -107,7 +107,7 @@ public class RomUpdater implements Updater.UpdaterListener {
 
     @Override
     public void versionError(String error) {
-        if (!mFromService) {
+        if (!mFromAlarm) {
             if (error != null) {
                 Constants.showToastOnUiThread(mContext,
                         mContext.getResources().getString(R.string.check_rom_updates_error) + ": "

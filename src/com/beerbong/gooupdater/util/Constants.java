@@ -25,21 +25,26 @@ import java.math.BigInteger;
 import java.security.MessageDigest;
 
 import android.app.Activity;
+import android.app.AlarmManager;
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
+import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.Resources;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.widget.Toast;
 
 import com.beerbong.gooupdater.MainActivity;
+import com.beerbong.gooupdater.NotificationAlarm;
 import com.beerbong.gooupdater.R;
-import com.beerbong.gooupdater.Service;
 import com.beerbong.gooupdater.updater.Updater.PackageInfo;
 
 public class Constants {
 
+    public static final int ALARM_ID = 122303221;
     public static final int NEWROMVERSION_NOTIFICATION_ID = 122303222;
     public static final int DOWNLOADROM_NOTIFICATION_ID = 122303223;
     public static final int NEWGAPPSVERSION_NOTIFICATION_ID = 122303224;
@@ -132,5 +137,25 @@ public class Constants {
             } catch (Exception e) {
             }
         }
+    }
+    
+    public static boolean isNetworkAvailable(Context context) {
+        ConnectivityManager connectivityManager = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
+        return activeNetworkInfo != null && activeNetworkInfo.isConnected();
+    }
+    
+    public static void setAlarm(Context context, long time, boolean trigger) {
+        long current = System.currentTimeMillis();
+
+        Intent i = new Intent(context, NotificationAlarm.class);
+        i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+
+        PendingIntent pi = PendingIntent
+                .getBroadcast(context, Constants.ALARM_ID, i, PendingIntent.FLAG_UPDATE_CURRENT);
+
+        AlarmManager am = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
+        am.cancel(pi);
+        am.setInexactRepeating(AlarmManager.RTC_WAKEUP, trigger ? current : current + time, time, pi);
     }
 }

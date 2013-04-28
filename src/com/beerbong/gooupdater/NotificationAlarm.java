@@ -20,15 +20,22 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 
-import com.beerbong.gooupdater.manager.ManagerFactory;
+import com.beerbong.gooupdater.updater.RomUpdater;
 import com.beerbong.gooupdater.util.Constants;
 
-public class Receiver extends BroadcastReceiver {
+public class NotificationAlarm extends BroadcastReceiver {
+
+    private RomUpdater mRomUpdater;
 
     @Override
     public void onReceive(Context context, Intent intent) {
-        Constants.setAlarm(context, ManagerFactory.getPreferencesManager(context)
-                .getTimeNotifications(), true);
-    }
 
+        if (mRomUpdater == null) {
+            mRomUpdater = new RomUpdater(context, null, true);
+        }
+
+        if (Constants.isNetworkAvailable(context)) {
+            mRomUpdater.check();
+        }
+    }
 }
