@@ -38,11 +38,18 @@ public abstract class UI {
         return instance;
     }
 
+    public interface OnNewIntentListener {
+
+        public void onNewIntent(Context context, Intent intent);
+    }
+
     public abstract void redraw(Activity activity);
 
     public abstract boolean onCreateOptionsMenu(Menu menu);
 
     public abstract boolean onOptionsItemSelected(MenuItem item);
+
+    public abstract void setOnNewIntentListener(OnNewIntentListener listener);
 
     public abstract void onNewIntent(Context context, Intent intent);
 }

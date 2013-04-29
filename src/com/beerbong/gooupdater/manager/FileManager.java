@@ -39,11 +39,12 @@ import android.widget.Toast;
 
 import com.beerbong.gooupdater.MainActivity;
 import com.beerbong.gooupdater.R;
+import com.beerbong.gooupdater.ui.UI;
 import com.beerbong.gooupdater.util.Constants;
 import com.beerbong.gooupdater.util.DownloadTask;
 import com.beerbong.gooupdater.util.DownloadTask.DownloadTaskListener;
 
-public class FileManager extends Manager {
+public class FileManager extends Manager implements UI.OnNewIntentListener {
 
     private static DownloadTask mDownloadRom;
     private static DownloadTask mDownloadGapps;
@@ -51,6 +52,35 @@ public class FileManager extends Manager {
 
     protected FileManager(Context context) {
         super(context);
+    }
+
+    @Override
+    public void onNewIntent(Context context, Intent intent) {
+        int notificationId = intent.getExtras() != null
+                && intent.getExtras().get("NOTIFICATION_ID") != null ? Integer.parseInt(intent
+                .getExtras().get("NOTIFICATION_ID").toString()) : -1;
+        if (notificationId == Constants.NEWROMVERSION_NOTIFICATION_ID
+                || notificationId == Constants.NEWGAPPSVERSION_NOTIFICATION_ID) {
+            String url = intent.getExtras().getString("URL");
+            String md5 = intent.getStringExtra("MD5");
+            String name = intent.getStringExtra("ZIP_NAME");
+
+            NotificationManager nMgr = (NotificationManager) context
+                    .getSystemService(Context.NOTIFICATION_SERVICE);
+            nMgr.cancel(notificationId);
+
+            if (notificationId == Constants.NEWROMVERSION_NOTIFICATION_ID) {
+                notificationId = Constants.DOWNLOADROM_NOTIFICATION_ID;
+            } else {
+                notificationId = Constants.DOWNLOADGAPPS_NOTIFICATION_ID;
+            }
+            ManagerFactory.getFileManager(context)
+                    .download(context, url, name, md5, notificationId);
+        } else if (notificationId == Constants.DOWNLOADROM_NOTIFICATION_ID
+                || notificationId == Constants.DOWNLOADGAPPS_NOTIFICATION_ID
+                || notificationId == Constants.DOWNLOADTWRP_NOTIFICATION_ID) {
+            ManagerFactory.getFileManager().cancelDownload(notificationId, intent.getExtras());
+        }
     }
 
     public void selectDownloadPath(final Activity activity) {

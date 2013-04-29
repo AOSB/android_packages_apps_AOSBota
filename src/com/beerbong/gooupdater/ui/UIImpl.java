@@ -17,7 +17,6 @@
 package com.beerbong.gooupdater.ui;
 
 import android.app.Activity;
-import android.app.NotificationManager;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
@@ -46,6 +45,7 @@ public class UIImpl extends UI implements RomUpdater.RomUpdaterListener,
     private static long mNewRomVersion = -1L;
 
     private Activity mActivity;
+    private OnNewIntentListener mOnNewIntentListener;
     private RomUpdater mRomUpdater;
     private GappsUpdater mGappsUpdater;
     private TWRPUpdater mTwrpUpdater;
@@ -171,34 +171,16 @@ public class UIImpl extends UI implements RomUpdater.RomUpdaterListener,
     }
 
     @Override
+    public void setOnNewIntentListener(OnNewIntentListener listener) {
+        mOnNewIntentListener = listener;
+    }
+
+    @Override
     public void onNewIntent(Context context, Intent intent) {
 
-        int notificationId = intent.getExtras() != null
-                && intent.getExtras().get("NOTIFICATION_ID") != null ? Integer.parseInt(intent
-                .getExtras().get("NOTIFICATION_ID").toString()) : -1;
-        if (notificationId == Constants.NEWROMVERSION_NOTIFICATION_ID
-                || notificationId == Constants.NEWGAPPSVERSION_NOTIFICATION_ID) {
-            String url = intent.getExtras().getString("URL");
-            String md5 = intent.getStringExtra("MD5");
-            String name = intent.getStringExtra("ZIP_NAME");
-
-            NotificationManager nMgr = (NotificationManager) mActivity
-                    .getSystemService(Context.NOTIFICATION_SERVICE);
-            nMgr.cancel(notificationId);
-
-            if (notificationId == Constants.NEWROMVERSION_NOTIFICATION_ID) {
-                notificationId = Constants.DOWNLOADROM_NOTIFICATION_ID;
-            } else {
-                notificationId = Constants.DOWNLOADGAPPS_NOTIFICATION_ID;
-            }
-            ManagerFactory.getFileManager(context)
-                    .download(context, url, name, md5, notificationId);
-        } else if (notificationId == Constants.DOWNLOADROM_NOTIFICATION_ID
-                || notificationId == Constants.DOWNLOADGAPPS_NOTIFICATION_ID
-                || notificationId == Constants.DOWNLOADTWRP_NOTIFICATION_ID) {
-            ManagerFactory.getFileManager().cancelDownload(notificationId, intent.getExtras());
+        if (mOnNewIntentListener != null) {
+            mOnNewIntentListener.onNewIntent(context, intent);
         }
-
     }
 
     @Override
