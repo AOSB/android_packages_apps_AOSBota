@@ -18,6 +18,9 @@
     <item android:id="@+id/login"
         android:title="@string/menu_login" />
 
+    <item android:id="@+id/goo"
+        android:title="@string/goo_browse" />
+
     <item android:id="@+id/settings"
         android:title="@string/menu_settings" />
 

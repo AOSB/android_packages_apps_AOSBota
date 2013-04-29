@@ -83,7 +83,6 @@ public class UIImpl extends UI implements RomUpdater.RomUpdaterListener,
         TextView romHeader = null;
         TextView devHeader = null;
         TextView versionHeader = null;
-        Button buttonGoo = null;
         
         mActivity.setContentView(R.layout.main_activity);
 
@@ -102,7 +101,6 @@ public class UIImpl extends UI implements RomUpdater.RomUpdaterListener,
         mButtonCheckRom = (Button) mActivity.findViewById(R.id.button_checkupdates);
         mButtonCheckGapps = (Button) mActivity.findViewById(R.id.button_checkupdatesgapps);
         mButtonCheckTwrp = (Button) mActivity.findViewById(R.id.button_checkupdatestwrp);
-        buttonGoo = (Button) mActivity.findViewById(R.id.button_browse);
 
         romHeader.setText(romCanUpdate ? mRomUpdater.getRomName() : mActivity.getResources()
                 .getString(R.string.not_available));
@@ -140,15 +138,6 @@ public class UIImpl extends UI implements RomUpdater.RomUpdaterListener,
             @Override
             public void onClick(View v) {
                 checkTwrp();
-            }
-        });
-
-        buttonGoo.setOnClickListener(new OnClickListener() {
-
-            @Override
-            public void onClick(View v) {
-                GooActivity.CURRENT_NAVIGATION = null;
-                mActivity.startActivity(new Intent(mActivity, GooActivity.class));
             }
         });
 
@@ -244,6 +233,10 @@ public class UIImpl extends UI implements RomUpdater.RomUpdaterListener,
                 break;
             case R.id.login:
                 mActivity.startActivity(new Intent(mActivity, LoginActivity.class));
+                break;
+            case R.id.goo:
+                GooActivity.CURRENT_NAVIGATION = null;
+                mActivity.startActivity(new Intent(mActivity, GooActivity.class));
                 break;
         }
 
