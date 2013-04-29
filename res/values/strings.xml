@@ -96,5 +96,6 @@
     <string name="watchlist_add_confirm">Do you want to add the folder to the watchlist?</string>
     <string name="watchlist_remove_confirm_title">Remove from watchlist</string>
     <string name="watchlist_remove_confirm">Do you want to remove the folder from the watchlist?</string>
+    <string name="open_with">Open with...</string>
 
 </resources>

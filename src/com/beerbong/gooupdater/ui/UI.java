@@ -40,7 +40,7 @@ public abstract class UI {
 
     public interface OnNewIntentListener {
 
-        public void onNewIntent(Context context, Intent intent);
+        public boolean onNewIntent(Context context, Intent intent, boolean preRedraw);
     }
 
     public abstract void redraw(Activity activity);

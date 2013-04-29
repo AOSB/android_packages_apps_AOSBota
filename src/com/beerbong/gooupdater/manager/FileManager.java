@@ -31,6 +31,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.Resources;
+import android.net.Uri;
 import android.os.AsyncTask.Status;
 import android.os.Bundle;
 import android.text.TextUtils;
@@ -52,10 +53,12 @@ public class FileManager extends Manager implements UI.OnNewIntentListener {
 
     protected FileManager(Context context) {
         super(context);
+
+        UI.getInstance().setOnNewIntentListener(this);
     }
 
     @Override
-    public void onNewIntent(Context context, Intent intent) {
+    public boolean onNewIntent(Context context, Intent intent, boolean preRedraw) {
         int notificationId = intent.getExtras() != null
                 && intent.getExtras().get("NOTIFICATION_ID") != null ? Integer.parseInt(intent
                 .getExtras().get("NOTIFICATION_ID").toString()) : -1;
@@ -79,8 +82,37 @@ public class FileManager extends Manager implements UI.OnNewIntentListener {
         } else if (notificationId == Constants.DOWNLOADROM_NOTIFICATION_ID
                 || notificationId == Constants.DOWNLOADGAPPS_NOTIFICATION_ID
                 || notificationId == Constants.DOWNLOADTWRP_NOTIFICATION_ID) {
+            if (preRedraw) {
+                DownloadTask task = null;
+                switch (notificationId) {
+                    case Constants.DOWNLOADROM_NOTIFICATION_ID:
+                        if (mDownloadRom != null && mDownloadRom.getStatus() == Status.FINISHED) {
+                            task = mDownloadRom;
+                        }
+                        break;
+                    case Constants.DOWNLOADGAPPS_NOTIFICATION_ID:
+                        if (mDownloadGapps != null && mDownloadGapps.getStatus() == Status.FINISHED) {
+                            task = mDownloadGapps;
+                        }
+                        break;
+                }
+                if (task != null) {
+                    Intent sendIntent = new Intent();
+                    sendIntent.setAction(Intent.ACTION_SEND);
+                    sendIntent.putExtra(Intent.EXTRA_STREAM, Uri.fromFile(task.getDestinationFile()));
+                    sendIntent.setType("application/zip");
+                    context.startActivity(Intent.createChooser(sendIntent, context.getResources().getString(R.string.open_with)));
+
+                    NotificationManager nMgr = (NotificationManager) context
+                            .getSystemService(Context.NOTIFICATION_SERVICE);
+                    nMgr.cancel(notificationId);
+
+                    return false;
+                }
+            }
             ManagerFactory.getFileManager().cancelDownload(notificationId, intent.getExtras());
         }
+        return true;
     }
 
     public void selectDownloadPath(final Activity activity) {

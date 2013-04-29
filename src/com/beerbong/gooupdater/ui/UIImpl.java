@@ -63,6 +63,16 @@ public class UIImpl extends UI implements RomUpdater.RomUpdaterListener,
     @Override
     public void redraw(Activity activity) {
 
+        Intent intent = activity.getIntent();
+        if (intent != null && intent.getExtras() != null && intent.getExtras().get("NOTIFICATION_ID") != null) {
+            if (mOnNewIntentListener != null) {
+                if (!mOnNewIntentListener.onNewIntent(activity, intent, true)) {
+                    activity.finish();
+                    return;
+                }
+            }
+        }
+
         PreferencesManager pManager = ManagerFactory.getPreferencesManager(activity);
 
         boolean useDarkTheme = pManager.isDarkTheme();
@@ -141,10 +151,11 @@ public class UIImpl extends UI implements RomUpdater.RomUpdaterListener,
                 mActivity.startActivity(new Intent(mActivity, GooActivity.class));
             }
         });
-        
-        Intent intent = mActivity.getIntent();
-        if (intent != null && intent.getExtras() != null && intent.getExtras().get("NOTIFICATION_ID") != null){
-            onNewIntent(mActivity, intent);
+
+        if (intent != null && intent.getExtras() != null && intent.getExtras().get("NOTIFICATION_ID") != null) {
+            if (mOnNewIntentListener != null) {
+                mOnNewIntentListener.onNewIntent(activity, intent, false);
+            }
         }
 
         if (!Constants.alarmExists(activity)) {
@@ -179,7 +190,7 @@ public class UIImpl extends UI implements RomUpdater.RomUpdaterListener,
     public void onNewIntent(Context context, Intent intent) {
 
         if (mOnNewIntentListener != null) {
-            mOnNewIntentListener.onNewIntent(context, intent);
+            mOnNewIntentListener.onNewIntent(context, intent, true);
         }
     }
 
