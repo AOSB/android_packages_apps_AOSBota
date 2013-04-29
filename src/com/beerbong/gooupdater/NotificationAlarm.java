@@ -20,12 +20,14 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 
+import com.beerbong.gooupdater.updater.GappsUpdater;
 import com.beerbong.gooupdater.updater.RomUpdater;
 import com.beerbong.gooupdater.util.Constants;
 
 public class NotificationAlarm extends BroadcastReceiver {
 
     private RomUpdater mRomUpdater;
+    private GappsUpdater mGappsUpdater;
 
     @Override
     public void onReceive(Context context, Intent intent) {
@@ -33,9 +35,13 @@ public class NotificationAlarm extends BroadcastReceiver {
         if (mRomUpdater == null) {
             mRomUpdater = new RomUpdater(context, null, true);
         }
+        if (mGappsUpdater == null) {
+            mGappsUpdater = new GappsUpdater(context, null, true);
+        }
 
         if (Constants.isNetworkAvailable(context)) {
             mRomUpdater.check();
+            mGappsUpdater.check();
         }
     }
 }

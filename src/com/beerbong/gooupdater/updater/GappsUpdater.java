@@ -47,15 +47,15 @@ public class GappsUpdater implements Updater, Updater.UpdaterListener {
     private String mName;
     private String mPlatform;
     private int mVersion;
-    private boolean mFromService;
+    private boolean mFromAlarm;
     private boolean mCanUpdate;
     private boolean mScanning;
     private boolean mCustomGapps;
 
-    public GappsUpdater(Context context, GappsUpdaterListener listener, boolean fromService) {
+    public GappsUpdater(Context context, GappsUpdaterListener listener, boolean fromAlarm) {
         mContext = context;
         mListener = listener;
-        mFromService = fromService;
+        mFromAlarm = fromAlarm;
 
         File file = new File("/system/etc/g.prop");
         mCanUpdate = file.exists();
@@ -113,7 +113,7 @@ public class GappsUpdater implements Updater, Updater.UpdaterListener {
 
     @Override
     public void onReadError(Exception ex) {
-        if (!mFromService) {
+        if (!mFromAlarm) {
             Constants.showToastOnUiThread(mContext, R.string.check_gapps_updates_error);
         }
         if (mListener != null) {
@@ -162,6 +162,9 @@ public class GappsUpdater implements Updater, Updater.UpdaterListener {
                     + getPlatform() + "&gapps_addon_version=" + getVersion());
         } else {
             mCustomGapps = true;
+            if (mFromAlarm) {
+                return;
+            }
             new URLStringReader(this).execute("http://goo.im/json2&path=" + folder);
         }
     }
@@ -178,7 +181,7 @@ public class GappsUpdater implements Updater, Updater.UpdaterListener {
             showLastGappsFound(info);
         } else {
             if (info != null && info.version > mVersion) {
-                if (!mFromService) {
+                if (!mFromAlarm) {
                     showNewGappsFound(info);
                 } else {
                     Constants.showNotification(mContext, info,
@@ -186,7 +189,7 @@ public class GappsUpdater implements Updater, Updater.UpdaterListener {
                             R.string.new_gapps_found_title, R.string.new_package_name);
                 }
             } else {
-                if (!mFromService) {
+                if (!mFromAlarm) {
                     Constants.showToastOnUiThread(mContext, R.string.check_gapps_updates_no_new);
                 }
             }
@@ -204,7 +207,7 @@ public class GappsUpdater implements Updater, Updater.UpdaterListener {
     @Override
     public void versionError(String error) {
         mScanning = false;
-        if (!mFromService) {
+        if (!mFromAlarm) {
             if (error != null) {
                 Constants.showToastOnUiThread(mContext,
                         mContext.getResources().getString(R.string.check_gapps_updates_error)
