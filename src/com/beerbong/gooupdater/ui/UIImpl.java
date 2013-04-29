@@ -34,6 +34,7 @@ import com.beerbong.gooupdater.LoginActivity;
 import com.beerbong.gooupdater.R;
 import com.beerbong.gooupdater.SettingsActivity;
 import com.beerbong.gooupdater.manager.ManagerFactory;
+import com.beerbong.gooupdater.manager.PreferencesManager;
 import com.beerbong.gooupdater.updater.GappsUpdater;
 import com.beerbong.gooupdater.updater.RomUpdater;
 import com.beerbong.gooupdater.updater.TWRPUpdater;
@@ -62,7 +63,9 @@ public class UIImpl extends UI implements RomUpdater.RomUpdaterListener,
     @Override
     public void redraw(Activity activity) {
 
-        boolean useDarkTheme = ManagerFactory.getPreferencesManager(activity).isDarkTheme();
+        PreferencesManager pManager = ManagerFactory.getPreferencesManager(activity);
+
+        boolean useDarkTheme = pManager.isDarkTheme();
         activity.setTheme(useDarkTheme ? R.style.Theme_Dark : R.style.Theme_Light);
 
         mActivity = activity;
@@ -142,6 +145,10 @@ public class UIImpl extends UI implements RomUpdater.RomUpdaterListener,
         Intent intent = mActivity.getIntent();
         if (intent != null && intent.getExtras() != null && intent.getExtras().get("NOTIFICATION_ID") != null){
             onNewIntent(mActivity, intent);
+        }
+
+        if (!Constants.alarmExists(activity)) {
+            Constants.setAlarm(mActivity, pManager.getTimeNotifications(), true);
         }
     }
 

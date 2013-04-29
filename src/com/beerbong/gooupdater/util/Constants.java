@@ -146,18 +146,22 @@ public class Constants {
     }
     
     public static void setAlarm(Context context, long time, boolean trigger) {
-        long current = System.currentTimeMillis();
 
         Intent i = new Intent(context, NotificationAlarm.class);
         i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 
         PendingIntent pi = PendingIntent
-                .getBroadcast(context, Constants.ALARM_ID, i, PendingIntent.FLAG_UPDATE_CURRENT);
+                .getBroadcast(context, ALARM_ID, i, PendingIntent.FLAG_UPDATE_CURRENT);
 
         AlarmManager am = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
         am.cancel(pi);
         if (time > 0) {
-            am.setInexactRepeating(AlarmManager.RTC_WAKEUP, trigger ? current : current + time, time, pi);
+            am.setInexactRepeating(AlarmManager.RTC_WAKEUP, trigger ? 0 : time, time, pi);
         }
+    }
+
+    public static boolean alarmExists(Context context) {
+        return (PendingIntent.getBroadcast(context, ALARM_ID, new Intent(context,
+                NotificationAlarm.class), PendingIntent.FLAG_NO_CREATE) != null);
     }
 }
