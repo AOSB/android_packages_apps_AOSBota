@@ -20,9 +20,6 @@ import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.preference.Preference;
 import android.view.View;
-import android.view.View.OnClickListener;
-import android.view.View.OnLongClickListener;
-import android.view.ViewGroup;
 import android.widget.Toast;
 
 import com.beerbong.gooupdater.GooActivity;
@@ -30,7 +27,7 @@ import com.beerbong.gooupdater.R;
 import com.beerbong.gooupdater.manager.ManagerFactory;
 import com.beerbong.gooupdater.manager.PreferencesManager;
 
-public class FolderPreference extends Preference {
+public class FolderPreference extends Preference implements View.OnLongClickListener {
 
     private GooActivity mActivity;
     private String mFolder;
@@ -43,32 +40,14 @@ public class FolderPreference extends Preference {
         mWatchlist = watchlist;
     }
 
-    protected View onCreateView(ViewGroup parent) {
-        final View layout = super.onCreateView(parent);
-
-        layout.setOnClickListener(new OnClickListener() {
-
-            @Override
-            public void onClick(View v) {
-                mActivity.onPreferenceTreeClick(null, FolderPreference.this);
-            }
-        });
-
-        layout.setOnLongClickListener(new OnLongClickListener() {
-
-            public boolean onLongClick(View v) {
-
-                if (mWatchlist) {
-                    removeWatchlist();
-                } else {
-                    addWatchlist();
-                }
-
-                return true;
-            }
-        });
-
-        return layout;
+    @Override
+    public boolean onLongClick(View v) {
+        if (mWatchlist) {
+            removeWatchlist();
+        } else {
+            addWatchlist();
+        }
+        return true;
     }
 
     private void addWatchlist() {
@@ -91,7 +70,7 @@ public class FolderPreference extends Preference {
                                             if ("".equals(str)) {
                                                 str = mFolder;
                                             } else {
-                                                str += "#-#" + mFolder;
+                                                str += PreferencesManager.WATCHLIST_SEPARATOR + mFolder;
                                             }
                                             pManager.setWatchlist(str);
                                             Toast.makeText(mActivity, R.string.watchlist_added,
@@ -133,8 +112,8 @@ public class FolderPreference extends Preference {
                                             if (str.equals(mFolder)) {
                                                 str = "";
                                             } else {
-                                                str = str.replace("#-#" + mFolder, "");
-                                                str = str.replace(mFolder + "#-#", "");
+                                                str = str.replace(PreferencesManager.WATCHLIST_SEPARATOR + mFolder, "");
+                                                str = str.replace(mFolder + PreferencesManager.WATCHLIST_SEPARATOR, "");
                                             }
                                             pManager.setWatchlist(str);
                                             Toast.makeText(mActivity, R.string.watchlist_removed,

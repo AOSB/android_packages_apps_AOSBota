@@ -32,9 +32,15 @@ import android.preference.Preference;
 import android.preference.PreferenceActivity;
 import android.preference.PreferenceCategory;
 import android.preference.PreferenceScreen;
+import android.view.View;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemLongClickListener;
+import android.widget.ListAdapter;
+import android.widget.ListView;
 import android.widget.Toast;
 
 import com.beerbong.gooupdater.manager.ManagerFactory;
+import com.beerbong.gooupdater.manager.PreferencesManager;
 import com.beerbong.gooupdater.updater.GooPackage;
 import com.beerbong.gooupdater.updater.Updater;
 import com.beerbong.gooupdater.updater.Updater.PackageInfo;
@@ -170,6 +176,22 @@ public class GooActivity extends PreferenceActivity implements URLStringReaderLi
             DIALOG.dismiss();
 
         DIALOG = null;
+        
+        ListView listView = getListView();
+        listView.setOnItemLongClickListener(new OnItemLongClickListener() {
+
+            @Override
+            public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
+                ListView listView = (ListView) parent;
+                ListAdapter listAdapter = listView.getAdapter();
+                Object obj = listAdapter.getItem(position);
+                if (obj != null && obj instanceof View.OnLongClickListener) {
+                    View.OnLongClickListener longListener = (View.OnLongClickListener) obj;
+                    return longListener.onLongClick(view);
+                }
+                return false;
+            }
+        });
     }
 
     @Override
@@ -268,7 +290,7 @@ public class GooActivity extends PreferenceActivity implements URLStringReaderLi
 
     private String[] getWatchlist() {
         String str = ManagerFactory.getPreferencesManager().getWatchlist();
-        return str.split("#-#");
+        return str.split(PreferencesManager.WATCHLIST_SEPARATOR);
     }
 
     @SuppressWarnings("deprecation")

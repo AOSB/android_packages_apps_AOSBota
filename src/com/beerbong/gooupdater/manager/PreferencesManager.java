@@ -34,6 +34,8 @@ public class PreferencesManager extends Manager {
     private static final String DEFAULT_DOWNLOAD_PATH = "/" + SDCARD + "/download/";
     private static final boolean DEFAULT_DARK_THEME = true;
 
+    public static final String WATCHLIST_SEPARATOR = "#-#";
+
     private SharedPreferences settings;
 
     protected PreferencesManager(Context context) {
