@@ -16,6 +16,8 @@
 
 package com.beerbong.gooupdater;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.preference.CheckBoxPreference;
 import android.preference.ListPreference;
@@ -23,6 +25,7 @@ import android.preference.Preference;
 import android.preference.Preference.OnPreferenceChangeListener;
 import android.preference.PreferenceActivity;
 import android.preference.PreferenceScreen;
+import android.widget.EditText;
 
 import com.beerbong.gooupdater.manager.ManagerFactory;
 import com.beerbong.gooupdater.manager.PreferencesManager;
@@ -33,6 +36,8 @@ public class SettingsActivity extends PreferenceActivity implements OnPreference
     private CheckBoxPreference mDarkTheme;
     private ListPreference mCheckTime;
     private Preference mDownloadPath;
+    private Preference mGappsFolder;
+    private Preference mGappsReset;
 
     @Override
     @SuppressWarnings("deprecation")
@@ -48,6 +53,8 @@ public class SettingsActivity extends PreferenceActivity implements OnPreference
         mDarkTheme = (CheckBoxPreference) findPreference(Constants.PREFERENCE_SETTINGS_DARK_THEME);
         mDownloadPath = findPreference(Constants.PREFERENCE_SETTINGS_DOWNLOAD_PATH);
         mCheckTime = (ListPreference) findPreference(Constants.PREFERENCE_SETTINGS_CHECK_TIME);
+        mGappsFolder = findPreference(Constants.PREFERENCE_SETTINGS_GAPPS_FOLDER);
+        mGappsReset = findPreference(Constants.PREFERENCE_SETTINGS_GAPPS_RESET);
 
         PreferencesManager pManager = ManagerFactory.getPreferencesManager();
 
@@ -75,6 +82,16 @@ public class SettingsActivity extends PreferenceActivity implements OnPreference
             ManagerFactory.getFileManager().selectDownloadPath(this);
             updateSummaries();
 
+        } else if (Constants.PREFERENCE_SETTINGS_GAPPS_FOLDER.equals(key)) {
+
+            selectGappsFolder();
+            updateSummaries();
+
+        } else if (Constants.PREFERENCE_SETTINGS_GAPPS_RESET.equals(key)) {
+
+            ManagerFactory.getPreferencesManager().setGappsFolder("");
+            updateSummaries();
+
         }
 
         return true;
@@ -97,5 +114,53 @@ public class SettingsActivity extends PreferenceActivity implements OnPreference
 
     private void updateSummaries() {
         mDownloadPath.setSummary(ManagerFactory.getPreferencesManager().getDownloadPath());
+        String folder = ManagerFactory.getPreferencesManager().getGappsFolder();
+        if (folder == null || "".equals(folder)) {
+            mGappsReset.setEnabled(false);
+            folder = getResources().getString(R.string.gapps_folder_official);
+        } else {
+            mGappsReset.setEnabled(true);
+        }
+        mGappsFolder.setSummary(folder);
+    }
+
+    public void selectGappsFolder() {
+        final PreferencesManager pManager = ManagerFactory.getPreferencesManager();
+
+        String folder = pManager.getGappsFolder();
+        if (folder == null || "".equals(folder)) {
+            folder = "/devs/";
+        }
+
+        final EditText input = new EditText(this);
+        input.setText(folder);
+        input.setSelection(folder.length());
+
+        new AlertDialog.Builder(this)
+                .setTitle(R.string.gapps_folder_alert_title)
+                .setMessage(R.string.gapps_folder_alert_summary)
+                .setView(input)
+                .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+
+                    public void onClick(DialogInterface dialog, int whichButton) {
+                        String value = input.getText().toString();
+
+                        if (value == null || "".equals(value.trim())) {
+                            pManager.setGappsFolder("");
+                        } else if (value.endsWith("/")) {
+                            value = value.substring(0, value.length() - 1);
+                        }
+
+                        pManager.setGappsFolder(value);
+                        updateSummaries();
+                        dialog.dismiss();
+                    }
+                })
+                .setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
+
+                    public void onClick(DialogInterface dialog, int whichButton) {
+                        dialog.dismiss();
+                    }
+                }).show();
     }
 }

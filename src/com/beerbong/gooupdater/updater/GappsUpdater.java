@@ -20,6 +20,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.util.Properties;
 
+import org.json.JSONArray;
 import org.json.JSONObject;
 import org.json.JSONTokener;
 
@@ -49,6 +50,7 @@ public class GappsUpdater implements Updater, Updater.UpdaterListener {
     private boolean mFromService;
     private boolean mCanUpdate;
     private boolean mScanning;
+    private boolean mCustomGapps;
 
     public GappsUpdater(Context context, GappsUpdaterListener listener, boolean fromService) {
         mContext = context;
@@ -86,8 +88,19 @@ public class GappsUpdater implements Updater, Updater.UpdaterListener {
             if ("false".equals(buffer)) {
                 info = new GooPackage(null);
             } else {
-                JSONObject result = (JSONObject) new JSONTokener(buffer).nextValue();
-                info = new GooPackage(result);
+                if (!mCustomGapps) {
+                    JSONObject result = (JSONObject) new JSONTokener(buffer).nextValue();
+                    info = new GooPackage(result);
+                } else {
+                    JSONObject object = (JSONObject) new JSONTokener(buffer).nextValue();
+                    info = new GooPackage(null);
+                    if (!object.isNull("list")) {
+                        JSONArray list = object.getJSONArray("list");
+                        if (list.length() > 0) {
+                            info = new GooPackage(list.getJSONObject(0));
+                        }
+                    }
+                }
             }
 
             versionFound(info);
@@ -142,8 +155,15 @@ public class GappsUpdater implements Updater, Updater.UpdaterListener {
     @Override
     public void searchVersion() {
         mScanning = true;
-        new URLStringReader(this).execute("http://goo.im/json2&action=gapps_update&gapps_platform="
-                + getPlatform() + "&gapps_addon_version=" + getVersion());
+        String folder = ManagerFactory.getPreferencesManager().getGappsFolder();
+        if (folder == null || "".equals(folder)) {
+            mCustomGapps = false;
+            new URLStringReader(this).execute("http://goo.im/json2&action=gapps_update&gapps_platform="
+                    + getPlatform() + "&gapps_addon_version=" + getVersion());
+        } else {
+            mCustomGapps = true;
+            new URLStringReader(this).execute("http://goo.im/json2&path=" + folder);
+        }
     }
 
     @Override
@@ -154,17 +174,21 @@ public class GappsUpdater implements Updater, Updater.UpdaterListener {
     @Override
     public void versionFound(final PackageInfo info) {
         mScanning = false;
-        if (info != null && info.version > mVersion) {
-            if (!mFromService) {
-                showNewGappsFound(info);
-            } else {
-                Constants.showNotification(mContext, info,
-                        Constants.NEWGAPPSVERSION_NOTIFICATION_ID,
-                        R.string.new_gapps_found_title, R.string.new_package_name);
-            }
+        if (mCustomGapps) {
+            showLastGappsFound(info);
         } else {
-            if (!mFromService) {
-                Constants.showToastOnUiThread(mContext, R.string.check_gapps_updates_no_new);
+            if (info != null && info.version > mVersion) {
+                if (!mFromService) {
+                    showNewGappsFound(info);
+                } else {
+                    Constants.showNotification(mContext, info,
+                            Constants.NEWGAPPSVERSION_NOTIFICATION_ID,
+                            R.string.new_gapps_found_title, R.string.new_package_name);
+                }
+            } else {
+                if (!mFromService) {
+                    Constants.showToastOnUiThread(mContext, R.string.check_gapps_updates_no_new);
+                }
             }
         }
         if (mListener != null) {
@@ -209,6 +233,52 @@ public class GappsUpdater implements Updater, Updater.UpdaterListener {
                             .setMessage(
                                     mContext.getResources().getString(
                                             R.string.new_gapps_found_summary,
+                                            new Object[] { info.filename, info.folder }))
+                            .setPositiveButton(android.R.string.ok,
+                                    new DialogInterface.OnClickListener() {
+
+                                        public void onClick(DialogInterface dialog, int whichButton) {
+                                            dialog.dismiss();
+
+                                            ((Activity) mContext).runOnUiThread(new Runnable() {
+
+                                                public void run() {
+                                                    ManagerFactory
+                                                            .getFileManager()
+                                                            .download(
+                                                                    mContext,
+                                                                    info.path,
+                                                                    info.filename,
+                                                                    info.md5,
+                                                                    Constants.DOWNLOADGAPPS_NOTIFICATION_ID);
+                                                }
+                                            });
+                                        }
+                                    })
+                            .setNegativeButton(android.R.string.cancel,
+                                    new DialogInterface.OnClickListener() {
+
+                                        public void onClick(DialogInterface dialog, int whichButton) {
+                                            dialog.dismiss();
+                                        }
+                                    }).show();
+                } catch (Exception ex) {
+                    // app closed?
+                }
+            }
+        });
+    }
+
+    private void showLastGappsFound(final PackageInfo info) {
+        ((Activity) mContext).runOnUiThread(new Runnable() {
+
+            public void run() {
+                try {
+                    new AlertDialog.Builder(mContext)
+                            .setTitle(R.string.last_gapps_found_title)
+                            .setMessage(
+                                    mContext.getResources().getString(
+                                            R.string.last_gapps_found_summary,
                                             new Object[] { info.filename, info.folder }))
                             .setPositiveButton(android.R.string.ok,
                                     new DialogInterface.OnClickListener() {

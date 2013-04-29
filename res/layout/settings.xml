@@ -41,4 +41,17 @@
             android:title="@string/download_path" />
     </PreferenceCategory>
 
+    <PreferenceCategory
+        android:key="settings_gapps"
+        android:title="@string/settings_gapps" > 
+
+        <Preference
+            android:key="gapps"
+            android:title="@string/gapps_folder" />
+
+        <Preference
+            android:key="gapps_reset"
+            android:title="@string/gapps_reset_folder" />
+    </PreferenceCategory>
+
 </PreferenceScreen>

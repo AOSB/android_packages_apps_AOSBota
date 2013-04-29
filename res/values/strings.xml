@@ -93,5 +93,15 @@
     <string name="watchlist_remove_confirm_title">Remove from watchlist</string>
     <string name="watchlist_remove_confirm">Do you want to remove the folder from the watchlist?</string>
     <string name="open_with">Open with...</string>
+    <string name="settings_gapps">Gapps</string>
+    <string name="gapps_folder">Custom Gapps url</string>
+    <string name="gapps_reset_folder">Back to official Gapps</string>
+    <string name="gapps_folder_official">Using official Gapps</string>
+    <string name="gapps_folder_alert_title">Gapps path url</string>
+    <string name="gapps_folder_alert_summary">Insert the url of the folder where the Gapps are stored. Leave blank to use the official Gapps.</string>
+    <string name="gapps_folder_select">Set as Gapps folder</string>
+    <string name="gapps_folder_selected">Folder set as Gapps url</string>
+    <string name="last_gapps_found_title">Newer Gapps package found</string>
+    <string name="last_gapps_found_summary">This is the last GApps package found. Do you want to download it now?\n\n%1$s\n%2$s\n</string>
 
 </resources>

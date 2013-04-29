@@ -81,6 +81,16 @@ public class FolderPreference extends Preference implements View.OnLongClickList
                                         }
                                     }
                                 })
+                        .setNeutralButton(R.string.gapps_folder_select,
+                                new DialogInterface.OnClickListener() {
+
+                                    public void onClick(DialogInterface dialog, int whichButton) {
+                                        ManagerFactory.getPreferencesManager().setGappsFolder(mFolder);
+                                        Toast.makeText(mActivity, R.string.gapps_folder_selected,
+                                                Toast.LENGTH_LONG).show();
+                                        dialog.dismiss();
+                                    }
+                                })
                         .setNegativeButton(android.R.string.cancel,
                                 new DialogInterface.OnClickListener() {
 
