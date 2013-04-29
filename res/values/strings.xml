@@ -52,9 +52,6 @@
     <string name="download_alert_error">Please specify the path to save the downloads</string>
     <string name="download_cancel_title">Cancel download</string>
     <string name="download_cancel_message">Do you want to cancel the current download?</string>
-    <string name="alert_md5_loading">Generating MD5 sum&#8230;</string>
-    <string name="alert_md5_match">The specified MD5 sum is correct</string>
-    <string name="alert_md5_no_match">The MD5 sums does not match:\nSpecified: %1$s\nGenerated: %2$s</string>
     <string name="goo_browse">Browse Goo.im</string>
     <string name="goo_browse_all_compatible">Browse compatible ROMs</string>
     <string name="goo_browse_all">Browse all files</string>
@@ -71,7 +68,6 @@
     <string name="settings_theme_summary">Use dark them instead of Holo</string>
     <string name="settings_update">Updates</string>
     <string name="download_path">Download path</string>
-    <string name="time_notifications_title">Notifications time</string>
     <string name="time_notifications_summary">Time between each search for ROM updates</string>
     <string name="time_notifications_never">Don\'t check</string>
     <string name="time_notifications_half_an_hour">Half an hour</string>
