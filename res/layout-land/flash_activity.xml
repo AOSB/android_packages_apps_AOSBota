@@ -21,8 +21,10 @@
 
     <LinearLayout
         android:id="@+id/policy_header"
-        android:layout_width="match_parent"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:layout_gravity="left"
         android:orientation="vertical" >
 
         <Button 
@@ -48,10 +50,20 @@
         
     </LinearLayout>
 
-    <com.beerbong.gooupdater.widget.TouchInterceptor
-        android:id="@+id/file_list"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content" >
-    </com.beerbong.gooupdater.widget.TouchInterceptor>
+    <LinearLayout
+        android:id="@+id/policy_header2"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:layout_gravity="right"
+        android:orientation="vertical" >
+
+	    <com.beerbong.gooupdater.widget.TouchInterceptor
+	        android:id="@+id/file_list"
+	        android:layout_width="match_parent"
+	        android:layout_height="wrap_content" >
+	    </com.beerbong.gooupdater.widget.TouchInterceptor>
+
+	</LinearLayout>
 
 </LinearLayout>

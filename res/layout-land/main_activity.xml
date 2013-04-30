@@ -102,13 +102,6 @@
         </Button>
 
         <Button 
-            android:text="@string/goo_browse" 
-            android:id="@+id/button_browse"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-        </Button>
-
-        <Button 
             android:text="@string/flash_queue" 
             android:id="@+id/button_flashqueue"
             android:layout_width="match_parent"
