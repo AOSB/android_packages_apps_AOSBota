@@ -23,7 +23,7 @@ import com.beerbong.otaplatform.R;
 
 public class InstallOptionsCursor extends AbstractCursor {
 
-    private static final String[] INSTALL_OPTIONS = {"WIPEDATA", "WIPECACHES"};
+    private static final String[] INSTALL_OPTIONS = {"BACKUP", "WIPEDATA", "WIPECACHES"};
     private static final String[] COLUMN_NAMES = { "_id", "TEXT", "CHECKED" };
 
     private String[] mOption;
@@ -101,21 +101,15 @@ public class InstallOptionsCursor extends AbstractCursor {
     }
 
     public boolean isWipeData() {
-        for (int i = 0; i < getCount(); i++) {
-            if ("WIPEDATA".equals(mOption[i])) {
-                return mChecked[i] == 1;
-            }
-        }
-        return false;
+        return isOption("WIPEDATA");
     }
 
     public boolean isWipeCaches() {
-        for (int i = 0; i < getCount(); i++) {
-            if ("WIPECACHES".equals(mOption[i])) {
-                return mChecked[i] == 1;
-            }
-        }
-        return false;
+        return isOption("WIPECACHES");
+    }
+
+    public boolean isBackup() {
+        return isOption("BACKUP");
     }
 
     public String getIsCheckedColumn() {
@@ -126,8 +120,19 @@ public class InstallOptionsCursor extends AbstractCursor {
         return "TEXT";
     }
 
+    private boolean isOption(String option) {
+        for (int i = 0; i < getCount(); i++) {
+            if (option.equals(mOption[i])) {
+                return mChecked[i] == 1;
+            }
+        }
+        return false;
+    }
+
     private int getText(String option) {
-        if ("WIPEDATA".equals(option)) {
+        if ("BACKUP".equals(option)) {
+            return R.string.backup;
+        } else if ("WIPEDATA".equals(option)) {
             return R.string.wipe_data;
         } else if ("WIPECACHES".equals(option)) {
             return R.string.wipe_caches;

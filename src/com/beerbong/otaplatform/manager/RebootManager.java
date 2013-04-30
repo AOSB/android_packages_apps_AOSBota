@@ -23,6 +23,7 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.os.PowerManager;
+import android.widget.EditText;
 
 import com.beerbong.otaplatform.R;
 import com.beerbong.otaplatform.util.Constants;
@@ -36,7 +37,39 @@ public class RebootManager extends Manager {
         mContext = context;
     }
 
-    public void showRebootDialog(Context context) {
+    private void showBackupDialog(final Context context, final boolean wipeData, final boolean wipeCaches) {
+
+        AlertDialog.Builder alert = new AlertDialog.Builder(context);
+        alert.setTitle(R.string.alert_backup_title);
+        alert.setMessage(R.string.alert_backup_message);
+
+        final EditText input = new EditText(context);
+        alert.setView(input);
+        input.setText(Constants.getDateAndTime());
+        input.selectAll();
+
+        alert.setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+
+            public void onClick(DialogInterface dialog, int whichButton) {
+                dialog.dismiss();
+
+                String text = input.getText().toString();
+                text = text.replace(" ", "");
+
+                reboot(wipeData, wipeCaches, text);
+            }
+        });
+
+        alert.setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
+
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+            }
+        });
+        alert.show();
+    }
+
+    public void showRebootDialog(final Context context) {
 
         if (ManagerFactory.getPreferencesManager().getFlashQueueSize() == 0)
             return;
@@ -61,7 +94,11 @@ public class RebootManager extends Manager {
             public void onClick(DialogInterface dialog, int whichButton) {
                 dialog.dismiss();
 
-                reboot(cursor.isWipeData(), cursor.isWipeCaches());
+                if (cursor.isBackup()) {
+                    showBackupDialog(context, cursor.isWipeData(), cursor.isWipeCaches());
+                } else {
+                    reboot(cursor.isWipeData(), cursor.isWipeCaches(), null);
+                }
 
             }
         });
@@ -75,7 +112,7 @@ public class RebootManager extends Manager {
         alert.show();
     }
 
-    private void reboot(final boolean wipeData, final boolean wipeCaches) {
+    private void reboot(final boolean wipeData, final boolean wipeCaches, String backupFolder) {
 
         try {
 
@@ -90,7 +127,7 @@ public class RebootManager extends Manager {
 
             String file = manager.getCommandsFile();
 
-            String[] commands = manager.getCommands(wipeData, wipeCaches);
+            String[] commands = manager.getCommands(wipeData, wipeCaches, backupFolder);
             if (commands != null) {
                 int size = commands.length, i = 0;
                 for (; i < size; i++) {

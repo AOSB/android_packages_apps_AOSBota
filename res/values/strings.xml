@@ -135,7 +135,10 @@
     <string name="sdcard_alert_error">Please specify the storage name</string>
     <string name="wipe_data">Wipe Data</string>
     <string name="wipe_caches">Wipe Cache &amp; Dalvik</string>
+    <string name="backup">Backup</string>
     <string name="alert_reboot_title">Select actions and install</string>
     <string name="alert_reboot_now">Install now</string>
+    <string name="alert_backup_title">Backup</string>
+    <string name="alert_backup_message">Specify the backup name (spaces will be removed).</string>
 
 </resources>

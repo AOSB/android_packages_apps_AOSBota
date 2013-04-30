@@ -23,6 +23,8 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.math.BigInteger;
 import java.security.MessageDigest;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 import android.app.Activity;
 import android.app.AlarmManager;
@@ -69,6 +71,12 @@ public class Constants {
     private static final long T = G * K;
 
     private static int isSystemApp = -1;
+
+    private static final SimpleDateFormat SDF = new SimpleDateFormat("yyyy-MM-dd.HH.mm.ss");
+
+    public static String getDateAndTime() {
+        return SDF.format(new Date(System.currentTimeMillis()));
+    }
 
     public static String getProperty(String prop) {
         try {

@@ -107,6 +107,30 @@ public class RecoveryManager extends Manager {
                 }).show();
     }
 
+    public String getBackupDir(boolean force) {
+
+        RecoveryInfo info = getRecovery();
+
+        String sdcard = "sdcard";
+        String str = "";
+
+        switch (info.getId()) {
+            case R.id.twrp:
+                File f = new File("/" + sdcard + "/TWRP/BACKUPS/");
+                if (f.exists()) {
+                    File[] fs = f.listFiles();
+                    str += fs[0].getName() + "/";
+                }
+                break;
+            default:
+                if (force) {
+                    str = "/" + sdcard + "/clockworkmod/backup/";
+                }
+                break;
+        }
+        return str;
+    }
+
     public void selectSdcard(final Activity activity, final boolean internal) {
         final PreferencesManager pManager = ManagerFactory.getPreferencesManager();
 
@@ -183,7 +207,7 @@ public class RecoveryManager extends Manager {
         }
     }
 
-    public String[] getCommands(boolean wipeData, boolean wipeCaches) throws Exception {
+    public String[] getCommands(boolean wipeData, boolean wipeCaches, String backupFolder) throws Exception {
         List<String> commands = new ArrayList<String>();
 
         List<FileItem> items = ManagerFactory.getFileManager().getFileItems();
@@ -202,6 +226,12 @@ public class RecoveryManager extends Manager {
                         + mContext.getPackageManager().getPackageInfo(mContext.getPackageName(), 0).versionName
                         + "\");");
                 commands.add("ui_print(\"-------------------------------------\");");
+
+                if (backupFolder != null) {
+                    commands.add("ui_print(\" Backup ROM\");");
+                    commands.add("backup_rom(\"/" + internalStorage + "/clockworkmod/backup/"
+                            + backupFolder + "\");");
+                }
 
                 if (wipeData) {
                     commands.add("ui_print(\" Wiping data\");");
@@ -230,6 +260,19 @@ public class RecoveryManager extends Manager {
                 break;
 
             case R.id.twrp:
+
+                String sdcard = "sdcard";
+
+                if (backupFolder != null) {
+                    String str = "backup SDCR123B";
+                    if (folderExists("/" + sdcard + "/.android-secure")) {
+                        str += "A";
+                    }
+                    if (folderExists("/sd-ext")) {
+                        str += "E";
+                    }
+                    commands.add(str + "O " + backupFolder);
+                }
 
                 if (wipeData) {
                     commands.add("wipe data");
@@ -317,5 +360,10 @@ public class RecoveryManager extends Manager {
                     break;
             }
         }
+    }
+
+    private boolean folderExists(String path) {
+        File f = new File(path);
+        return f.exists() && f.isDirectory();
     }
 }
