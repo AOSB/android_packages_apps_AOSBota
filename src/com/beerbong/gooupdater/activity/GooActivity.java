@@ -47,9 +47,9 @@ import com.beerbong.gooupdater.updater.GooPackage;
 import com.beerbong.gooupdater.updater.Updater;
 import com.beerbong.gooupdater.updater.Updater.PackageInfo;
 import com.beerbong.gooupdater.util.Constants;
-import com.beerbong.gooupdater.util.FolderPreference;
 import com.beerbong.gooupdater.util.URLStringReader;
 import com.beerbong.gooupdater.util.URLStringReader.URLStringReaderListener;
+import com.beerbong.gooupdater.widget.FolderPreference;
 
 public class GooActivity extends PreferenceActivity implements URLStringReaderListener {
 
@@ -292,7 +292,7 @@ public class GooActivity extends PreferenceActivity implements URLStringReaderLi
 
     private String[] getWatchlist() {
         String str = ManagerFactory.getPreferencesManager().getWatchlist();
-        return str.split(PreferencesManager.WATCHLIST_SEPARATOR);
+        return str.split(PreferencesManager.SEPARATOR);
     }
 
     @SuppressWarnings("deprecation")

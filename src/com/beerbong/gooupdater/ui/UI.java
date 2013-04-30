@@ -40,7 +40,7 @@ public abstract class UI {
 
     public interface OnNewIntentListener {
 
-        public boolean onNewIntent(Context context, Intent intent, boolean preRedraw);
+        public void onNewIntent(Context context, Intent intent);
     }
 
     public abstract void redraw(Activity activity);
@@ -52,4 +52,6 @@ public abstract class UI {
     public abstract void setOnNewIntentListener(OnNewIntentListener listener);
 
     public abstract void onNewIntent(Context context, Intent intent);
+
+    public abstract void onListChanged();
 }

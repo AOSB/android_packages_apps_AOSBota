@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.beerbong.gooupdater.util;
+package com.beerbong.gooupdater.widget;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
@@ -70,7 +70,7 @@ public class FolderPreference extends Preference implements View.OnLongClickList
                                             if ("".equals(str)) {
                                                 str = mFolder;
                                             } else {
-                                                str += PreferencesManager.WATCHLIST_SEPARATOR + mFolder;
+                                                str += PreferencesManager.SEPARATOR + mFolder;
                                             }
                                             pManager.setWatchlist(str);
                                             Toast.makeText(mActivity, R.string.watchlist_added,
@@ -122,8 +122,8 @@ public class FolderPreference extends Preference implements View.OnLongClickList
                                             if (str.equals(mFolder)) {
                                                 str = "";
                                             } else {
-                                                str = str.replace(PreferencesManager.WATCHLIST_SEPARATOR + mFolder, "");
-                                                str = str.replace(mFolder + PreferencesManager.WATCHLIST_SEPARATOR, "");
+                                                str = str.replace(PreferencesManager.SEPARATOR + mFolder, "");
+                                                str = str.replace(mFolder + PreferencesManager.SEPARATOR, "");
                                             }
                                             pManager.setWatchlist(str);
                                             Toast.makeText(mActivity, R.string.watchlist_removed,

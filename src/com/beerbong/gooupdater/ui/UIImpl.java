@@ -29,6 +29,7 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import com.beerbong.gooupdater.R;
+import com.beerbong.gooupdater.activity.FlashActivity;
 import com.beerbong.gooupdater.activity.GooActivity;
 import com.beerbong.gooupdater.activity.LoginActivity;
 import com.beerbong.gooupdater.activity.SettingsActivity;
@@ -54,6 +55,7 @@ public class UIImpl extends UI implements RomUpdater.RomUpdaterListener,
     private Button mButtonCheckRom;
     private Button mButtonCheckGapps;
     private Button mButtonCheckTwrp;
+    private Button mButtonFlashQueue;
 
     protected UIImpl(Activity activity) {
 
@@ -62,16 +64,6 @@ public class UIImpl extends UI implements RomUpdater.RomUpdaterListener,
 
     @Override
     public void redraw(Activity activity) {
-
-        Intent intent = activity.getIntent();
-        if (intent != null && intent.getExtras() != null && intent.getExtras().get("NOTIFICATION_ID") != null) {
-            if (mOnNewIntentListener != null) {
-                if (!mOnNewIntentListener.onNewIntent(activity, intent, true)) {
-                    activity.finish();
-                    return;
-                }
-            }
-        }
 
         PreferencesManager pManager = ManagerFactory.getPreferencesManager(activity);
 
@@ -83,7 +75,7 @@ public class UIImpl extends UI implements RomUpdater.RomUpdaterListener,
         TextView romHeader = null;
         TextView devHeader = null;
         TextView versionHeader = null;
-        
+
         mActivity.setContentView(R.layout.main_activity);
 
         mRomUpdater = new RomUpdater(mActivity, this, false);
@@ -101,6 +93,7 @@ public class UIImpl extends UI implements RomUpdater.RomUpdaterListener,
         mButtonCheckRom = (Button) mActivity.findViewById(R.id.button_checkupdates);
         mButtonCheckGapps = (Button) mActivity.findViewById(R.id.button_checkupdatesgapps);
         mButtonCheckTwrp = (Button) mActivity.findViewById(R.id.button_checkupdatestwrp);
+        mButtonFlashQueue = (Button) mActivity.findViewById(R.id.button_flashqueue);
 
         romHeader.setText(romCanUpdate ? mRomUpdater.getRomName() : mActivity.getResources()
                 .getString(R.string.not_available));
@@ -141,15 +134,31 @@ public class UIImpl extends UI implements RomUpdater.RomUpdaterListener,
             }
         });
 
-        if (intent != null && intent.getExtras() != null && intent.getExtras().get("NOTIFICATION_ID") != null) {
+        mButtonFlashQueue.setOnClickListener(new OnClickListener() {
+
+            @Override
+            public void onClick(View v) {
+                mActivity.startActivity(new Intent(mActivity, FlashActivity.class));
+            }
+        });
+        updateFlashQueueText();
+
+        Intent intent = activity.getIntent();
+        if (intent != null && intent.getExtras() != null
+                && intent.getExtras().get("NOTIFICATION_ID") != null) {
             if (mOnNewIntentListener != null) {
-                mOnNewIntentListener.onNewIntent(activity, intent, false);
+                mOnNewIntentListener.onNewIntent(activity, intent);
             }
         }
 
         if (!Constants.alarmExists(activity)) {
             Constants.setAlarm(mActivity, pManager.getTimeNotifications(), true);
         }
+    }
+
+    @Override
+    public void onListChanged() {
+        updateFlashQueueText();
     }
 
     private void checkRom() {
@@ -179,7 +188,7 @@ public class UIImpl extends UI implements RomUpdater.RomUpdaterListener,
     public void onNewIntent(Context context, Intent intent) {
 
         if (mOnNewIntentListener != null) {
-            mOnNewIntentListener.onNewIntent(context, intent, true);
+            mOnNewIntentListener.onNewIntent(context, intent);
         }
     }
 
@@ -241,5 +250,12 @@ public class UIImpl extends UI implements RomUpdater.RomUpdaterListener,
         }
 
         return true;
+    }
+
+    private void updateFlashQueueText() {
+        mButtonFlashQueue.setText(mActivity.getResources().getString(
+                R.string.flash_queue_number,
+                new Object[] { String.valueOf(ManagerFactory.getPreferencesManager()
+                        .getFlashQueueSize()) }));
     }
 }

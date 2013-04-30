@@ -32,6 +32,9 @@ import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.ApplicationInfo;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
 import android.content.res.Resources;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
@@ -40,7 +43,7 @@ import android.widget.Toast;
 import com.beerbong.gooupdater.MainActivity;
 import com.beerbong.gooupdater.NotificationAlarm;
 import com.beerbong.gooupdater.R;
-import com.beerbong.gooupdater.updater.Updater.PackageInfo;
+import com.beerbong.gooupdater.updater.Updater;
 
 public class Constants {
 
@@ -56,6 +59,16 @@ public class Constants {
     public static final String PREFERENCE_SETTINGS_CHECK_TIME = "checktime";
     public static final String PREFERENCE_SETTINGS_GAPPS_FOLDER = "gapps";
     public static final String PREFERENCE_SETTINGS_GAPPS_RESET = "gapps_reset";
+    public static final String PREFERENCE_SETTINGS_RECOVERY = "recovery";
+    public static final String PREFERENCE_SETTINGS_INTERNAL_SDCARD = "internalsdcard";
+    public static final String PREFERENCE_SETTINGS_EXTERNAL_SDCARD = "externalsdcard";
+
+    private static final long K = 1024;
+    private static final long M = K * K;
+    private static final long G = M * K;
+    private static final long T = G * K;
+
+    private static int isSystemApp = -1;
 
     public static String getProperty(String prop) {
         try {
@@ -89,7 +102,7 @@ public class Constants {
         });
     }
 
-    public static void showNotification(Context context, PackageInfo info, int notificationId,
+    public static void showNotification(Context context, Updater.PackageInfo info, int notificationId,
             int resourceTitle, int resourceText) {
         Resources resources = context.getResources();
 
@@ -165,5 +178,38 @@ public class Constants {
     public static boolean alarmExists(Context context) {
         return (PendingIntent.getBroadcast(context, ALARM_ID, new Intent(context,
                 NotificationAlarm.class), PendingIntent.FLAG_NO_CREATE) != null);
+    }
+
+    public static String formatSize(final long value) {
+        final long[] dividers = new long[] { T, G, M, K, 1 };
+        final String[] units = new String[] { "TB", "GB", "MB", "KB", "B" };
+        if (value < 1)
+            throw new IllegalArgumentException("Invalid file size: " + value);
+        String result = null;
+        for (int i = 0; i < dividers.length; i++) {
+            final long divider = dividers[i];
+            if (value >= divider) {
+                result = format(value, divider, units[i]);
+                break;
+            }
+        }
+        return result;
+    }
+
+    private static String format(final long value, final long divider, final String unit) {
+        final double result = divider > 1 ? (double) value / (double) divider : (double) value;
+        return String.format("%.1f %s", Double.valueOf(result), unit);
+    }
+
+    public static boolean isSystemApp(Context context) throws Exception {
+        if (isSystemApp > -1) {
+            return isSystemApp == 1;
+        }
+        PackageManager pm = context.getPackageManager();
+        PackageInfo info = pm.getPackageInfo("com.beerbong.gooupdater", PackageManager.GET_ACTIVITIES);
+        ApplicationInfo aInfo = info.applicationInfo;
+        String path = aInfo.sourceDir.substring(0, aInfo.sourceDir.lastIndexOf("/"));
+        isSystemApp = path.contains("system/app") ? 1 : 0;
+        return isSystemApp == 1;
     }
 }

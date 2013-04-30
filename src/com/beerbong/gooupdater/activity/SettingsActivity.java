@@ -31,6 +31,7 @@ import com.beerbong.gooupdater.R;
 import com.beerbong.gooupdater.manager.ManagerFactory;
 import com.beerbong.gooupdater.manager.PreferencesManager;
 import com.beerbong.gooupdater.util.Constants;
+import com.beerbong.gooupdater.util.RecoveryInfo;
 
 public class SettingsActivity extends PreferenceActivity implements OnPreferenceChangeListener {
 
@@ -39,6 +40,9 @@ public class SettingsActivity extends PreferenceActivity implements OnPreference
     private Preference mDownloadPath;
     private Preference mGappsFolder;
     private Preference mGappsReset;
+    private Preference mRecovery;
+    private Preference mInternalSdcard;
+    private Preference mExternalSdcard;
 
     @Override
     @SuppressWarnings("deprecation")
@@ -56,6 +60,9 @@ public class SettingsActivity extends PreferenceActivity implements OnPreference
         mCheckTime = (ListPreference) findPreference(Constants.PREFERENCE_SETTINGS_CHECK_TIME);
         mGappsFolder = findPreference(Constants.PREFERENCE_SETTINGS_GAPPS_FOLDER);
         mGappsReset = findPreference(Constants.PREFERENCE_SETTINGS_GAPPS_RESET);
+        mRecovery = findPreference(Constants.PREFERENCE_SETTINGS_RECOVERY);
+        mInternalSdcard = findPreference(Constants.PREFERENCE_SETTINGS_INTERNAL_SDCARD);
+        mExternalSdcard = findPreference(Constants.PREFERENCE_SETTINGS_EXTERNAL_SDCARD);
 
         PreferencesManager pManager = ManagerFactory.getPreferencesManager();
 
@@ -63,6 +70,10 @@ public class SettingsActivity extends PreferenceActivity implements OnPreference
         mCheckTime.setOnPreferenceChangeListener(this);
 
         mDarkTheme.setChecked(pManager.isDarkTheme());
+        
+        if (!ManagerFactory.getFileManager().hasExternalStorage()) {
+            getPreferenceScreen().removePreference(mExternalSdcard);
+        }
 
         updateSummaries();
     }
@@ -93,6 +104,21 @@ public class SettingsActivity extends PreferenceActivity implements OnPreference
             ManagerFactory.getPreferencesManager().setGappsFolder("");
             updateSummaries();
 
+        } else if (Constants.PREFERENCE_SETTINGS_RECOVERY.equals(key)) {
+
+            ManagerFactory.getRecoveryManager().selectRecovery(this);
+            updateSummaries();
+
+        } else if (Constants.PREFERENCE_SETTINGS_INTERNAL_SDCARD.equals(key)) {
+
+            ManagerFactory.getRecoveryManager().selectSdcard(this, true);
+            updateSummaries();
+
+        } else if (Constants.PREFERENCE_SETTINGS_EXTERNAL_SDCARD.equals(key)) {
+
+            ManagerFactory.getRecoveryManager().selectSdcard(this, false);
+            updateSummaries();
+
         }
 
         return true;
@@ -114,7 +140,8 @@ public class SettingsActivity extends PreferenceActivity implements OnPreference
     }
 
     private void updateSummaries() {
-        mDownloadPath.setSummary(ManagerFactory.getPreferencesManager().getDownloadPath());
+        PreferencesManager pManager = ManagerFactory.getPreferencesManager();
+        mDownloadPath.setSummary(pManager.getDownloadPath());
         String folder = ManagerFactory.getPreferencesManager().getGappsFolder();
         if (folder == null || "".equals(folder)) {
             mGappsReset.setEnabled(false);
@@ -123,6 +150,13 @@ public class SettingsActivity extends PreferenceActivity implements OnPreference
             mGappsReset.setEnabled(true);
         }
         mGappsFolder.setSummary(folder);
+        RecoveryInfo info = ManagerFactory.getRecoveryManager().getRecovery();
+        mRecovery.setSummary(getResources().getText(R.string.recovery_summary) + " ("
+                + info.getName() + ")");
+        mInternalSdcard.setSummary(getResources().getText(R.string.internalsdcard_summary) + " ("
+                + pManager.getInternalStorage() + ")");
+        mExternalSdcard.setSummary(getResources().getText(R.string.externalsdcard_summary) + " ("
+                + pManager.getExternalStorage() + ")");
     }
 
     public void selectGappsFolder() {

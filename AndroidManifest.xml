@@ -31,6 +31,7 @@
         <activity android:name="com.beerbong.gooupdater.activity.GooActivity" />
         <activity android:name="com.beerbong.gooupdater.activity.LoginActivity" />
         <activity android:name="com.beerbong.gooupdater.activity.SettingsActivity" />
+        <activity android:name="com.beerbong.gooupdater.activity.FlashActivity" />
 
         <receiver android:name="com.beerbong.gooupdater.NotificationAlarm" />
         <receiver

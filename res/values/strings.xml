@@ -93,7 +93,6 @@
     <string name="watchlist_add_confirm">Do you want to add the folder to the watchlist?</string>
     <string name="watchlist_remove_confirm_title">Remove from watchlist</string>
     <string name="watchlist_remove_confirm">Do you want to remove the folder from the watchlist?</string>
-    <string name="open_with">Open with...</string>
     <string name="settings_gapps">Gapps</string>
     <string name="gapps_folder">Custom Gapps url</string>
     <string name="gapps_reset_folder">Back to official Gapps</string>
@@ -104,5 +103,39 @@
     <string name="gapps_folder_selected">Folder set as Gapps url</string>
     <string name="last_gapps_found_title">Newer Gapps package found</string>
     <string name="last_gapps_found_summary">This is the last GApps package found. Do you want to download it now?\n\n%1$s\n%2$s\n</string>
+    <string name="flash_queue">Flash queue</string>
+    <string name="flash_queue_number">Flash queue (%1$s)</string>
+    <string name="flash_now">Install now</string>
+    <string name="add_zip">Add zip</string>
+    <string name="clear_queue">Clear queue</string>
+    <string name="alert_file_title">%1$s</string>
+    <string name="alert_file_summary">Path: %1$s\nSize: %2$s\nModified: %3$s</string>
+    <string name="alert_file_delete">Delete from list</string>
+    <string name="install_file_manager_error">No application found to pick the zip file. Please install a file manager.</string>
+    <string name="install_file_manager_invalid_zip">Invalid ZIP file.</string>
+    <string name="install_file_manager_not_found_zip">Not found item deleted from list.</string>
+    <string name="install_file_manager_zip_added">Zip added to the flash queue</string>
+    <string name="recovery_change_alert_title">Recovery found</string>
+    <string name="recovery_change_alert_message">%1$s recovery folder found. Do you want to configure it as default?</string>
+    <string name="recovery_changed">Recovery %1$s configured.</string>
+    <string name="recovery_cwm">CWM-based</string>
+    <string name="recovery_4ext">4EXT</string>
+    <string name="recovery_twrp">TWRP</string>
+    <string name="recovery_title">Select recovery</string>
+    <string name="recovery_summary">Select the recovery intalled in your device</string>
+    <string name="recovery_alert_title">Select recovery</string>
+    <string name="recovery_alert_summary">Specify the recovery you are using</string>
+    <string name="settings_recovery">Recovery</string>
+    <string name="internalsdcard_title">Internal storage path</string>
+    <string name="internalsdcard_summary">Specify the internal storage path used by the recovery</string>
+    <string name="externalsdcard_title">External storage path</string>
+    <string name="externalsdcard_summary">Specify the external storage path used by the recovery</string>
+    <string name="sdcard_alert_title">Storage path</string>
+    <string name="sdcard_alert_summary">Specify the storage name</string>
+    <string name="sdcard_alert_error">Please specify the storage name</string>
+    <string name="wipe_data">Wipe Data</string>
+    <string name="wipe_caches">Wipe Cache &amp; Dalvik</string>
+    <string name="alert_reboot_title">Select actions and install</string>
+    <string name="alert_reboot_now">Install now</string>
 
 </resources>

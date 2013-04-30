@@ -24,12 +24,16 @@ public class ManagerFactory {
     private static FileManager mFileManager;
     private static PreferencesManager mPreferencesManager;
     private static SUManager mSUManager;
+    private static RecoveryManager mRecoveryManager;
+    private static RebootManager mRebootManager;
 
     public static void start(Activity mActivity) {
         mFileManager = new FileManager(mActivity);
         if (mPreferencesManager == null)
             mPreferencesManager = new PreferencesManager(mActivity);
         mSUManager = new SUManager(mActivity);
+        mRecoveryManager = new RecoveryManager(mActivity);
+        mRebootManager = new RebootManager(mActivity);
     }
 
     public static FileManager getFileManager() {
@@ -54,5 +58,13 @@ public class ManagerFactory {
 
     public static SUManager getSUManager() {
         return mSUManager;
+    }
+
+    public static RecoveryManager getRecoveryManager() {
+        return mRecoveryManager;
+    }
+
+    public static RebootManager getRebootManager() {
+        return mRebootManager;
     }
 }

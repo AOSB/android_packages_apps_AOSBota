@@ -16,6 +16,10 @@
 
 package com.beerbong.gooupdater.manager;
 
+import java.util.List;
+
+import com.beerbong.gooupdater.util.FileItem;
+
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
@@ -30,12 +34,19 @@ public class PreferencesManager extends Manager {
     private static final String PROPERTY_LOGIN = "login";
     private static final String PROPERTY_WATCHLIST = "watchlist";
     private static final String PROPERTY_GAPPS = "gapps";
+    private static final String PROPERTY_QUEUE = "queue";
+    private static final String PROPERTY_INTERNAL_STORAGE = "internal-storage";
+    private static final String PROPERTY_EXTERNAL_STORAGE = "external-storage";
+    private static final String PROPERTY_RECOVERY = "recovery";
 
     private static final String DEFAULT_TIME_NOTIFICATIONS = "3600000"; // an hour
     private static final String DEFAULT_DOWNLOAD_PATH = "/" + SDCARD + "/download/";
+    private static final String DEFAULT_RECOVERY = "cwmbased";
+    private static final String DEFAULT_INTERNAL_STORAGE = "emmc";
+    private static final String DEFAULT_EXTERNAL_STORAGE = "sdcard";
     private static final boolean DEFAULT_DARK_THEME = true;
 
-    public static final String WATCHLIST_SEPARATOR = "#-#";
+    public static final String SEPARATOR = "#-#";
 
     private SharedPreferences settings;
 
@@ -93,6 +104,85 @@ public class PreferencesManager extends Manager {
 
     public void setGappsFolder(String value) {
         savePreference(PROPERTY_GAPPS, value);
+    }
+
+    public String[] getFlashQueue() {
+        String queue = settings.getString(PROPERTY_QUEUE, "");
+        return queue.equals("") ? new String[0] : queue.split(SEPARATOR);
+    }
+
+    public void addFlashQueue(String value) {
+        String queue = settings.getString(PROPERTY_QUEUE, "");
+        if (queue.indexOf(value) >= 0) {
+            return;
+        }
+        if ("".equals(queue)) {
+            queue = value;
+        } else {
+            queue += SEPARATOR + value;
+        }
+        savePreference(PROPERTY_QUEUE, queue);
+    }
+
+    public void removeFlashQueue(String value) {
+        String queue = settings.getString(PROPERTY_QUEUE, "");
+        if (queue.indexOf(value) < 0) {
+            return;
+        }
+        if (!"".equals(queue)) {
+            if (queue.equals(value)) {
+                queue = "";
+            } else {
+                queue = queue.replace(SEPARATOR + value, "");
+                queue = queue.replace(value + SEPARATOR, "");
+            }
+        }
+        savePreference(PROPERTY_QUEUE, queue);
+    }
+
+    public int getFlashQueueSize() {
+        return getFlashQueue().length;
+    }
+
+    public void setFlashQueue(List<FileItem> items) {
+        String queue = "";
+        if (items != null) {
+            for (FileItem item : items) {
+                queue += item.toString();
+                if (!item.equals(items.get(items.size() - 1))) {
+                    queue += SEPARATOR;
+                }
+            }
+        }
+        savePreference(PROPERTY_QUEUE, queue);
+    }
+
+    public String getInternalStorage() {
+        return settings.getString(PROPERTY_INTERNAL_STORAGE, DEFAULT_INTERNAL_STORAGE);
+    }
+
+    public void setInternalStorage(String value) {
+        savePreference(PROPERTY_INTERNAL_STORAGE, value);
+    }
+
+    public String getExternalStorage() {
+        return settings.getString(PROPERTY_EXTERNAL_STORAGE, DEFAULT_EXTERNAL_STORAGE);
+    }
+
+    public void setExternalStorage(String value) {
+        savePreference(PROPERTY_EXTERNAL_STORAGE, value);
+    }
+
+    public boolean existsRecovery() {
+        return settings.contains(PROPERTY_RECOVERY);
+    }
+
+    public String getRecovery() {
+        return settings.getString(PROPERTY_RECOVERY, DEFAULT_RECOVERY);
+    }
+
+    public void setRecovery(String value) {
+        savePreference(PROPERTY_RECOVERY, value);
     }
 
     private void savePreference(String preference, String value) {

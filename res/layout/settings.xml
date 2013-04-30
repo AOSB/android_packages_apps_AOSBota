@@ -54,4 +54,23 @@
             android:title="@string/gapps_reset_folder" />
     </PreferenceCategory>
 
+    <PreferenceCategory android:title="@string/settings_recovery" >
+
+        <Preference
+            android:key="recovery"
+            android:summary="@string/recovery_summary"
+            android:title="@string/recovery_title" />
+
+        <Preference
+            android:key="internalsdcard"
+            android:summary="@string/internalsdcard_summary"
+            android:title="@string/internalsdcard_title" />
+
+        <Preference
+            android:key="externalsdcard"
+            android:summary="@string/externalsdcard_summary"
+            android:title="@string/externalsdcard_title" />
+
+    </PreferenceCategory>
+
 </PreferenceScreen>

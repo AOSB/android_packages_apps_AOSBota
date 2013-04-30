@@ -21,6 +21,9 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Scanner;
 
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -31,22 +34,27 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.Resources;
-import android.net.Uri;
 import android.os.AsyncTask.Status;
 import android.os.Bundle;
+import android.os.Environment;
 import android.text.TextUtils;
 import android.widget.EditText;
 import android.widget.Toast;
 
 import com.beerbong.gooupdater.MainActivity;
 import com.beerbong.gooupdater.R;
+import com.beerbong.gooupdater.activity.FlashActivity;
 import com.beerbong.gooupdater.ui.UI;
 import com.beerbong.gooupdater.util.Constants;
 import com.beerbong.gooupdater.util.DownloadTask;
 import com.beerbong.gooupdater.util.DownloadTask.DownloadTaskListener;
+import com.beerbong.gooupdater.util.FileItem;
 
 public class FileManager extends Manager implements UI.OnNewIntentListener {
 
+    private List<FileItem> mItems;
+    private String mInternalStoragePath;
+    private String mExternalStoragePath;
     private static DownloadTask mDownloadRom;
     private static DownloadTask mDownloadGapps;
     private static DownloadTask mDownloadTWRP;
@@ -55,10 +63,49 @@ public class FileManager extends Manager implements UI.OnNewIntentListener {
         super(context);
 
         UI.getInstance().setOnNewIntentListener(this);
+
+        calculateItems();
+        readMounts();
+    }
+
+    public String getInternalStoragePath() {
+        return mInternalStoragePath;
+    }
+
+    public String getExternalStoragePath() {
+        return mExternalStoragePath;
+    }
+
+    public void removeItem(FileItem item) {
+        mItems.remove(item);
+        ManagerFactory.getPreferencesManager().removeFlashQueue(item.toString());
+    }
+
+    public List<FileItem> getFileItems() {
+        if (mItems.size() == 0) {
+            calculateItems();
+        }
+        return mItems;
+    }
+
+    public void clearItems() {
+        mItems.clear();
+    }
+
+    private void calculateItems() {
+        String[] queue = ManagerFactory.getPreferencesManager().getFlashQueue();
+        mItems = new ArrayList<FileItem>();
+        for (String q : queue) {
+            FileItem item = new FileItem(q);
+            File file = new File(item.getPath());
+            if (file.exists()) {
+                mItems.add(item);
+            }
+        }
     }
 
     @Override
-    public boolean onNewIntent(Context context, Intent intent, boolean preRedraw) {
+    public void onNewIntent(Context context, Intent intent) {
         int notificationId = intent.getExtras() != null
                 && intent.getExtras().get("NOTIFICATION_ID") != null ? Integer.parseInt(intent
                 .getExtras().get("NOTIFICATION_ID").toString()) : -1;
@@ -82,35 +129,91 @@ public class FileManager extends Manager implements UI.OnNewIntentListener {
         } else if (notificationId == Constants.DOWNLOADROM_NOTIFICATION_ID
                 || notificationId == Constants.DOWNLOADGAPPS_NOTIFICATION_ID
                 || notificationId == Constants.DOWNLOADTWRP_NOTIFICATION_ID) {
-            if (preRedraw) {
-                DownloadTask task = null;
-                switch (notificationId) {
-                    case Constants.DOWNLOADROM_NOTIFICATION_ID:
-                        if (mDownloadRom != null && mDownloadRom.getStatus() == Status.FINISHED) {
-                            task = mDownloadRom;
-                        }
-                        break;
-                    case Constants.DOWNLOADGAPPS_NOTIFICATION_ID:
-                        if (mDownloadGapps != null && mDownloadGapps.getStatus() == Status.FINISHED) {
-                            task = mDownloadGapps;
-                        }
-                        break;
+            DownloadTask task = null;
+            switch (notificationId) {
+                case Constants.DOWNLOADROM_NOTIFICATION_ID:
+                    if (mDownloadRom != null && mDownloadRom.getStatus() == Status.FINISHED) {
+                        task = mDownloadRom;
+                    }
+                    break;
+                case Constants.DOWNLOADGAPPS_NOTIFICATION_ID:
+                    if (mDownloadGapps != null && mDownloadGapps.getStatus() == Status.FINISHED) {
+                        task = mDownloadGapps;
+                    }
+                    break;
+            }
+            if (task != null) {
+                
+                if (addItem(task.getDestinationFile().getAbsolutePath())) {
+                    Toast.makeText(context, R.string.install_file_manager_zip_added, Toast.LENGTH_LONG).show();
+                    context.startActivity(new Intent(context, FlashActivity.class));
                 }
-                if (task != null) {
-                    Intent sendIntent = new Intent();
-                    sendIntent.setAction(Intent.ACTION_SEND);
-                    sendIntent.putExtra(Intent.EXTRA_STREAM, Uri.fromFile(task.getDestinationFile()));
-                    sendIntent.setType("application/zip");
-                    context.startActivity(Intent.createChooser(sendIntent, context.getResources().getString(R.string.open_with)));
 
-                    NotificationManager nMgr = (NotificationManager) context
-                            .getSystemService(Context.NOTIFICATION_SERVICE);
-                    nMgr.cancel(notificationId);
+                NotificationManager nMgr = (NotificationManager) context
+                        .getSystemService(Context.NOTIFICATION_SERVICE);
+                nMgr.cancel(notificationId);
 
-                    return false;
-                }
+                return;
             }
             ManagerFactory.getFileManager().cancelDownload(notificationId, intent.getExtras());
+        }
+    }
+
+    public boolean addItem(String filePath) {
+
+        if (filePath == null || !filePath.endsWith(".zip")) {
+            Toast.makeText(mContext, R.string.install_file_manager_invalid_zip, Toast.LENGTH_SHORT)
+                    .show();
+            return false;
+        }
+
+        PreferencesManager pManager = ManagerFactory.getPreferencesManager();
+
+        String sdcardPath = new String(filePath);
+
+        String internalStorage = pManager.getInternalStorage();
+        String externalStorage = pManager.getExternalStorage();
+
+        String[] internalNames = new String[] { mInternalStoragePath, "/mnt/sdcard", "/sdcard" };
+        String[] externalNames = new String[] {
+                mExternalStoragePath == null ? " " : mExternalStoragePath,
+                "/mnt/extSdCard",
+                "/extSdCard" };
+        for (int i = 0; i < internalNames.length; i++) {
+            String internalName = internalNames[i];
+            String externalName = externalNames[i];
+            boolean external = isExternalStorage(filePath);
+            if (external) {
+                if (filePath.startsWith(externalName)) {
+                    filePath = filePath.replace(externalName, "/" + externalStorage);
+                }
+            } else {
+                if (filePath.startsWith(internalName)) {
+                    filePath = filePath.replace(internalName, "/" + internalStorage);
+                }
+            }
+        }
+
+        File file = new File(sdcardPath);
+        if (!file.exists()) {
+            Toast.makeText(mContext, R.string.install_file_manager_not_found_zip, Toast.LENGTH_LONG)
+                    .show();
+            return false;
+        } else {
+
+            for (FileItem item : mItems) {
+                if (item.getKey().equals(filePath)) {
+                    mItems.remove(item);
+                    break;
+                }
+            }
+
+            FileItem item = new FileItem(filePath,
+                    sdcardPath.substring(sdcardPath.lastIndexOf("/") + 1), sdcardPath);
+
+            mItems.add(item);
+
+            pManager.addFlashQueue(item.toString());
         }
         return true;
     }
@@ -244,13 +347,12 @@ public class FileManager extends Manager implements UI.OnNewIntentListener {
                         }
                     }
                 })
-                .setNegativeButton(android.R.string.cancel,
-                        new DialogInterface.OnClickListener() {
+                .setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
 
-                            public void onClick(DialogInterface dialog, int whichButton) {
-                                dialog.dismiss();
-                            }
-                        }).show();
+                    public void onClick(DialogInterface dialog, int whichButton) {
+                        dialog.dismiss();
+                    }
+                }).show();
     }
 
     public boolean recursiveDelete(File f) {
@@ -327,5 +429,85 @@ public class FileManager extends Manager implements UI.OnNewIntentListener {
             return null;
         }
         return data.toString();
+    }
+
+    public boolean hasExternalStorage() {
+        return Environment.MEDIA_MOUNTED.equals(Environment.getExternalStorageState());
+    }
+
+    public boolean isExternalStorage(String path) {
+        return !path.startsWith(mInternalStoragePath) && !path.startsWith("/sdcard")
+                && !path.startsWith("/mnt/sdcard");
+    }
+
+    private void readMounts() {
+
+        ArrayList<String> mounts = new ArrayList<String>();
+        ArrayList<String> vold = new ArrayList<String>();
+
+        try {
+            Scanner scanner = new Scanner(new File("/proc/mounts"));
+            while (scanner.hasNext()) {
+                String line = scanner.nextLine();
+                if (line.startsWith("/dev/block/vold/")) {
+                    String[] lineElements = line.split(" ");
+                    String element = lineElements[1];
+
+                    mounts.add(element);
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        if (mounts.size() == 0 || (mounts.size() == 1 && hasExternalStorage())) {
+            mounts.add("/mnt/sdcard");
+        }
+
+        try {
+            Scanner scanner = new Scanner(new File("/system/etc/vold.fstab"));
+            while (scanner.hasNext()) {
+                String line = scanner.nextLine();
+                if (line.startsWith("dev_mount")) {
+                    String[] lineElements = line.split(" ");
+                    String element = lineElements[2];
+
+                    if (element.contains(":")) {
+                        element = element.substring(0, element.indexOf(":"));
+                    }
+
+                    if (element.toLowerCase().indexOf("usb") < 0) {
+                        vold.add(element);
+                    }
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        if (vold.size() == 0 || (vold.size() == 1 && hasExternalStorage())) {
+            vold.add("/mnt/sdcard");
+        }
+
+        for (int i = 0; i < mounts.size(); i++) {
+            String mount = mounts.get(i);
+            File root = new File(mount);
+            if (!vold.contains(mount)
+                    || (!root.exists() || !root.isDirectory() || !root.canWrite())) {
+                mounts.remove(i--);
+            }
+        }
+
+        for (int i = 0; i < mounts.size(); i++) {
+            String mount = mounts.get(i);
+            if (mount.indexOf("sdcard0") >= 0 || mount.equalsIgnoreCase("/mnt/sdcard")
+                    || mount.equalsIgnoreCase("/sdcard")) {
+                mInternalStoragePath = mount;
+            } else {
+                mExternalStoragePath = mount;
+            }
+        }
+
+        if (mInternalStoragePath == null) {
+            mInternalStoragePath = "/sdcard";
+        }
     }
 }
