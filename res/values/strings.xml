@@ -1,7 +1,7 @@
 <resources>
 
     <!--
-     Copyright (C) 2013 GooUpdater
+     Copyright (C) 2013 OTAPlatform
 
      Licensed under the Apache License, Version 2.0 (the "License");
      you may not use this file except in compliance with the License.
@@ -16,7 +16,7 @@
      limitations under the License.
     -->
 
-    <string name="app_name">GooUpdater</string>
+    <string name="app_name">OTAPlatform</string>
     <string name="rom_info">Installed ROM info</string>
     <string name="not_available">N/A</string>
     <string name="checking">Checking for new version</string>

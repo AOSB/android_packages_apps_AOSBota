@@ -1,4 +1,4 @@
-GooUpdater
+OTAPlatform
 ==========
 
-      This is the GooUpdater readme
+      This is the OTAPlatform readme
