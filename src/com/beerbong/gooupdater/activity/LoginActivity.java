@@ -29,6 +29,7 @@ import android.widget.EditText;
 
 import com.beerbong.gooupdater.R;
 import com.beerbong.gooupdater.manager.ManagerFactory;
+import com.beerbong.gooupdater.manager.PreferencesManager;
 import com.beerbong.gooupdater.util.Constants;
 import com.beerbong.gooupdater.util.URLStringReader;
 
@@ -42,6 +43,12 @@ public class LoginActivity extends Activity implements URLStringReader.URLString
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
+
+        PreferencesManager pManager = ManagerFactory.getPreferencesManager();
+
+        boolean useDarkTheme = pManager.isDarkTheme();
+        setTheme(useDarkTheme ? R.style.Theme_Dark : R.style.Theme_Light);
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.login);
 
@@ -70,7 +77,7 @@ public class LoginActivity extends Activity implements URLStringReader.URLString
             }
         });
 
-        String login = ManagerFactory.getPreferencesManager().getLogin();
+        String login = pManager.getLogin();
 
         final Button btnLogout = (Button) findViewById(R.id.btnLogout);
         btnLogout.setEnabled(login != null && !"".equals(login));
