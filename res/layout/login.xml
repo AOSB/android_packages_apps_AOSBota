@@ -22,8 +22,7 @@
     <TextView
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:text="@string/username"
-        android:textColor="#372c24" />
+        android:text="@string/username" />
 
     <EditText
         android:id="@+id/username"
@@ -36,8 +35,7 @@
     <TextView
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:text="@string/password"
-        android:textColor="#372c24" />
+        android:text="@string/password" />
 
     <EditText
         android:id="@+id/password"
