@@ -42,6 +42,7 @@ public class GooUpdater implements Updater {
         mListener = listener;
     }
 
+    @Override
     public String getDeveloperId() {
         return Constants.getProperty(PROPERTY_GOO_DEVELOPER);
     }

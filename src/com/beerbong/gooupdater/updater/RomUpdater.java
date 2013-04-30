@@ -25,6 +25,7 @@ import com.beerbong.gooupdater.R;
 import com.beerbong.gooupdater.manager.ManagerFactory;
 import com.beerbong.gooupdater.updater.Updater.PackageInfo;
 import com.beerbong.gooupdater.updater.impl.GooUpdater;
+import com.beerbong.gooupdater.updater.impl.OUCUpdater;
 import com.beerbong.gooupdater.util.Constants;
 
 public class RomUpdater implements Updater.UpdaterListener {
@@ -173,6 +174,11 @@ public class RomUpdater implements Updater.UpdaterListener {
                 && Constants.getProperty(GooUpdater.PROPERTY_GOO_ROM) != null
                 && Constants.getProperty(GooUpdater.PROPERTY_GOO_VERSION) != null) {
             return new GooUpdater(this);
+        }
+        if (Constants.getProperty(OUCUpdater.PROPERTY_OTA_ID) != null
+                && Constants.getProperty(OUCUpdater.PROPERTY_OTA_TIME) != null
+                && Constants.getProperty(OUCUpdater.PROPERTY_OTA_VER) != null) {
+            return new OUCUpdater(this);
         }
         return null;
     }
