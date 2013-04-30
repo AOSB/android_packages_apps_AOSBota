@@ -20,6 +20,7 @@ import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 
 import android.app.Activity;
+import android.app.ProgressDialog;
 import android.os.Bundle;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -35,6 +36,7 @@ public class LoginActivity extends Activity implements URLStringReader.URLString
 
     private static final String URL = "http://goo-inside.me/salt";
 
+    private ProgressDialog mDialog;
     private EditText mPassword;
     private EditText mUsername;
 
@@ -53,6 +55,12 @@ public class LoginActivity extends Activity implements URLStringReader.URLString
             public void onClick(View v) {
                 String username = mUsername.getText() == null ? "" : mUsername.getText().toString();
                 String password = mPassword.getText() == null ? "" : mPassword.getText().toString();
+                mDialog = new ProgressDialog(LoginActivity.this);
+                mDialog.setIndeterminate(true);
+                mDialog.setMessage(getResources().getString(R.string.logging_in));
+                mDialog.setCancelable(true);
+                mDialog.setCanceledOnTouchOutside(true);
+                mDialog.show();
                 try {
                     new URLStringReader(LoginActivity.this).execute(URL + "&username="
                             + URLEncoder.encode(username, "UTF-8") + "&password=" + URLEncoder.encode(password, "UTF-8"));
@@ -62,12 +70,16 @@ public class LoginActivity extends Activity implements URLStringReader.URLString
             }
         });
 
-        Button btnLogout = (Button) findViewById(R.id.btnLogout);
+        String login = ManagerFactory.getPreferencesManager().getLogin();
+
+        final Button btnLogout = (Button) findViewById(R.id.btnLogout);
+        btnLogout.setEnabled(login != null && !"".equals(login));
         btnLogout.setOnClickListener(new OnClickListener() {
 
             @Override
             public void onClick(View v) {
                 ManagerFactory.getPreferencesManager().setLogin("");
+                btnLogout.setEnabled(false);
                 Constants.showToastOnUiThread(LoginActivity.this, R.string.logged_out);
             }
         });
@@ -75,6 +87,8 @@ public class LoginActivity extends Activity implements URLStringReader.URLString
 
     @Override
     public void onReadEnd(String buffer) {
+        mDialog.dismiss();
+        mDialog = null;
         if (buffer != null && buffer.length() == 32) {
             ManagerFactory.getPreferencesManager().setLogin(buffer);
             Constants.showToastOnUiThread(LoginActivity.this, R.string.logged_in);

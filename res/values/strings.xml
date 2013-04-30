@@ -81,6 +81,7 @@
     <string name="password">Password</string>
     <string name="login">Login</string>
     <string name="logout">Logout</string>
+    <string name="logging_in">Logging into goo.im...</string>
     <string name="logged_in">Now you are logged in</string>
     <string name="logged_invalid">Invalid username/password</string>
     <string name="logged_down">Unable to reach server</string>
