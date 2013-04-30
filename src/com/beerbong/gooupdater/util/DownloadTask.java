@@ -140,7 +140,7 @@ public class DownloadTask extends AsyncTask<Void, Integer, Integer> {
             FileOutputStream fos = null;
             try {
                 fos = new FileOutputStream(new File(ManagerFactory.getPreferencesManager()
-                        .getDownloadPath(), mFileName + ".md5sum"));
+                        .getDownloadPath(), mFileName + ".md5"));
                 fos.write((mMd5 + " " + mFileName).getBytes());
             } catch (Exception ex) {
             } finally {
