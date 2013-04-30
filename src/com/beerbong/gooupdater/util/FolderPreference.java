@@ -22,7 +22,7 @@ import android.preference.Preference;
 import android.view.View;
 import android.widget.Toast;
 
-import com.beerbong.gooupdater.GooActivity;
+import com.beerbong.gooupdater.activity.GooActivity;
 import com.beerbong.gooupdater.R;
 import com.beerbong.gooupdater.manager.ManagerFactory;
 import com.beerbong.gooupdater.manager.PreferencesManager;

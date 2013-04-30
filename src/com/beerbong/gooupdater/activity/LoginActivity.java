@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.beerbong.gooupdater;
+package com.beerbong.gooupdater.activity;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
@@ -26,6 +26,7 @@ import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.EditText;
 
+import com.beerbong.gooupdater.R;
 import com.beerbong.gooupdater.manager.ManagerFactory;
 import com.beerbong.gooupdater.util.Constants;
 import com.beerbong.gooupdater.util.URLStringReader;

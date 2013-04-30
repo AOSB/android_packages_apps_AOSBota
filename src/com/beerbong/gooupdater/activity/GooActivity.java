@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.beerbong.gooupdater;
+package com.beerbong.gooupdater.activity;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -39,6 +39,8 @@ import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.Toast;
 
+import com.beerbong.gooupdater.MainActivity;
+import com.beerbong.gooupdater.R;
 import com.beerbong.gooupdater.manager.ManagerFactory;
 import com.beerbong.gooupdater.manager.PreferencesManager;
 import com.beerbong.gooupdater.updater.GooPackage;

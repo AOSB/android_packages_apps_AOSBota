@@ -28,10 +28,10 @@ import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.TextView;
 
-import com.beerbong.gooupdater.GooActivity;
-import com.beerbong.gooupdater.LoginActivity;
 import com.beerbong.gooupdater.R;
-import com.beerbong.gooupdater.SettingsActivity;
+import com.beerbong.gooupdater.activity.GooActivity;
+import com.beerbong.gooupdater.activity.LoginActivity;
+import com.beerbong.gooupdater.activity.SettingsActivity;
 import com.beerbong.gooupdater.manager.ManagerFactory;
 import com.beerbong.gooupdater.manager.PreferencesManager;
 import com.beerbong.gooupdater.updater.GappsUpdater;

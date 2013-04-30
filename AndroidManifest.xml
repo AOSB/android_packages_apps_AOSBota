@@ -28,9 +28,9 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name="com.beerbong.gooupdater.GooActivity" />
-        <activity android:name="com.beerbong.gooupdater.LoginActivity" />
-        <activity android:name="com.beerbong.gooupdater.SettingsActivity" />
+        <activity android:name="com.beerbong.gooupdater.activity.GooActivity" />
+        <activity android:name="com.beerbong.gooupdater.activity.LoginActivity" />
+        <activity android:name="com.beerbong.gooupdater.activity.SettingsActivity" />
 
         <receiver android:name="com.beerbong.gooupdater.NotificationAlarm" />
         <receiver

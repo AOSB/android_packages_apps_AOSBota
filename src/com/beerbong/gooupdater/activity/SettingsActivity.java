@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.beerbong.gooupdater;
+package com.beerbong.gooupdater.activity;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
@@ -27,6 +27,7 @@ import android.preference.PreferenceActivity;
 import android.preference.PreferenceScreen;
 import android.widget.EditText;
 
+import com.beerbong.gooupdater.R;
 import com.beerbong.gooupdater.manager.ManagerFactory;
 import com.beerbong.gooupdater.manager.PreferencesManager;
 import com.beerbong.gooupdater.util.Constants;
