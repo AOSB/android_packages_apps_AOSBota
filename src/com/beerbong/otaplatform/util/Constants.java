@@ -49,6 +49,21 @@ import com.beerbong.otaplatform.updater.Updater;
 
 public class Constants {
 
+    // install options
+    public static final String INSTALL_BACKUP = "BACKUP";
+    public static final String INSTALL_WIPESYSTEM = "WIPESYSTEM";
+    public static final String INSTALL_WIPEDATA = "WIPEDATA";
+    public static final String INSTALL_WIPECACHES = "WIPECACHES";
+    public static final String INSTALL_FIXPERM = "FIXPERM";
+    public static final String[] INSTALL_OPTIONS = {
+            INSTALL_BACKUP,
+            INSTALL_WIPESYSTEM,
+            INSTALL_WIPEDATA,
+            INSTALL_WIPECACHES,
+            INSTALL_FIXPERM };
+    public static final String INSTALL_OPTIONS_DEFAULT = INSTALL_BACKUP + "|" + INSTALL_WIPESYSTEM
+            + "|" + INSTALL_WIPEDATA + "|" + INSTALL_WIPECACHES + "|" + INSTALL_FIXPERM;
+
     public static final int ALARM_ID = 122303221;
     public static final int NEWROMVERSION_NOTIFICATION_ID = 122303222;
     public static final int DOWNLOADROM_NOTIFICATION_ID = 122303223;
@@ -64,6 +79,7 @@ public class Constants {
     public static final String PREFERENCE_SETTINGS_RECOVERY = "recovery";
     public static final String PREFERENCE_SETTINGS_INTERNAL_SDCARD = "internalsdcard";
     public static final String PREFERENCE_SETTINGS_EXTERNAL_SDCARD = "externalsdcard";
+    public static final String PREFERENCE_SETTINGS_OPTIONS = "showoptions";
 
     private static final long K = 1024;
     private static final long M = K * K;

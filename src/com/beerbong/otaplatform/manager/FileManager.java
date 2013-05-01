@@ -37,6 +37,7 @@ import android.content.res.Resources;
 import android.os.AsyncTask.Status;
 import android.os.Bundle;
 import android.os.Environment;
+import android.os.StatFs;
 import android.text.TextUtils;
 import android.widget.EditText;
 import android.widget.Toast;
@@ -68,6 +69,13 @@ public class FileManager extends Manager implements UI.OnNewIntentListener {
         readMounts();
     }
 
+    public double getSpaceLeft() {
+        StatFs stat = new StatFs(Environment.getExternalStorageDirectory().getPath());
+        double sdAvailSize = (double) stat.getAvailableBlocks() * (double) stat.getBlockSize();
+        // One binary gigabyte equals 1,073,741,824 bytes.
+        return sdAvailSize / 1073741824;
+    }
+
     public String getInternalStoragePath() {
         return mInternalStoragePath;
     }
@@ -78,7 +86,7 @@ public class FileManager extends Manager implements UI.OnNewIntentListener {
 
     public void removeItem(FileItem item) {
         mItems.remove(item);
-        ManagerFactory.getPreferencesManager().removeFlashQueue(item.toString());
+        ManagerFactory.getPreferencesManager(mContext).removeFlashQueue(item.toString());
     }
 
     public List<FileItem> getFileItems() {
@@ -93,7 +101,7 @@ public class FileManager extends Manager implements UI.OnNewIntentListener {
     }
 
     private void calculateItems() {
-        String[] queue = ManagerFactory.getPreferencesManager().getFlashQueue();
+        String[] queue = ManagerFactory.getPreferencesManager(mContext).getFlashQueue();
         mItems = new ArrayList<FileItem>();
         for (String q : queue) {
             FileItem item = new FileItem(q);
@@ -155,7 +163,7 @@ public class FileManager extends Manager implements UI.OnNewIntentListener {
 
                 return;
             }
-            ManagerFactory.getFileManager().cancelDownload(notificationId, intent.getExtras());
+            cancelDownload(notificationId, intent.getExtras());
         }
     }
 
@@ -167,7 +175,7 @@ public class FileManager extends Manager implements UI.OnNewIntentListener {
             return false;
         }
 
-        PreferencesManager pManager = ManagerFactory.getPreferencesManager();
+        PreferencesManager pManager = ManagerFactory.getPreferencesManager(mContext);
 
         String sdcardPath = new String(filePath);
 
@@ -220,7 +228,7 @@ public class FileManager extends Manager implements UI.OnNewIntentListener {
 
     public void selectDownloadPath(final Activity activity) {
         final EditText input = new EditText(activity);
-        input.setText(ManagerFactory.getPreferencesManager().getDownloadPath());
+        input.setText(ManagerFactory.getPreferencesManager(activity).getDownloadPath());
 
         new AlertDialog.Builder(activity)
                 .setTitle(R.string.download_alert_title)
@@ -238,7 +246,7 @@ public class FileManager extends Manager implements UI.OnNewIntentListener {
                             return;
                         }
 
-                        ManagerFactory.getPreferencesManager().setDownloadPath(value);
+                        ManagerFactory.getPreferencesManager(activity).setDownloadPath(value);
                         dialog.dismiss();
                     }
                 })

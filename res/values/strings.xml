@@ -133,12 +133,21 @@
     <string name="sdcard_alert_title">Storage path</string>
     <string name="sdcard_alert_summary">Specify the storage name</string>
     <string name="sdcard_alert_error">Please specify the storage name</string>
+    <string name="backup">Backup</string>
+    <string name="wipe_system">Wipe System</string>
     <string name="wipe_data">Wipe Data</string>
     <string name="wipe_caches">Wipe Cache &amp; Dalvik</string>
-    <string name="backup">Backup</string>
+    <string name="fix_permissions">Fix permissions</string>
     <string name="alert_reboot_title">Select actions and install</string>
     <string name="alert_reboot_now">Install now</string>
     <string name="alert_backup_title">Backup</string>
     <string name="alert_backup_message">Specify the backup name (spaces will be removed).</string>
+    <string name="settings_showoptions_title">Options</string>
+    <string name="settings_showoptions_summary">Chose options to show when pressing the Install Now button</string>
+    <string name="alert_backup_space_title">Space left</string>
+    <string name="alert_backup_space_message">There\'s less than %1$sGB in the internal sdcard. Do you want to continue with the backup?</string>
+    <string name="alert_restore_title">Restore</string>
+    <string name="alert_wipe_system_title">System wipe</string>
+    <string name="alert_wipe_system_message">You are about to perform a system wipe. Are you sure you want to do that?</string>
 
 </resources>

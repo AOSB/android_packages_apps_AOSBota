@@ -66,7 +66,7 @@ public class GooActivity extends PreferenceActivity implements URLStringReaderLi
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
-        boolean useDarkTheme = ManagerFactory.getPreferencesManager().isDarkTheme();
+        boolean useDarkTheme = ManagerFactory.getPreferencesManager(this).isDarkTheme();
         setTheme(useDarkTheme ? R.style.Theme_Dark : R.style.Theme_Light);
 
         super.onCreate(savedInstanceState);
@@ -291,7 +291,7 @@ public class GooActivity extends PreferenceActivity implements URLStringReaderLi
     }
 
     private String[] getWatchlist() {
-        String str = ManagerFactory.getPreferencesManager().getWatchlist();
+        String str = ManagerFactory.getPreferencesManager(this).getWatchlist();
         return str.split(PreferencesManager.SEPARATOR);
     }
 

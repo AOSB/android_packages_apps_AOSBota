@@ -138,7 +138,7 @@ public class TWRPUpdater implements Updater, Updater.UpdaterListener {
         if (path.endsWith(".img")) {
             if (mInstallCommand != null) {
                 String command = mInstallCommand.replace("#FILE#", path);
-                ManagerFactory.getSUManager().execute(command);
+                ManagerFactory.getSUManager(mContext).execute(command);
             } else {
                 // TODO flash image throug recovery
             }
@@ -216,7 +216,7 @@ public class TWRPUpdater implements Updater, Updater.UpdaterListener {
                                             ((Activity) mContext).runOnUiThread(new Runnable() {
 
                                                 public void run() {
-                                                    ManagerFactory.getFileManager().download(
+                                                    ManagerFactory.getFileManager(mContext).download(
                                                             mContext, info.path, info.filename,
                                                             info.md5,
                                                             Constants.DOWNLOADTWRP_NOTIFICATION_ID, new DownloadTaskListener() {

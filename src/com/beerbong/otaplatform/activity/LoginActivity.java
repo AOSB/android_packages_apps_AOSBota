@@ -44,7 +44,7 @@ public class LoginActivity extends Activity implements URLStringReader.URLString
     @Override
     public void onCreate(Bundle savedInstanceState) {
 
-        PreferencesManager pManager = ManagerFactory.getPreferencesManager();
+        PreferencesManager pManager = ManagerFactory.getPreferencesManager(this);
 
         boolean useDarkTheme = pManager.isDarkTheme();
         setTheme(useDarkTheme ? R.style.Theme_Dark : R.style.Theme_Light);
@@ -85,7 +85,7 @@ public class LoginActivity extends Activity implements URLStringReader.URLString
 
             @Override
             public void onClick(View v) {
-                ManagerFactory.getPreferencesManager().setLogin("");
+                ManagerFactory.getPreferencesManager(LoginActivity.this).setLogin("");
                 btnLogout.setEnabled(false);
                 Constants.showToastOnUiThread(LoginActivity.this, R.string.logged_out);
             }
@@ -97,13 +97,13 @@ public class LoginActivity extends Activity implements URLStringReader.URLString
         mDialog.dismiss();
         mDialog = null;
         if (buffer != null && buffer.length() == 32) {
-            ManagerFactory.getPreferencesManager().setLogin(buffer);
-            Constants.showToastOnUiThread(LoginActivity.this, R.string.logged_in);
+            ManagerFactory.getPreferencesManager(this).setLogin(buffer);
+            Constants.showToastOnUiThread(this, R.string.logged_in);
             finish();
         } else if (buffer != null) {
-            Constants.showToastOnUiThread(LoginActivity.this, R.string.logged_invalid);
+            Constants.showToastOnUiThread(this, R.string.logged_invalid);
         } else {
-            Constants.showToastOnUiThread(LoginActivity.this, R.string.logged_down);
+            Constants.showToastOnUiThread(this, R.string.logged_down);
         }
     }
 

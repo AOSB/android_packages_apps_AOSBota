@@ -20,31 +20,44 @@ import android.content.Context;
 import android.database.AbstractCursor;
 
 import com.beerbong.otaplatform.R;
+import com.beerbong.otaplatform.manager.ManagerFactory;
+import com.beerbong.otaplatform.manager.PreferencesManager;
 
 public class InstallOptionsCursor extends AbstractCursor {
 
-    private static final String[] INSTALL_OPTIONS = {"BACKUP", "WIPEDATA", "WIPECACHES"};
     private static final String[] COLUMN_NAMES = { "_id", "TEXT", "CHECKED" };
 
     private String[] mOption;
     private String[] mText;
     private int[] mChecked;
+    private int mCount = 0;
 
     public InstallOptionsCursor(Context context) {
-        mOption = new String[INSTALL_OPTIONS.length];
-        mText = new String[INSTALL_OPTIONS.length];
-        mChecked = new int[INSTALL_OPTIONS.length];
-        for (int i = 0; i < INSTALL_OPTIONS.length; i++) {
-            mOption[i] = INSTALL_OPTIONS[i];
-            mText[i] = context.getResources().getString(
-                    getText(INSTALL_OPTIONS[i]));
-            mChecked[i] = 0;
+        PreferencesManager pManager = ManagerFactory.getPreferencesManager(context);
+
+        for (int i = 0; i < Constants.INSTALL_OPTIONS.length; i++) {
+            if (pManager.isShowOption(Constants.INSTALL_OPTIONS[i])) {
+                mCount++;
+            }
+        }
+        mOption = new String[mCount];
+        mText = new String[mCount];
+        mChecked = new int[mCount];
+        int count = 0;
+        for (int i = 0; i < Constants.INSTALL_OPTIONS.length; i++) {
+            if (pManager.isShowOption(Constants.INSTALL_OPTIONS[i])) {
+                mOption[count] = Constants.INSTALL_OPTIONS[i];
+                mText[count] = context.getResources().getString(
+                        getText(Constants.INSTALL_OPTIONS[i]));
+                mChecked[count] = 0;
+                count++;
+            }
         }
     }
 
     @Override
     public int getCount() {
-        return INSTALL_OPTIONS.length;
+        return mCount;
     }
 
     @Override
@@ -100,6 +113,10 @@ public class InstallOptionsCursor extends AbstractCursor {
         mChecked[which] = isChecked ? 1 : 0;
     }
 
+    public boolean isWipeSystem() {
+        return isOption("WIPESYSTEM");
+    }
+
     public boolean isWipeData() {
         return isOption("WIPEDATA");
     }
@@ -110,6 +127,10 @@ public class InstallOptionsCursor extends AbstractCursor {
 
     public boolean isBackup() {
         return isOption("BACKUP");
+    }
+
+    public boolean isFixPermissions() {
+        return isOption("FIXPERM");
     }
 
     public String getIsCheckedColumn() {
@@ -130,12 +151,16 @@ public class InstallOptionsCursor extends AbstractCursor {
     }
 
     private int getText(String option) {
-        if ("BACKUP".equals(option)) {
+        if (Constants.INSTALL_BACKUP.equals(option)) {
             return R.string.backup;
-        } else if ("WIPEDATA".equals(option)) {
+        } else if (Constants.INSTALL_WIPESYSTEM.equals(option)) {
+            return R.string.wipe_system;
+        } else if (Constants.INSTALL_WIPEDATA.equals(option)) {
             return R.string.wipe_data;
-        } else if ("WIPECACHES".equals(option)) {
+        } else if (Constants.INSTALL_WIPECACHES.equals(option)) {
             return R.string.wipe_caches;
+        } else if (Constants.INSTALL_FIXPERM.equals(option)) {
+            return R.string.fix_permissions;
         }
         return -1;
     }

@@ -18,6 +18,7 @@ package com.beerbong.otaplatform.manager;
 
 import java.util.List;
 
+import com.beerbong.otaplatform.util.Constants;
 import com.beerbong.otaplatform.util.FileItem;
 
 import android.content.Context;
@@ -38,12 +39,14 @@ public class PreferencesManager extends Manager {
     private static final String PROPERTY_INTERNAL_STORAGE = "internal-storage";
     private static final String PROPERTY_EXTERNAL_STORAGE = "external-storage";
     private static final String PROPERTY_RECOVERY = "recovery";
+    private static final String PROPERTY_SHOW_OPTIONS = "show-option";
 
     private static final String DEFAULT_TIME_NOTIFICATIONS = "3600000"; // an hour
     private static final String DEFAULT_DOWNLOAD_PATH = "/" + SDCARD + "/download/";
     private static final String DEFAULT_RECOVERY = "cwmbased";
     private static final String DEFAULT_INTERNAL_STORAGE = "emmc";
     private static final String DEFAULT_EXTERNAL_STORAGE = "sdcard";
+    private static final String DEFAULT_SHOW_OPTIONS = Constants.INSTALL_OPTIONS_DEFAULT;
     private static final boolean DEFAULT_DARK_THEME = true;
 
     public static final String SEPARATOR = "#-#";
@@ -183,6 +186,19 @@ public class PreferencesManager extends Manager {
 
     public void setRecovery(String value) {
         savePreference(PROPERTY_RECOVERY, value);
+    }
+
+    public boolean isShowOption(String option) {
+        String opts = settings.getString(PROPERTY_SHOW_OPTIONS, DEFAULT_SHOW_OPTIONS);
+        return opts.indexOf(option) >= 0;
+    }
+
+    public String getShowOptions() {
+        return settings.getString(PROPERTY_SHOW_OPTIONS, DEFAULT_SHOW_OPTIONS);
+    }
+
+    public void setShowOptions(String options) {
+        savePreference(PROPERTY_SHOW_OPTIONS, options);
     }
 
     private void savePreference(String preference, String value) {

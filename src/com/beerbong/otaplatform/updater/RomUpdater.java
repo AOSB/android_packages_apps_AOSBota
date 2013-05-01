@@ -147,7 +147,7 @@ public class RomUpdater implements Updater.UpdaterListener {
                                             ((Activity) mContext).runOnUiThread(new Runnable() {
 
                                                 public void run() {
-                                                    ManagerFactory.getFileManager().download(
+                                                    ManagerFactory.getFileManager(mContext).download(
                                                             mContext, info.path, info.filename,
                                                             info.md5,
                                                             Constants.DOWNLOADROM_NOTIFICATION_ID);

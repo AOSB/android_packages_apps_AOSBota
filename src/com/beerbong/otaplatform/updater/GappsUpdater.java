@@ -155,7 +155,7 @@ public class GappsUpdater implements Updater, Updater.UpdaterListener {
     @Override
     public void searchVersion() {
         mScanning = true;
-        String folder = ManagerFactory.getPreferencesManager().getGappsFolder();
+        String folder = ManagerFactory.getPreferencesManager(mContext).getGappsFolder();
         if (folder == null || "".equals(folder)) {
             mCustomGapps = false;
             new URLStringReader(this).execute("http://goo.im/json2&action=gapps_update&gapps_platform="
@@ -247,7 +247,7 @@ public class GappsUpdater implements Updater, Updater.UpdaterListener {
 
                                                 public void run() {
                                                     ManagerFactory
-                                                            .getFileManager()
+                                                            .getFileManager(mContext)
                                                             .download(
                                                                     mContext,
                                                                     info.path,
@@ -293,7 +293,7 @@ public class GappsUpdater implements Updater, Updater.UpdaterListener {
 
                                                 public void run() {
                                                     ManagerFactory
-                                                            .getFileManager()
+                                                            .getFileManager(mContext)
                                                             .download(
                                                                     mContext,
                                                                     info.path,

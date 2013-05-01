@@ -36,18 +36,10 @@ public class ManagerFactory {
         mRebootManager = new RebootManager(mActivity);
     }
 
-    public static FileManager getFileManager() {
-        return mFileManager;
-    }
-
     public static FileManager getFileManager(Context context) {
         if (mFileManager == null)
             mFileManager = new FileManager(context);
         return mFileManager;
-    }
-
-    public static PreferencesManager getPreferencesManager() {
-        return mPreferencesManager;
     }
 
     public static PreferencesManager getPreferencesManager(Context context) {
@@ -56,15 +48,21 @@ public class ManagerFactory {
         return mPreferencesManager;
     }
 
-    public static SUManager getSUManager() {
+    public static SUManager getSUManager(Context context) {
+        if (mSUManager == null)
+            mSUManager = new SUManager(context);
         return mSUManager;
     }
 
-    public static RecoveryManager getRecoveryManager() {
+    public static RecoveryManager getRecoveryManager(Context context) {
+        if (mRecoveryManager == null)
+            mRecoveryManager = new RecoveryManager(context);
         return mRecoveryManager;
     }
 
-    public static RebootManager getRebootManager() {
+    public static RebootManager getRebootManager(Context context) {
+        if (mRebootManager == null)
+            mRebootManager = new RebootManager(context);
         return mRebootManager;
     }
 }

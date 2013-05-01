@@ -64,7 +64,7 @@ public class FolderPreference extends Preference implements View.OnLongClickList
                                         dialog.dismiss();
 
                                         PreferencesManager pManager = ManagerFactory
-                                                .getPreferencesManager();
+                                                .getPreferencesManager(mActivity);
                                         String str = pManager.getWatchlist();
                                         if (str.indexOf(mFolder) < 0) {
                                             if ("".equals(str)) {
@@ -85,7 +85,7 @@ public class FolderPreference extends Preference implements View.OnLongClickList
                                 new DialogInterface.OnClickListener() {
 
                                     public void onClick(DialogInterface dialog, int whichButton) {
-                                        ManagerFactory.getPreferencesManager().setGappsFolder(mFolder);
+                                        ManagerFactory.getPreferencesManager(mActivity).setGappsFolder(mFolder);
                                         Toast.makeText(mActivity, R.string.gapps_folder_selected,
                                                 Toast.LENGTH_LONG).show();
                                         dialog.dismiss();
@@ -116,7 +116,7 @@ public class FolderPreference extends Preference implements View.OnLongClickList
                                     public void onClick(DialogInterface dialog, int whichButton) {
                                         dialog.dismiss();
                                         PreferencesManager pManager = ManagerFactory
-                                                .getPreferencesManager();
+                                                .getPreferencesManager(mActivity);
                                         String str = pManager.getWatchlist();
                                         if (str.indexOf(mFolder) >= 0) {
                                             if (str.equals(mFolder)) {

@@ -18,6 +18,8 @@ package com.beerbong.otaplatform.manager;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 import android.app.Activity;
@@ -44,7 +46,7 @@ public class RecoveryManager extends Manager {
     protected RecoveryManager(Context context) {
         super(context);
 
-        if (ManagerFactory.getFileManager().hasExternalStorage()) {
+        if (ManagerFactory.getFileManager(context).hasExternalStorage()) {
             recoveries.put(R.id.cwmbased, new RecoveryInfo(R.id.cwmbased, "cwmbased", "emmc",
                     "sdcard"));
             recoveries.put(R.id.twrp, new RecoveryInfo(R.id.twrp, "twrp", "emmc", "sdcard"));
@@ -58,7 +60,7 @@ public class RecoveryManager extends Manager {
                     "sdcard"));
         }
 
-        if (!ManagerFactory.getPreferencesManager().existsRecovery()) {
+        if (!ManagerFactory.getPreferencesManager(context).existsRecovery()) {
             test(R.id.fourext);
         }
     }
@@ -131,8 +133,52 @@ public class RecoveryManager extends Manager {
         return str;
     }
 
+    public String[] getBackupList() {
+
+        RecoveryInfo info = getRecovery();
+
+        String sdcard = "sdcard";
+        String folder = "";
+
+        switch (info.getId()) {
+            case R.id.cwmbased:
+            case R.id.fourext:
+                folder = "/" + sdcard + "/clockworkmod/backup/";
+                break;
+            case R.id.twrp:
+                folder = "/" + sdcard + "/TWRP/BACKUPS/";
+                File f = new File(folder);
+                if (f.exists()) {
+                    File[] fs = f.listFiles();
+                    folder += fs[0].getName() + "/";
+                }
+                break;
+        }
+
+        List<String> list = new ArrayList<String>();
+
+        File f = new File(folder);
+        if (f.exists()) {
+            File[] fs = f.listFiles();
+            for (int i = 0; i < fs.length; i++) {
+                list.add(fs[i].getName());
+            }
+        }
+
+        Collections.sort(list, new Comparator<String>() {
+
+            @Override
+            public int compare(String s1, String s2) {
+                int value = s1.compareTo(s2);
+                return -value;
+            }
+        });
+
+        return list.toArray(new String[list.size()]);
+    }
+
     public void selectSdcard(final Activity activity, final boolean internal) {
-        final PreferencesManager pManager = ManagerFactory.getPreferencesManager();
+        final PreferencesManager pManager = ManagerFactory.getPreferencesManager(activity);
 
         final EditText input = new EditText(activity);
         input.setText(internal ? pManager.getInternalStorage() : pManager.getExternalStorage());
@@ -174,7 +220,7 @@ public class RecoveryManager extends Manager {
     }
 
     public RecoveryInfo getRecovery() {
-        String recovery = ManagerFactory.getPreferencesManager().getRecovery();
+        String recovery = ManagerFactory.getPreferencesManager(mContext).getRecovery();
         for (int i = 0; i < recoveries.size(); i++) {
             int key = recoveries.keyAt(i);
             RecoveryInfo info = recoveries.get(key);
@@ -187,9 +233,10 @@ public class RecoveryManager extends Manager {
 
     public void setRecovery(int id) {
         RecoveryInfo info = recoveries.get(id);
-        ManagerFactory.getPreferencesManager().setRecovery(info.getName());
-        ManagerFactory.getPreferencesManager().setInternalStorage(info.getInternalSdcard());
-        ManagerFactory.getPreferencesManager().setExternalStorage(info.getExternalSdcard());
+        PreferencesManager pManager = ManagerFactory.getPreferencesManager(mContext);
+        pManager.setRecovery(info.getName());
+        pManager.setInternalStorage(info.getInternalSdcard());
+        pManager.setExternalStorage(info.getExternalSdcard());
     }
 
     public String getCommandsFile() {
@@ -207,15 +254,18 @@ public class RecoveryManager extends Manager {
         }
     }
 
-    public String[] getCommands(boolean wipeData, boolean wipeCaches, String backupFolder) throws Exception {
+    public String[] getCommands(boolean wipeSystem, boolean wipeData, boolean wipeCaches,
+            boolean fixPermissions, String backupFolder, String restore) throws Exception {
         List<String> commands = new ArrayList<String>();
 
-        List<FileItem> items = ManagerFactory.getFileManager().getFileItems();
+        List<FileItem> items = ManagerFactory.getFileManager(mContext).getFileItems();
         int size = items.size(), i = 0;
 
         RecoveryInfo info = getRecovery();
 
-        String internalStorage = ManagerFactory.getPreferencesManager().getInternalStorage();
+        String internalStorage = ManagerFactory.getPreferencesManager(mContext).getInternalStorage();
+
+        String sbin = getSBINFolder();
 
         switch (info.getId()) {
             case R.id.cwmbased:
@@ -227,10 +277,22 @@ public class RecoveryManager extends Manager {
                         + "\");");
                 commands.add("ui_print(\"-------------------------------------\");");
 
+                if (restore != null) {
+                    commands.add("ui_print(\" Restore ROM\");");
+                    commands.add("restore_rom(\"/" + internalStorage + "/clockworkmod/backup/"
+                            + restore
+                            + "\", \"boot\", \"system\", \"data\", \"cache\", \"sd-ext\")");
+                }
+
                 if (backupFolder != null) {
                     commands.add("ui_print(\" Backup ROM\");");
                     commands.add("backup_rom(\"/" + internalStorage + "/clockworkmod/backup/"
                             + backupFolder + "\");");
+                }
+
+                if (wipeSystem) {
+                    commands.add("ui_print(\" Wiping system\");");
+                    commands.add("format(\"/system\");");
                 }
 
                 if (wipeData) {
@@ -256,12 +318,32 @@ public class RecoveryManager extends Manager {
                     }
                 }
 
+                if (fixPermissions) {
+                    commands.add("ui_print(\" Fix permissions\");");
+                    commands.add("run_program(\"" + sbin
+                            + "chmod\", \"+x\", \"/cache/fix_permissions.sh\");");
+                    commands.add("run_program(\"" + sbin + "sh\", \"/cache/fix_permissions.sh\");");
+                    commands.add("run_program(\"/sbin/busybox\", \"rm\", \"/cache/fix_permissions.sh\");");
+                }
+
                 commands.add("ui_print(\" Rebooting\");");
                 break;
 
             case R.id.twrp:
 
                 String sdcard = "sdcard";
+
+                if (restore != null) {
+                    String str = "restore /" + internalStorage + "/TWRP/BACKUPS/" + restore
+                            + " SDCR123B";
+                    if (folderExists("/" + sdcard + "/.android-secure")) {
+                        str += "A";
+                    }
+                    if (folderExists("/sd-ext")) {
+                        str += "E";
+                    }
+                    commands.add(str);
+                }
 
                 if (backupFolder != null) {
                     String str = "backup SDCR123B";
@@ -272,6 +354,12 @@ public class RecoveryManager extends Manager {
                         str += "E";
                     }
                     commands.add(str + "O " + backupFolder);
+                }
+
+                if (wipeSystem) {
+                    commands.add("mount system");
+                    commands.add("cmd /sbin/busybox rm -r /system/*");
+                    commands.add("unmount system");
                 }
 
                 if (wipeData) {
@@ -285,6 +373,12 @@ public class RecoveryManager extends Manager {
                 for (; i < size; i++) {
                     FileItem item = items.get(i);
                     commands.add("install " + item.getKey());
+                }
+
+                if (fixPermissions) {
+                    commands.add("cmd " + sbin + "chmod +x /cache/fix_permissions.sh");
+                    commands.add("cmd " + sbin + "sh /cache/fix_permissions.sh");
+                    commands.add("cmd /sbin/busybox rm /cache/fix_permissions.sh");
                 }
 
                 break;
@@ -360,6 +454,15 @@ public class RecoveryManager extends Manager {
                     break;
             }
         }
+    }
+
+    private String getSBINFolder() {
+        if (folderExists("/sbin")) {
+            return "/sbin/";
+        } else if (folderExists("/system/sbin")) {
+            return "/system/sbin/";
+        }
+        return null;
     }
 
     private boolean folderExists(String path) {

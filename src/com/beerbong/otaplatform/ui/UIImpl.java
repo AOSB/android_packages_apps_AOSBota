@@ -255,7 +255,7 @@ public class UIImpl extends UI implements RomUpdater.RomUpdaterListener,
     private void updateFlashQueueText() {
         mButtonFlashQueue.setText(mActivity.getResources().getString(
                 R.string.flash_queue_number,
-                new Object[] { String.valueOf(ManagerFactory.getPreferencesManager()
+                new Object[] { String.valueOf(ManagerFactory.getPreferencesManager(mActivity)
                         .getFlashQueueSize()) }));
     }
 }

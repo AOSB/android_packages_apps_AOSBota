@@ -63,7 +63,7 @@ public class DownloadTask extends AsyncTask<Void, Integer, Integer> {
             String url, String fileName, String md5) {
         this.attach(notification, notificationId, context);
 
-        PreferencesManager pManager = ManagerFactory.getPreferencesManager();
+        PreferencesManager pManager = ManagerFactory.getPreferencesManager(context);
 
         File dPath = new File(pManager.getDownloadPath());
         dPath.mkdirs();
@@ -128,7 +128,7 @@ public class DownloadTask extends AsyncTask<Void, Integer, Integer> {
      */
     @Override
     protected Integer doInBackground(Void... params) {
-        PreferencesManager pManager = ManagerFactory.getPreferencesManager();
+        PreferencesManager pManager = ManagerFactory.getPreferencesManager(mContext);
 
         String login = pManager.getLogin();
         String url = mUrl;
@@ -139,7 +139,7 @@ public class DownloadTask extends AsyncTask<Void, Integer, Integer> {
         if (mMd5 != null) {
             FileOutputStream fos = null;
             try {
-                fos = new FileOutputStream(new File(ManagerFactory.getPreferencesManager()
+                fos = new FileOutputStream(new File(ManagerFactory.getPreferencesManager(mContext)
                         .getDownloadPath(), mFileName + ".md5"));
                 fos.write((mMd5 + " " + mFileName).getBytes());
             } catch (Exception ex) {

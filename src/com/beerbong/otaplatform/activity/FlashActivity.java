@@ -59,7 +59,7 @@ public class FlashActivity extends FragmentActivity implements OnItemClickListen
     private class FileItemsAdapter extends ArrayAdapter<FileItem> {
 
         public FileItemsAdapter() {
-            super(FlashActivity.this, R.layout.order_item, ManagerFactory.getFileManager()
+            super(FlashActivity.this, R.layout.order_item, ManagerFactory.getFileManager(FlashActivity.this)
                     .getFileItems());
         }
 
@@ -97,13 +97,13 @@ public class FlashActivity extends FragmentActivity implements OnItemClickListen
         public void drop(int from, int to) {
             if (from == to)
                 return;
-            List<FileItem> items = ManagerFactory.getFileManager().getFileItems();
+            List<FileItem> items = ManagerFactory.getFileManager(FlashActivity.this).getFileItems();
             FileItem toMove = items.get(from);
             while (items.indexOf(toMove) != to) {
                 int i = items.indexOf(toMove);
                 Collections.swap(items, i, to < from ? i - 1 : i + 1);
             }
-            ManagerFactory.getPreferencesManager().setFlashQueue(items);
+            ManagerFactory.getPreferencesManager(FlashActivity.this).setFlashQueue(items);
             redrawItems();
         }
     };
@@ -111,7 +111,7 @@ public class FlashActivity extends FragmentActivity implements OnItemClickListen
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
-        PreferencesManager pManager = ManagerFactory.getPreferencesManager();
+        PreferencesManager pManager = ManagerFactory.getPreferencesManager(FlashActivity.this);
 
         boolean useDarkTheme = pManager.isDarkTheme();
         setTheme(useDarkTheme ? R.style.Theme_Dark : R.style.Theme_Light);
@@ -127,7 +127,7 @@ public class FlashActivity extends FragmentActivity implements OnItemClickListen
         mButtonFlash.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
-                ManagerFactory.getRebootManager().showRebootDialog(FlashActivity.this);
+                ManagerFactory.getRebootManager(FlashActivity.this).showRebootDialog(FlashActivity.this);
             }
         });
 
@@ -156,8 +156,8 @@ public class FlashActivity extends FragmentActivity implements OnItemClickListen
         mButtonClear.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
-                ManagerFactory.getFileManager().clearItems();
-                ManagerFactory.getPreferencesManager().setFlashQueue(null);
+                ManagerFactory.getFileManager(FlashActivity.this).clearItems();
+                ManagerFactory.getPreferencesManager(FlashActivity.this).setFlashQueue(null);
                 UI.getInstance().onListChanged();
                 redrawItems();
             }
@@ -172,7 +172,7 @@ public class FlashActivity extends FragmentActivity implements OnItemClickListen
 
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-        List<FileItem> items = ManagerFactory.getFileManager().getFileItems();
+        List<FileItem> items = ManagerFactory.getFileManager(FlashActivity.this).getFileItems();
         FileItem item = items.get(position);
         showInfoDialog(item);
     }
@@ -196,7 +196,7 @@ public class FlashActivity extends FragmentActivity implements OnItemClickListen
     }
 
     private void redrawItems() {
-        List<FileItem> items = ManagerFactory.getFileManager().getFileItems();
+        List<FileItem> items = ManagerFactory.getFileManager(FlashActivity.this).getFileItems();
         mFileList.setAdapter(new FileItemsAdapter());
         mButtonFlash.setEnabled(items.size() > 0);
         mButtonClear.setEnabled(items.size() > 0);
@@ -230,7 +230,7 @@ public class FlashActivity extends FragmentActivity implements OnItemClickListen
             @Override
             public void onClick(DialogInterface dialog, int whichButton) {
                 dialog.dismiss();
-                ManagerFactory.getFileManager().removeItem(item);
+                ManagerFactory.getFileManager(FlashActivity.this).removeItem(item);
                 redrawItems();
             }
         });
@@ -240,7 +240,7 @@ public class FlashActivity extends FragmentActivity implements OnItemClickListen
 
     private void addItem(String filePath) {
 
-        if (ManagerFactory.getFileManager().addItem(filePath)) {
+        if (ManagerFactory.getFileManager(FlashActivity.this).addItem(filePath)) {
 
             redrawItems();
         }

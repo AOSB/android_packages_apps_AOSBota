@@ -16,6 +16,8 @@
 
 package com.beerbong.otaplatform.activity;
 
+import java.util.List;
+
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.os.Bundle;
@@ -30,6 +32,7 @@ import android.widget.EditText;
 import com.beerbong.otaplatform.R;
 import com.beerbong.otaplatform.manager.ManagerFactory;
 import com.beerbong.otaplatform.manager.PreferencesManager;
+import com.beerbong.otaplatform.manager.RecoveryManager;
 import com.beerbong.otaplatform.util.Constants;
 import com.beerbong.otaplatform.util.RecoveryInfo;
 
@@ -43,12 +46,13 @@ public class SettingsActivity extends PreferenceActivity implements OnPreference
     private Preference mRecovery;
     private Preference mInternalSdcard;
     private Preference mExternalSdcard;
+    private ListPreference mOptions;
 
     @Override
     @SuppressWarnings("deprecation")
     protected void onCreate(Bundle savedInstanceState) {
 
-        boolean useDarkTheme = ManagerFactory.getPreferencesManager().isDarkTheme();
+        boolean useDarkTheme = ManagerFactory.getPreferencesManager(this).isDarkTheme();
         setTheme(useDarkTheme ? R.style.Theme_Dark : R.style.Theme_Light);
 
         super.onCreate(savedInstanceState);
@@ -63,15 +67,19 @@ public class SettingsActivity extends PreferenceActivity implements OnPreference
         mRecovery = findPreference(Constants.PREFERENCE_SETTINGS_RECOVERY);
         mInternalSdcard = findPreference(Constants.PREFERENCE_SETTINGS_INTERNAL_SDCARD);
         mExternalSdcard = findPreference(Constants.PREFERENCE_SETTINGS_EXTERNAL_SDCARD);
+        mOptions = (ListPreference) findPreference(Constants.PREFERENCE_SETTINGS_OPTIONS);
 
-        PreferencesManager pManager = ManagerFactory.getPreferencesManager();
+        PreferencesManager pManager = ManagerFactory.getPreferencesManager(this);
 
         mCheckTime.setValue(String.valueOf(pManager.getTimeNotifications()));
         mCheckTime.setOnPreferenceChangeListener(this);
 
         mDarkTheme.setChecked(pManager.isDarkTheme());
+
+        mOptions.setValue(pManager.getShowOptions());
+        mOptions.setOnPreferenceChangeListener(this);
         
-        if (!ManagerFactory.getFileManager().hasExternalStorage()) {
+        if (!ManagerFactory.getFileManager(this).hasExternalStorage()) {
             getPreferenceScreen().removePreference(mExternalSdcard);
         }
 
@@ -82,7 +90,8 @@ public class SettingsActivity extends PreferenceActivity implements OnPreference
     public boolean onPreferenceTreeClick(PreferenceScreen preferenceScreen, Preference preference) {
         String key = preference.getKey();
 
-        PreferencesManager pManager = ManagerFactory.getPreferencesManager();
+        PreferencesManager pManager = ManagerFactory.getPreferencesManager(this);
+        RecoveryManager rManager = ManagerFactory.getRecoveryManager(this);
 
         if (Constants.PREFERENCE_SETTINGS_DARK_THEME.equals(key)) {
 
@@ -91,7 +100,7 @@ public class SettingsActivity extends PreferenceActivity implements OnPreference
 
         } else if (Constants.PREFERENCE_SETTINGS_DOWNLOAD_PATH.equals(key)) {
 
-            ManagerFactory.getFileManager().selectDownloadPath(this);
+            ManagerFactory.getFileManager(this).selectDownloadPath(this);
             updateSummaries();
 
         } else if (Constants.PREFERENCE_SETTINGS_GAPPS_FOLDER.equals(key)) {
@@ -101,22 +110,22 @@ public class SettingsActivity extends PreferenceActivity implements OnPreference
 
         } else if (Constants.PREFERENCE_SETTINGS_GAPPS_RESET.equals(key)) {
 
-            ManagerFactory.getPreferencesManager().setGappsFolder("");
+            pManager.setGappsFolder("");
             updateSummaries();
 
         } else if (Constants.PREFERENCE_SETTINGS_RECOVERY.equals(key)) {
 
-            ManagerFactory.getRecoveryManager().selectRecovery(this);
+            rManager.selectRecovery(this);
             updateSummaries();
 
         } else if (Constants.PREFERENCE_SETTINGS_INTERNAL_SDCARD.equals(key)) {
 
-            ManagerFactory.getRecoveryManager().selectSdcard(this, true);
+            rManager.selectSdcard(this, true);
             updateSummaries();
 
         } else if (Constants.PREFERENCE_SETTINGS_EXTERNAL_SDCARD.equals(key)) {
 
-            ManagerFactory.getRecoveryManager().selectSdcard(this, false);
+            rManager.selectSdcard(this, false);
             updateSummaries();
 
         }
@@ -128,10 +137,22 @@ public class SettingsActivity extends PreferenceActivity implements OnPreference
     public boolean onPreferenceChange(Preference preference, Object newValue) {
         String key = preference.getKey();
 
-        if (Constants.PREFERENCE_SETTINGS_CHECK_TIME.equals(key)) {
+        PreferencesManager pManager = ManagerFactory.getPreferencesManager(this);
+
+        if (Constants.PREFERENCE_SETTINGS_OPTIONS.equals(key)) {
+            List<String> values = (List<String>) newValue;
+            String result = "";
+            for (int i = 0; i < values.size(); i++) {
+                result += values.get(i);
+                if (i < values.size() - 1)
+                    result += "|";
+            }
+            pManager.setShowOptions(result);
+
+        } else if (Constants.PREFERENCE_SETTINGS_CHECK_TIME.equals(key)) {
 
             long time = Long.parseLong(newValue.toString());
-            ManagerFactory.getPreferencesManager().setTimeNotifications(time);
+            pManager.setTimeNotifications(time);
             Constants.setAlarm(this, time, false);
             mCheckTime.setValue(newValue.toString());
 
@@ -140,9 +161,9 @@ public class SettingsActivity extends PreferenceActivity implements OnPreference
     }
 
     private void updateSummaries() {
-        PreferencesManager pManager = ManagerFactory.getPreferencesManager();
+        PreferencesManager pManager = ManagerFactory.getPreferencesManager(this);
         mDownloadPath.setSummary(pManager.getDownloadPath());
-        String folder = ManagerFactory.getPreferencesManager().getGappsFolder();
+        String folder = pManager.getGappsFolder();
         if (folder == null || "".equals(folder)) {
             mGappsReset.setEnabled(false);
             folder = getResources().getString(R.string.gapps_folder_official);
@@ -150,7 +171,7 @@ public class SettingsActivity extends PreferenceActivity implements OnPreference
             mGappsReset.setEnabled(true);
         }
         mGappsFolder.setSummary(folder);
-        RecoveryInfo info = ManagerFactory.getRecoveryManager().getRecovery();
+        RecoveryInfo info = ManagerFactory.getRecoveryManager(this).getRecovery();
         mRecovery.setSummary(getResources().getText(R.string.recovery_summary) + " ("
                 + info.getName() + ")");
         mInternalSdcard.setSummary(getResources().getText(R.string.internalsdcard_summary) + " ("
@@ -160,7 +181,7 @@ public class SettingsActivity extends PreferenceActivity implements OnPreference
     }
 
     public void selectGappsFolder() {
-        final PreferencesManager pManager = ManagerFactory.getPreferencesManager();
+        final PreferencesManager pManager = ManagerFactory.getPreferencesManager(this);
 
         String folder = pManager.getGappsFolder();
         if (folder == null || "".equals(folder)) {
