@@ -283,15 +283,17 @@ public class RebootManager extends Manager {
             os.writeBytes("rm -f /cache/recovery/extendedcommand\n");
             os.writeBytes("rm -f /cache/recovery/openrecoveryscript\n");
 
-            String file = manager.getCommandsFile();
-
-            String[] commands = manager.getCommands(wipeSystem, wipeData, wipeCaches,
-                    fixPermissions, backupFolder, restore);
-            if (commands != null) {
-                int size = commands.length, i = 0;
-                for (; i < size; i++) {
-                    os.writeBytes("echo '" + commands[i] + "' >> /cache/recovery/" + file
-                            + "\n");
+            if (!skipCommands) {
+                String file = manager.getCommandsFile();
+    
+                String[] commands = manager.getCommands(wipeSystem, wipeData, wipeCaches,
+                        fixPermissions, backupFolder, restore);
+                if (commands != null) {
+                    int size = commands.length, i = 0;
+                    for (; i < size; i++) {
+                        os.writeBytes("echo '" + commands[i] + "' >> /cache/recovery/" + file
+                                + "\n");
+                    }
                 }
             }
 
