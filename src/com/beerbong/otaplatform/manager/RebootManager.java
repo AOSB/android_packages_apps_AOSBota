@@ -325,7 +325,7 @@ public class RebootManager extends Manager {
         String data = fManager.readAssets(mContext, "fix_permissions.sh");
 
         if (data != null
-                && fManager.writeToFile(data, "/data/data/com.beerbong.zipinst/files/",
+                && fManager.writeToFile(data, "/data/data/com.beerbong.otaplatform/files/",
                         "fix_permissions.sh")) {
 
             ManagerFactory
