@@ -17,6 +17,7 @@
     -->
 
     <string name="app_name">OTAPlatform</string>
+    <string name="app_name2">OTAZipInstaller</string>
     <string name="rom_info">Installed ROM info</string>
     <string name="not_available">N/A</string>
     <string name="checking">Checking for new version</string>
