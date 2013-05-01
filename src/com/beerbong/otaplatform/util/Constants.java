@@ -81,6 +81,13 @@ public class Constants {
     public static final String PREFERENCE_SETTINGS_EXTERNAL_SDCARD = "externalsdcard";
     public static final String PREFERENCE_SETTINGS_OPTIONS = "showoptions";
 
+    // recovery preferences
+    public static final String PREFERENCE_RECOVERY_BACKUP = "recovery_activity_backup";
+    public static final String PREFERENCE_RECOVERY_RESTORE = "recovery_activity_restore";
+    public static final String PREFERENCE_RECOVERY_DELETE = "recovery_activity_delete";
+    public static final String PREFERENCE_RECOVERY_ACTIONS = "recovery_activity_actions";
+    public static final String PREFERENCE_RECOVERY_REBOOT = "recovery_activity_reboot";
+
     private static final long K = 1024;
     private static final long M = K * K;
     private static final long G = M * K;

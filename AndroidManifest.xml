@@ -32,6 +32,7 @@
         <activity android:name="com.beerbong.otaplatform.activity.LoginActivity" />
         <activity android:name="com.beerbong.otaplatform.activity.SettingsActivity" />
         <activity android:name="com.beerbong.otaplatform.activity.FlashActivity" />
+        <activity android:name="com.beerbong.otaplatform.activity.RecoveryActivity" />
 
         <receiver android:name="com.beerbong.otaplatform.NotificationAlarm" />
         <receiver

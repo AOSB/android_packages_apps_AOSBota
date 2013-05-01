@@ -30,6 +30,7 @@ import android.app.AlertDialog;
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -59,6 +60,7 @@ public class FileManager extends Manager implements UI.OnNewIntentListener {
     private static DownloadTask mDownloadRom;
     private static DownloadTask mDownloadGapps;
     private static DownloadTask mDownloadTWRP;
+    private int mSelectedBackup = -1;
 
     protected FileManager(Context context) {
         super(context);
@@ -224,6 +226,61 @@ public class FileManager extends Manager implements UI.OnNewIntentListener {
             pManager.addFlashQueue(item.toString());
         }
         return true;
+    }
+
+    public void showDeleteDialog(final Context context) {
+
+        AlertDialog.Builder alert = new AlertDialog.Builder(context);
+        alert.setTitle(R.string.alert_delete_title);
+
+        final String backupFolder = ManagerFactory.getRecoveryManager(context).getBackupDir(true);
+        final String[] backups = ManagerFactory.getRecoveryManager(context).getBackupList();
+        mSelectedBackup = backups.length > 0 ? 0 : -1;
+
+        alert.setSingleChoiceItems(backups, mSelectedBackup, new DialogInterface.OnClickListener() {
+
+            public void onClick(DialogInterface dialog, int which) {
+                mSelectedBackup = which;
+            }
+        });
+
+        alert.setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+
+            public void onClick(DialogInterface dialog, int whichButton) {
+                dialog.dismiss();
+
+                if (mSelectedBackup >= 0) {
+                    final String toDelete = backupFolder + backups[mSelectedBackup];
+
+                    final ProgressDialog pDialog = new ProgressDialog(context);
+                    pDialog.setIndeterminate(true);
+                    pDialog.setMessage(context.getResources().getString(
+                            R.string.alert_deleting_folder, new Object[] {backups[mSelectedBackup]}));
+                    pDialog.setCancelable(false);
+                    pDialog.setCanceledOnTouchOutside(false);
+                    pDialog.show();
+
+                    (new Thread() {
+
+                        public void run() {
+
+                            recursiveDelete(new File(toDelete));
+
+                            pDialog.dismiss();
+                        }
+                    }).start();
+                }
+            }
+        });
+
+        alert.setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
+
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+            }
+        });
+        alert.show();
+
     }
 
     public void selectDownloadPath(final Activity activity) {

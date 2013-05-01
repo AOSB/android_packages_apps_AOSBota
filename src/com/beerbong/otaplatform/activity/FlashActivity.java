@@ -31,7 +31,6 @@ import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.view.LayoutInflater;
 import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -249,21 +248,12 @@ public class FlashActivity extends FragmentActivity implements OnItemClickListen
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
 
-        MenuInflater inflater = getMenuInflater();
-        inflater.inflate(R.layout.flash_menu, menu);
-
-        return true;
+        return ManagerFactory.getMenuManager(this).onCreateOptionsMenu(this, menu, R.layout.flash_menu);
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
 
-        switch (item.getItemId()) {
-            case R.id.settings:
-                startActivity(new Intent(this, SettingsActivity.class));
-                break;
-        }
-
-        return true;
+        return ManagerFactory.getMenuManager(this).onOptionsItemSelected(this, item);
     }
 }

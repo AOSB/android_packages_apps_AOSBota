@@ -26,6 +26,7 @@ public class ManagerFactory {
     private static SUManager mSUManager;
     private static RecoveryManager mRecoveryManager;
     private static RebootManager mRebootManager;
+    private static MenuManager mMenuManager;
 
     public static void start(Activity mActivity) {
         mFileManager = new FileManager(mActivity);
@@ -34,6 +35,7 @@ public class ManagerFactory {
         mSUManager = new SUManager(mActivity);
         mRecoveryManager = new RecoveryManager(mActivity);
         mRebootManager = new RebootManager(mActivity);
+        mMenuManager = new MenuManager(mActivity);
     }
 
     public static FileManager getFileManager(Context context) {
@@ -64,5 +66,11 @@ public class ManagerFactory {
         if (mRebootManager == null)
             mRebootManager = new RebootManager(context);
         return mRebootManager;
+    }
+
+    public static MenuManager getMenuManager(Context context) {
+        if (mMenuManager == null)
+            mMenuManager = new MenuManager(context);
+        return mMenuManager;
     }
 }

@@ -21,7 +21,6 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -30,9 +29,6 @@ import android.widget.TextView;
 
 import com.beerbong.otaplatform.R;
 import com.beerbong.otaplatform.activity.FlashActivity;
-import com.beerbong.otaplatform.activity.GooActivity;
-import com.beerbong.otaplatform.activity.LoginActivity;
-import com.beerbong.otaplatform.activity.SettingsActivity;
 import com.beerbong.otaplatform.manager.ManagerFactory;
 import com.beerbong.otaplatform.manager.PreferencesManager;
 import com.beerbong.otaplatform.updater.GappsUpdater;
@@ -227,29 +223,13 @@ public class UIImpl extends UI implements RomUpdater.RomUpdaterListener,
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
 
-        MenuInflater inflater = mActivity.getMenuInflater();
-        inflater.inflate(R.layout.menu, menu);
-
-        return true;
+        return ManagerFactory.getMenuManager(mActivity).onCreateOptionsMenu(mActivity, menu, R.layout.menu);
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
 
-        switch (item.getItemId()) {
-            case R.id.settings:
-                mActivity.startActivity(new Intent(mActivity, SettingsActivity.class));
-                break;
-            case R.id.login:
-                mActivity.startActivity(new Intent(mActivity, LoginActivity.class));
-                break;
-            case R.id.goo:
-                GooActivity.CURRENT_NAVIGATION = null;
-                mActivity.startActivity(new Intent(mActivity, GooActivity.class));
-                break;
-        }
-
-        return true;
+        return ManagerFactory.getMenuManager(mActivity).onOptionsItemSelected(mActivity, item);
     }
 
     private void updateFlashQueueText() {

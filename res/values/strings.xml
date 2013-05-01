@@ -149,5 +149,17 @@
     <string name="alert_restore_title">Restore</string>
     <string name="alert_wipe_system_title">System wipe</string>
     <string name="alert_wipe_system_message">You are about to perform a system wipe. Are you sure you want to do that?</string>
+    <string name="alert_delete_title">Delete</string>
+    <string name="alert_deleting_folder">Deleting %1$s&#8230;</string>
+    <string name="recovery_activity_title">Recovery</string>
+    <string name="recovery_activity_backup_title">Backup</string>
+    <string name="recovery_activity_backup_summary">Do a backup of your rom</string>
+    <string name="recovery_activity_restore_title">Restore</string>
+    <string name="recovery_activity_restore_summary">Restore a previous backup</string>
+    <string name="recovery_activity_delete_title">Delete</string>
+    <string name="recovery_activity_delete_summary">Delete a previous backup</string>
+    <string name="recovery_activity_reboot_title">Reboot into recovery</string>
+    <string name="recovery_activity_actions">Recovery actions</string>
+    <string name="recovery_activity_actions_summary">Wipe data, caches and/or fix permissions</string>
 
 </resources>

@@ -44,7 +44,7 @@ public class RebootManager extends Manager {
         showBackupDialog(context, true, false, false, false, false);
     }
 
-    public void showRestoreDialog(Context context) {
+    public void showRestoreDialog(final Context context) {
 
         AlertDialog.Builder alert = new AlertDialog.Builder(context);
         alert.setTitle(R.string.alert_restore_title);
@@ -66,7 +66,7 @@ public class RebootManager extends Manager {
                 dialog.dismiss();
 
                 if (mSelectedBackup >= 0) {
-                    reboot(false, false, false, false, null, backupFolder
+                    reboot(context, false, false, false, false, null, backupFolder
                             + backups[mSelectedBackup]);
                 }
             }
@@ -82,22 +82,22 @@ public class RebootManager extends Manager {
 
     }
 
-    public void simpleReboot() {
-        reboot(false, false, false, false, null, null, true);
+    public void simpleReboot(Context context) {
+        reboot(context, false, false, false, false, null, null, true);
     }
 
-    public void simpleReboot(boolean wipeData, boolean wipeCaches, boolean fixPermissions) {
+    public void simpleReboot(Context context, boolean wipeData, boolean wipeCaches, boolean fixPermissions) {
         ManagerFactory.getFileManager(mContext).clearItems();
         ManagerFactory.getPreferencesManager(mContext).setFlashQueue(null);
         UI.getInstance().onListChanged();
-        reboot(false, wipeData, wipeCaches, fixPermissions, null, null, false);
+        reboot(context, false, wipeData, wipeCaches, fixPermissions, null, null, false);
     }
 
-    public void fixPermissions() {
+    public void fixPermissions(Context context) {
         ManagerFactory.getFileManager(mContext).clearItems();
         ManagerFactory.getPreferencesManager(mContext).setFlashQueue(null);
         UI.getInstance().onListChanged();
-        reboot(false, false, false, true, null, null, false);
+        reboot(context, false, false, false, true, null, null, false);
     }
 
     private void showBackupDialog(final Context context, final boolean removePreferences,
@@ -141,7 +141,7 @@ public class RebootManager extends Manager {
         }
     }
 
-    private void reallyShowBackupDialog(Context context, boolean removePreferences,
+    private void reallyShowBackupDialog(final Context context, boolean removePreferences,
             final boolean wipeSystem, final boolean wipeData, final boolean wipeCaches,
             final boolean fixPermissions) {
         if (removePreferences) {
@@ -154,7 +154,7 @@ public class RebootManager extends Manager {
         alert.setTitle(R.string.alert_backup_title);
         alert.setMessage(R.string.alert_backup_message);
 
-        final EditText input = new EditText(mContext);
+        final EditText input = new EditText(context);
         alert.setView(input);
         input.setText(Constants.getDateAndTime());
         input.selectAll();
@@ -167,7 +167,7 @@ public class RebootManager extends Manager {
                 String text = input.getText().toString();
                 text = text.replace(" ", "");
 
-                reboot(wipeSystem, wipeData, wipeCaches, false, text, null);
+                reboot(context, wipeSystem, wipeData, wipeCaches, false, text, null);
             }
         });
 
@@ -209,7 +209,7 @@ public class RebootManager extends Manager {
                     showBackupDialog(context, false, cursor.isWipeSystem(), cursor.isWipeData(),
                             cursor.isWipeCaches(), cursor.isFixPermissions());
                 } else {
-                    reboot(cursor.isWipeSystem(), cursor.isWipeData(), cursor.isWipeCaches(),
+                    reboot(context, cursor.isWipeSystem(), cursor.isWipeData(), cursor.isWipeCaches(),
                             cursor.isFixPermissions(), null, null);
                 }
 
@@ -225,17 +225,17 @@ public class RebootManager extends Manager {
         alert.show();
     }
 
-    private void reboot(boolean wipeSystem, boolean wipeData, boolean wipeCaches,
+    private void reboot(Context context, boolean wipeSystem, boolean wipeData, boolean wipeCaches,
             boolean fixPermissions, String backupFolder, String restore) {
-        reboot(wipeSystem, wipeData, wipeCaches, fixPermissions, backupFolder, restore, false);
+        reboot(context, wipeSystem, wipeData, wipeCaches, fixPermissions, backupFolder, restore, false);
     }
 
-    private void reboot(final boolean wipeSystem, final boolean wipeData, final boolean wipeCaches,
+    private void reboot(Context context, final boolean wipeSystem, final boolean wipeData, final boolean wipeCaches,
             final boolean fixPermissions, final String backupFolder, final String restore,
             final boolean skipCommands) {
 
-//        if (wipeSystem && ManagerFactory.getPreferencesManager().isShowSystemWipeAlert()) {
-            AlertDialog.Builder alert = new AlertDialog.Builder(mContext);
+        if (wipeSystem) {// && ManagerFactory.getPreferencesManager().isShowSystemWipeAlert()) {
+            AlertDialog.Builder alert = new AlertDialog.Builder(context);
             alert.setTitle(R.string.alert_wipe_system_title);
             alert.setMessage(R.string.alert_wipe_system_message);
 
@@ -258,10 +258,10 @@ public class RebootManager extends Manager {
                 }
             });
             alert.show();
-//        } else {
-//            _reboot(wipeSystem, wipeData, wipeCaches, fixPermissions, backupFolder, restore,
-//                    skipCommands);
-//        }
+        } else {
+            _reboot(wipeSystem, wipeData, wipeCaches, fixPermissions, backupFolder, restore,
+                    skipCommands);
+        }
 
     }
 
