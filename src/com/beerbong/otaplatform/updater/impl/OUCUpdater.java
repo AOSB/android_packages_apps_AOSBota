@@ -47,7 +47,7 @@ public class OUCUpdater implements Updater {
 
     @Override
     public String getDeveloperId() {
-        return null;
+        return Constants.getProperty(PROPERTY_OTA_ID);
     }
 
     @Override
