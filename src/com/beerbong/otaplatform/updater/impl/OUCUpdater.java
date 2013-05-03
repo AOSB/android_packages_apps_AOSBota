@@ -26,7 +26,7 @@ import com.beerbong.otaplatform.updater.Updater;
 import com.beerbong.otaplatform.util.Constants;
 import com.beerbong.otaplatform.util.HttpStringReader;
 
-public class OUCUpdater implements Updater {
+public class OUCUpdater extends Updater {
 
     public static final String URL = "https://www.otaupdatecenter.pro/pages/romupdate.php";
     public static final String PROPERTY_OTA_ID = "otaupdater.otaid";
@@ -67,7 +67,7 @@ public class OUCUpdater implements Updater {
     public void onReadEnd(String buffer) {
         mScanning = false;
         try {
-            JSONObject json = new JSONObject(buffer);
+            final JSONObject json = new JSONObject(buffer);
 
             if (json.has("error")) {
                 String error = json.getString("error");
@@ -75,14 +75,61 @@ public class OUCUpdater implements Updater {
                 return;
             }
 
-            String date = json.getString("date");
-            date = date.replace("-", "");
+            PackageInfo info = new PackageInfo(){
 
-            PackageInfo info = new PackageInfo(){};
-            info.md5 = json.getString("md5");
-            info.version = Long.parseLong(date);
-            info.path = json.getString("url");
-            info.filename = json.getString("rom") + "-" + json.getString("date") + ".zip";
+                @Override
+                public String getMd5() {
+                    try {
+                        return json.getString("md5");
+                    } catch (Exception ex) {
+                        ex.printStackTrace();
+                        mListener.versionError(null);
+                        return null;
+                    }
+                }
+
+                @Override
+                public String getFilename() {
+                    try {
+                        return json.getString("rom") + "-" + json.getString("date") + ".zip";
+                    } catch (Exception ex) {
+                        ex.printStackTrace();
+                        mListener.versionError(null);
+                        return null;
+                    }
+                }
+
+                @Override
+                public String getPath() {
+                    try {
+                        return json.getString("url");
+                    } catch (Exception ex) {
+                        ex.printStackTrace();
+                        mListener.versionError(null);
+                        return null;
+                    }
+                }
+
+                @Override
+                public String getFolder() {
+                    return null;
+                }
+
+                @Override
+                public long getVersion() {
+                    try {
+
+                        String date = json.getString("date");
+                        date = date.replace("-", "");
+                        return Long.parseLong(date);
+                    } catch (Exception ex) {
+                        ex.printStackTrace();
+                        mListener.versionError(null);
+                        return -1;
+                    }
+                }
+                
+            };
 
             mListener.versionFound(info);
         } catch (Exception ex) {

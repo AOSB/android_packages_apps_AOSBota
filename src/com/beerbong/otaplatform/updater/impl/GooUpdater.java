@@ -28,7 +28,7 @@ import com.beerbong.otaplatform.updater.Updater;
 import com.beerbong.otaplatform.util.Constants;
 import com.beerbong.otaplatform.util.URLStringReader;
 
-public class GooUpdater implements Updater {
+public class GooUpdater extends Updater {
 
     public static final String PROPERTY_GOO_DEVELOPER = "ro.goo.developerid";
     public static final String PROPERTY_GOO_ROM = "ro.goo.rom";
@@ -120,10 +120,10 @@ public class GooUpdater implements Updater {
                 PackageInfo newRom = null;
                 for (int i = 0; i < mFoundRoms.size(); i++) {
                     PackageInfo info = mFoundRoms.get(i);
-                    if (info.version > newVersion) {
+                    if (info.getVersion() > newVersion) {
                         newRom = info;
                     }
-                    newVersion = Math.max(newVersion, info.version);
+                    newVersion = Math.max(newVersion, info.getVersion());
                 }
                 mListener.versionFound(newRom);
             }

@@ -226,7 +226,7 @@ public class GooActivity extends PreferenceActivity implements URLStringReaderLi
                                 .setMessage(
                                         GooActivity.this.getResources().getString(
                                                 R.string.goo_download_summary,
-                                                new Object[] { info.filename, info.folder }))
+                                                new Object[] { info.getFilename(), info.getFolder() }))
                                 .setPositiveButton(android.R.string.ok,
                                         new DialogInterface.OnClickListener() {
 
@@ -241,9 +241,9 @@ public class GooActivity extends PreferenceActivity implements URLStringReaderLi
                                                                 MainActivity.class);
                                                         intent.putExtra("NOTIFICATION_ID",
                                                                 Constants.NEWROMVERSION_NOTIFICATION_ID);
-                                                        intent.putExtra("URL", info.path);
-                                                        intent.putExtra("ZIP_NAME", info.filename);
-                                                        intent.putExtra("MD5", info.md5);
+                                                        intent.putExtra("URL", info.getPath());
+                                                        intent.putExtra("ZIP_NAME", info.getFilename());
+                                                        intent.putExtra("MD5", info.getMd5());
                                                         startActivity(intent);
                                                     }
                                                 });

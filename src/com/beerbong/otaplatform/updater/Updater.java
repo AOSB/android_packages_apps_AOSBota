@@ -16,21 +16,30 @@
 
 package com.beerbong.otaplatform.updater;
 
+import android.content.Context;
+
+import com.beerbong.otaplatform.updater.RomUpdater.RomUpdaterListener;
+import com.beerbong.otaplatform.updater.impl.GooUpdater;
+import com.beerbong.otaplatform.updater.impl.OUCUpdater;
+import com.beerbong.otaplatform.util.Constants;
 import com.beerbong.otaplatform.util.HttpStringReader.HttpStringReaderListener;
 import com.beerbong.otaplatform.util.URLStringReader.URLStringReaderListener;
 
-public interface Updater extends URLStringReaderListener, HttpStringReaderListener {
+public abstract class Updater implements URLStringReaderListener, HttpStringReaderListener {
 
-    public abstract class PackageInfo {
+    public interface PackageInfo {
 
-        public String md5;
-        public String filename;
-        public String path;
-        public String folder;
-        public long version;
+        public String getMd5();
+        public String getFilename();
+        public String getPath();
+        public String getFolder();
+        public long getVersion();
     }
 
     public static final String PROPERTY_DEVICE = "ro.product.device";
+
+    public static final int UPDATER_GOO = 0;
+    public static final int UPDATER_OUC = 1;
 
     public static interface UpdaterListener {
 
@@ -39,13 +48,48 @@ public interface Updater extends URLStringReaderListener, HttpStringReaderListen
         public void versionError(String error);
     }
 
-    public String getDeveloperId();
+    public static int getRomType() {
+        if (Constants.getProperty(GooUpdater.PROPERTY_GOO_DEVELOPER) != null
+                && Constants.getProperty(GooUpdater.PROPERTY_GOO_ROM) != null
+                && Constants.getProperty(GooUpdater.PROPERTY_GOO_VERSION) != null) {
+            return UPDATER_GOO;
+        }
+        if (Constants.getProperty(OUCUpdater.PROPERTY_OTA_ID) != null
+                && Constants.getProperty(OUCUpdater.PROPERTY_OTA_TIME) != null
+                && Constants.getProperty(OUCUpdater.PROPERTY_OTA_VER) != null) {
+            return UPDATER_OUC;
+        }
+        return -1;
+    }
+    
+    public static RomUpdater getRomUpdater(Context context, RomUpdaterListener listener, boolean fromAlarm) {
+        switch (getRomType()) {
+            case UPDATER_GOO :
+            case UPDATER_OUC :
+                return new RomUpdater(context, listener, fromAlarm);
+            default :
+                return null;
+        }
+    }
+    
+    protected static Updater getRomUpdater(RomUpdater updater) {
+        switch (getRomType()) {
+            case UPDATER_GOO :
+                return new GooUpdater(updater);
+            case UPDATER_OUC :
+                return new OUCUpdater(updater);
+            default :
+                return null;
+        }
+    }
 
-    public String getName();
+    public abstract String getDeveloperId();
 
-    public int getVersion();
+    public abstract String getName();
 
-    public void searchVersion();
+    public abstract int getVersion();
 
-    public boolean isScanning();
+    public abstract void searchVersion();
+
+    public abstract boolean isScanning();
 }

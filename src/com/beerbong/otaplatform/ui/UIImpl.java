@@ -34,6 +34,7 @@ import com.beerbong.otaplatform.manager.PreferencesManager;
 import com.beerbong.otaplatform.updater.GappsUpdater;
 import com.beerbong.otaplatform.updater.RomUpdater;
 import com.beerbong.otaplatform.updater.TWRPUpdater;
+import com.beerbong.otaplatform.updater.Updater;
 import com.beerbong.otaplatform.util.Constants;
 
 public class UIImpl extends UI implements RomUpdater.RomUpdaterListener,
@@ -74,7 +75,7 @@ public class UIImpl extends UI implements RomUpdater.RomUpdaterListener,
 
         mActivity.setContentView(R.layout.main_activity);
 
-        mRomUpdater = new RomUpdater(mActivity, this, false);
+        mRomUpdater = Updater.getRomUpdater(mActivity, this, false);
 
         mGappsUpdater = new GappsUpdater(mActivity, this, false);
 

@@ -139,15 +139,15 @@ public class Constants {
 
         Intent intent = new Intent(context, MainActivity.class);
         intent.putExtra("NOTIFICATION_ID", notificationId);
-        intent.putExtra("URL", info.path);
-        intent.putExtra("ZIP_NAME", info.filename);
-        intent.putExtra("MD5", info.md5);
+        intent.putExtra("URL", info.getPath());
+        intent.putExtra("ZIP_NAME", info.getFilename());
+        intent.putExtra("MD5", info.getMd5());
         PendingIntent pIntent = PendingIntent.getActivity(context, 0, intent,
                 PendingIntent.FLAG_UPDATE_CURRENT);
 
         Notification noti = new Notification.Builder(context)
                 .setContentTitle(resources.getString(resourceTitle))
-                .setContentText(resources.getString(resourceText, new Object[] { info.filename }))
+                .setContentText(resources.getString(resourceText, new Object[] { info.getFilename() }))
                 .setSmallIcon(R.drawable.ic_launcher_goo).setContentIntent(pIntent).build();
 
         NotificationManager notificationManager = (NotificationManager) context

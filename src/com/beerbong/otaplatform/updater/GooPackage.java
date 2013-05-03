@@ -20,23 +20,28 @@ import org.json.JSONObject;
 
 import com.beerbong.otaplatform.updater.Updater.PackageInfo;
 
-public class GooPackage extends PackageInfo {
+public class GooPackage implements PackageInfo {
 
-    public int id;
-    public String type;
-    public String description;
-    public int is_flashable;
-    public long modified;
-    public int downloads;
-    public int status;
-    public String additional_info;
-    public String short_url;
-    public int developer_id;
-    public String developerid;
-    public String board;
-    public String rom;
-    public int gapps_package;
-    public int incremental_file;
+    private String md5 = null;
+    private String filename = null;
+    private String path = null;
+    private String folder = null;
+    private long version = -1;
+    private int id;
+    private String type;
+    private String description;
+    private int is_flashable;
+    private long modified;
+    private int downloads;
+    private int status;
+    private String additional_info;
+    private String short_url;
+    private int developer_id;
+    private String developerid;
+    private String board;
+    private String rom;
+    private int gapps_package;
+    private int incremental_file;
 
     public GooPackage(JSONObject result) {
         if (result == null) {
@@ -63,5 +68,105 @@ public class GooPackage extends PackageInfo {
             gapps_package = result.optInt("gapps_package");
             incremental_file = result.optInt("incremental_file");
         }
+    }
+
+    @Override
+    public String getMd5() {
+        return md5;
+    }
+
+    @Override
+    public String getFilename() {
+        return filename;
+    }
+
+    @Override
+    public String getPath() {
+        return path;
+    }
+
+    @Override
+    public String getFolder() {
+        return folder;
+    }
+
+    @Override
+    public long getVersion() {
+        return version;
+    }
+
+    
+    public int getId() {
+        return id;
+    }
+
+    
+    public String getType() {
+        return type;
+    }
+
+    
+    public String getDescription() {
+        return description;
+    }
+
+    
+    public int getIs_flashable() {
+        return is_flashable;
+    }
+
+    
+    public long getModified() {
+        return modified;
+    }
+
+    
+    public int getDownloads() {
+        return downloads;
+    }
+
+    
+    public int getStatus() {
+        return status;
+    }
+
+    
+    public String getAdditional_info() {
+        return additional_info;
+    }
+
+    
+    public String getShort_url() {
+        return short_url;
+    }
+
+    
+    public int getDeveloper_id() {
+        return developer_id;
+    }
+
+    
+    public String getDeveloperid() {
+        return developerid;
+    }
+
+    
+    public String getBoard() {
+        return board;
+    }
+
+    
+    public String getRom() {
+        return rom;
+    }
+
+    
+    public int getGapps_package() {
+        return gapps_package;
+    }
+
+    
+    public int getIncremental_file() {
+        return incremental_file;
     }
 }

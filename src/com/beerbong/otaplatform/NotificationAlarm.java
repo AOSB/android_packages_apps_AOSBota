@@ -22,6 +22,7 @@ import android.content.Intent;
 
 import com.beerbong.otaplatform.updater.GappsUpdater;
 import com.beerbong.otaplatform.updater.RomUpdater;
+import com.beerbong.otaplatform.updater.Updater;
 import com.beerbong.otaplatform.util.Constants;
 
 public class NotificationAlarm extends BroadcastReceiver {
@@ -32,15 +33,19 @@ public class NotificationAlarm extends BroadcastReceiver {
     @Override
     public void onReceive(Context context, Intent intent) {
 
-        if (mRomUpdater == null) {
-            mRomUpdater = new RomUpdater(context, null, true);
+        if (Updater.getRomType() != -1) {
+            if (mRomUpdater == null) {
+                mRomUpdater = Updater.getRomUpdater(context, null, true);
+            }
         }
         if (mGappsUpdater == null) {
             mGappsUpdater = new GappsUpdater(context, null, true);
         }
 
         if (Constants.isNetworkAvailable(context)) {
-            mRomUpdater.check();
+            if (mRomUpdater != null) {
+                mRomUpdater.check();
+            }
             mGappsUpdater.check();
         }
     }

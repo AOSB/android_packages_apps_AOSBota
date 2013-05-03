@@ -34,7 +34,7 @@ import com.beerbong.otaplatform.manager.ManagerFactory;
 import com.beerbong.otaplatform.util.Constants;
 import com.beerbong.otaplatform.util.URLStringReader;
 
-public class GappsUpdater implements Updater, Updater.UpdaterListener {
+public class GappsUpdater extends Updater implements Updater.UpdaterListener {
 
     public interface GappsUpdaterListener {
 
@@ -180,7 +180,7 @@ public class GappsUpdater implements Updater, Updater.UpdaterListener {
         if (mCustomGapps) {
             showLastGappsFound(info);
         } else {
-            if (info != null && info.version > mVersion) {
+            if (info != null && info.getVersion() > mVersion) {
                 if (!mFromAlarm) {
                     showNewGappsFound(info);
                 } else {
@@ -198,7 +198,7 @@ public class GappsUpdater implements Updater, Updater.UpdaterListener {
             ((Activity) mContext).runOnUiThread(new Runnable() {
 
                 public void run() {
-                    mListener.checkGappsCompleted(info.version);
+                    mListener.checkGappsCompleted(info.getVersion());
                 }
             });
         }
@@ -236,7 +236,7 @@ public class GappsUpdater implements Updater, Updater.UpdaterListener {
                             .setMessage(
                                     mContext.getResources().getString(
                                             R.string.new_gapps_found_summary,
-                                            new Object[] { info.filename, info.folder }))
+                                            new Object[] { info.getFilename(), info.getFolder() }))
                             .setPositiveButton(android.R.string.ok,
                                     new DialogInterface.OnClickListener() {
 
@@ -250,9 +250,9 @@ public class GappsUpdater implements Updater, Updater.UpdaterListener {
                                                             .getFileManager(mContext)
                                                             .download(
                                                                     mContext,
-                                                                    info.path,
-                                                                    info.filename,
-                                                                    info.md5,
+                                                                    info.getPath(),
+                                                                    info.getFilename(),
+                                                                    info.getMd5(),
                                                                     Constants.DOWNLOADGAPPS_NOTIFICATION_ID);
                                                 }
                                             });
@@ -282,7 +282,7 @@ public class GappsUpdater implements Updater, Updater.UpdaterListener {
                             .setMessage(
                                     mContext.getResources().getString(
                                             R.string.last_gapps_found_summary,
-                                            new Object[] { info.filename, info.folder }))
+                                            new Object[] { info.getFilename(), info.getFolder() }))
                             .setPositiveButton(android.R.string.ok,
                                     new DialogInterface.OnClickListener() {
 
@@ -296,9 +296,9 @@ public class GappsUpdater implements Updater, Updater.UpdaterListener {
                                                             .getFileManager(mContext)
                                                             .download(
                                                                     mContext,
-                                                                    info.path,
-                                                                    info.filename,
-                                                                    info.md5,
+                                                                    info.getPath(),
+                                                                    info.getFilename(),
+                                                                    info.getMd5(),
                                                                     Constants.DOWNLOADGAPPS_NOTIFICATION_ID);
                                                 }
                                             });

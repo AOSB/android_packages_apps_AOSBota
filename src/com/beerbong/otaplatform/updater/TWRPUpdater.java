@@ -34,7 +34,7 @@ import com.beerbong.otaplatform.util.DownloadTask.DownloadTaskListener;
 import com.beerbong.otaplatform.util.HttpStringReader.HttpStringReaderListener;
 import com.beerbong.otaplatform.util.URLStringReader;
 
-public class TWRPUpdater implements Updater, Updater.UpdaterListener {
+public class TWRPUpdater extends Updater implements Updater.UpdaterListener {
 
     public interface TWRPUpdaterListener {
 
@@ -170,7 +170,7 @@ public class TWRPUpdater implements Updater, Updater.UpdaterListener {
             ((Activity) mContext).runOnUiThread(new Runnable() {
 
                 public void run() {
-                    mListener.checkTWRPCompleted(info == null ? -1 : info.version);
+                    mListener.checkTWRPCompleted(info == null ? -1 : info.getVersion());
                 }
             });
         }
@@ -206,7 +206,7 @@ public class TWRPUpdater implements Updater, Updater.UpdaterListener {
                             .setMessage(
                                     mContext.getResources().getString(
                                             R.string.new_twrp_found_summary,
-                                            new Object[] { info.filename }))
+                                            new Object[] { info.getFilename() }))
                             .setPositiveButton(android.R.string.ok,
                                     new DialogInterface.OnClickListener() {
 
@@ -217,8 +217,8 @@ public class TWRPUpdater implements Updater, Updater.UpdaterListener {
 
                                                 public void run() {
                                                     ManagerFactory.getFileManager(mContext).download(
-                                                            mContext, info.path, info.filename,
-                                                            info.md5,
+                                                            mContext, info.getPath(), info.getFilename(),
+                                                            info.getMd5(),
                                                             Constants.DOWNLOADTWRP_NOTIFICATION_ID, new DownloadTaskListener() {
 
                                                                 @Override
@@ -226,7 +226,7 @@ public class TWRPUpdater implements Updater, Updater.UpdaterListener {
 
                                                                     if (status == 0) {
                                                                         String fileMd5 = Constants.md5(file);
-                                                                        if (!fileMd5.equals(info.md5)) {
+                                                                        if (!fileMd5.equals(info.getMd5())) {
                                                                             Constants.showToastOnUiThread(mContext, R.string.check_twrp_error_md5);
                                                                             return;
                                                                         }

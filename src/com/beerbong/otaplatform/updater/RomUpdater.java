@@ -24,8 +24,6 @@ import android.content.DialogInterface;
 import com.beerbong.otaplatform.R;
 import com.beerbong.otaplatform.manager.ManagerFactory;
 import com.beerbong.otaplatform.updater.Updater.PackageInfo;
-import com.beerbong.otaplatform.updater.impl.GooUpdater;
-import com.beerbong.otaplatform.updater.impl.OUCUpdater;
 import com.beerbong.otaplatform.util.Constants;
 
 public class RomUpdater implements Updater.UpdaterListener {
@@ -42,12 +40,12 @@ public class RomUpdater implements Updater.UpdaterListener {
         public void checkRomCompleted(long newVersion);
     }
 
-    public RomUpdater(Context context, RomUpdaterListener listener, boolean fromAlarm) {
+    protected RomUpdater(Context context, RomUpdaterListener listener, boolean fromAlarm) {
 
         mContext = context;
         mFromAlarm = fromAlarm;
 
-        mUpdater = getUpdater();
+        mUpdater = Updater.getRomUpdater(this);
 
         mListener = listener;
 
@@ -83,7 +81,7 @@ public class RomUpdater implements Updater.UpdaterListener {
 
     @Override
     public void versionFound(final PackageInfo info) {
-        if (info != null && info.version > mRomVersion) {
+        if (info != null && info.getVersion() > mRomVersion) {
             if (!mFromAlarm) {
                 showNewRomFound(info);
             } else {
@@ -100,7 +98,7 @@ public class RomUpdater implements Updater.UpdaterListener {
             ((Activity) mContext).runOnUiThread(new Runnable() {
 
                 public void run() {
-                    mListener.checkRomCompleted(info == null ? -1 : info.version);
+                    mListener.checkRomCompleted(info == null ? -1 : info.getVersion());
                 }
             });
         }
@@ -137,7 +135,7 @@ public class RomUpdater implements Updater.UpdaterListener {
                             .setMessage(
                                     mContext.getResources().getString(
                                             R.string.new_rom_found_summary,
-                                            new Object[] { info.filename, info.folder }))
+                                            new Object[] { info.getFilename(), info.getFolder() }))
                             .setPositiveButton(android.R.string.ok,
                                     new DialogInterface.OnClickListener() {
 
@@ -148,8 +146,8 @@ public class RomUpdater implements Updater.UpdaterListener {
 
                                                 public void run() {
                                                     ManagerFactory.getFileManager(mContext).download(
-                                                            mContext, info.path, info.filename,
-                                                            info.md5,
+                                                            mContext, info.getPath(), info.getFilename(),
+                                                            info.getMd5(),
                                                             Constants.DOWNLOADROM_NOTIFICATION_ID);
                                                 }
                                             });
@@ -167,19 +165,5 @@ public class RomUpdater implements Updater.UpdaterListener {
                 }
             }
         });
-    }
-
-    private Updater getUpdater() {
-        if (Constants.getProperty(GooUpdater.PROPERTY_GOO_DEVELOPER) != null
-                && Constants.getProperty(GooUpdater.PROPERTY_GOO_ROM) != null
-                && Constants.getProperty(GooUpdater.PROPERTY_GOO_VERSION) != null) {
-            return new GooUpdater(this);
-        }
-        if (Constants.getProperty(OUCUpdater.PROPERTY_OTA_ID) != null
-                && Constants.getProperty(OUCUpdater.PROPERTY_OTA_TIME) != null
-                && Constants.getProperty(OUCUpdater.PROPERTY_OTA_VER) != null) {
-            return new OUCUpdater(this);
-        }
-        return null;
     }
 }
