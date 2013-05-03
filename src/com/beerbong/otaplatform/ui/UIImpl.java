@@ -81,7 +81,7 @@ public class UIImpl extends UI implements RomUpdater.RomUpdaterListener,
 
         mTwrpUpdater = new TWRPUpdater(mActivity, this);
 
-        boolean romCanUpdate = mRomUpdater.canUpdate();
+        boolean romCanUpdate = mRomUpdater != null && mRomUpdater.canUpdate();
 
         romHeader = (TextView) mActivity.findViewById(R.id.rom_header);
         devHeader = (TextView) mActivity.findViewById(R.id.developer_header);
@@ -200,7 +200,7 @@ public class UIImpl extends UI implements RomUpdater.RomUpdaterListener,
 
         mRemoteVersionHeader.setText(newVersion == -1 ? "" : String.valueOf(mNewRomVersion));
 
-        mButtonCheckRom.setEnabled(mRomUpdater.canUpdate());
+        mButtonCheckRom.setEnabled(mRomUpdater != null && mRomUpdater.canUpdate());
     }
 
     @Override
