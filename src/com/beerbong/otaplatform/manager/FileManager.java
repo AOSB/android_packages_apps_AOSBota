@@ -119,7 +119,6 @@ public class FileManager extends Manager implements UI.OnNewIntentListener {
         int notificationId = intent.getExtras() != null
                 && intent.getExtras().get("NOTIFICATION_ID") != null ? Integer.parseInt(intent
                 .getExtras().get("NOTIFICATION_ID").toString()) : -1;
-                android.util.Log.d("*******************", "FileManager " + intent.getExtras().get("NOTIFICATION_ID"));
         if (notificationId == Constants.NEWROMVERSION_NOTIFICATION_ID
                 || notificationId == Constants.NEWGAPPSVERSION_NOTIFICATION_ID) {
             PackageInfo info = (PackageInfo)intent.getExtras().get("PACKAGE");
