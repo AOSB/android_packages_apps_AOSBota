@@ -241,9 +241,10 @@ public class GooActivity extends PreferenceActivity implements URLStringReaderLi
                                                                 MainActivity.class);
                                                         intent.putExtra("NOTIFICATION_ID",
                                                                 Constants.NEWROMVERSION_NOTIFICATION_ID);
-                                                        intent.putExtra("URL", info.getPath());
-                                                        intent.putExtra("ZIP_NAME", info.getFilename());
-                                                        intent.putExtra("MD5", info.getMd5());
+//                                                        intent.putExtra("URL", info.getPath());
+//                                                        intent.putExtra("ZIP_NAME", info.getFilename());
+//                                                        intent.putExtra("MD5", info.getMd5());
+                                                        intent.putExtra("PACKAGE", info);
                                                         startActivity(intent);
                                                     }
                                                 });

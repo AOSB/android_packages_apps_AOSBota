@@ -28,11 +28,13 @@ import java.util.Date;
 
 import android.app.Activity;
 import android.app.AlarmManager;
+import android.app.AlertDialog;
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageInfo;
@@ -139,14 +141,15 @@ public class Constants {
 
         Intent intent = new Intent(context, MainActivity.class);
         intent.putExtra("NOTIFICATION_ID", notificationId);
-        intent.putExtra("URL", info.getPath());
-        intent.putExtra("ZIP_NAME", info.getFilename());
-        intent.putExtra("MD5", info.getMd5());
+//        intent.putExtra("URL", info.getPath());
+//        intent.putExtra("ZIP_NAME", info.getFilename());
+//        intent.putExtra("MD5", info.getMd5());
+        intent.putExtra("PACKAGE", info);
         PendingIntent pIntent = PendingIntent.getActivity(context, 0, intent,
                 PendingIntent.FLAG_UPDATE_CURRENT);
 
         Notification noti = new Notification.Builder(context)
-                .setContentTitle(resources.getString(resourceTitle))
+                .setContentTitle(resources.getString(resourceTitle, new Object[] { info.getVersion() }))
                 .setContentText(resources.getString(resourceText, new Object[] { info.getFilename() }))
                 .setSmallIcon(R.drawable.ic_launcher_goo).setContentIntent(pIntent).build();
 
@@ -242,5 +245,18 @@ public class Constants {
         String path = aInfo.sourceDir.substring(0, aInfo.sourceDir.lastIndexOf("/"));
         isSystemApp = path.contains("system/app") ? 1 : 0;
         return isSystemApp == 1;
+    }
+
+    public static void showSimpleDialog(Context context, int titleId, int messageId) {
+        new AlertDialog.Builder(context)
+        .setTitle(titleId)
+        .setMessage(messageId)
+        .setPositiveButton(android.R.string.ok,
+                new DialogInterface.OnClickListener() {
+
+                    public void onClick(DialogInterface dialog, int whichButton) {
+                        dialog.dismiss();
+                    }
+                }).show();
     }
 }

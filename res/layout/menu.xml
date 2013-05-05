@@ -21,6 +21,9 @@
     <item android:id="@+id/goo"
         android:title="@string/goo_browse" />
 
+    <item android:id="@+id/twrp"
+        android:title="@string/check_twrp_updates" />
+
     <item android:id="@+id/recovery"
         android:title="@string/recovery_activity_title" />
 

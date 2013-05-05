@@ -16,6 +16,8 @@
 
 package com.beerbong.otaplatform.updater;
 
+import java.io.Serializable;
+
 import android.content.Context;
 
 import com.beerbong.otaplatform.updater.RomUpdater.RomUpdaterListener;
@@ -27,12 +29,13 @@ import com.beerbong.otaplatform.util.URLStringReader.URLStringReaderListener;
 
 public abstract class Updater implements URLStringReaderListener, HttpStringReaderListener {
 
-    public interface PackageInfo {
+    public interface PackageInfo extends Serializable {
 
         public String getMd5();
         public String getFilename();
         public String getPath();
         public String getFolder();
+        public String getMessage(Context context);
         public long getVersion();
     }
 

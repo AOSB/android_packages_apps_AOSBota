@@ -17,12 +17,9 @@
 package com.beerbong.otaplatform.updater;
 
 import android.app.Activity;
-import android.app.AlertDialog;
 import android.content.Context;
-import android.content.DialogInterface;
 
 import com.beerbong.otaplatform.R;
-import com.beerbong.otaplatform.manager.ManagerFactory;
 import com.beerbong.otaplatform.updater.Updater.PackageInfo;
 import com.beerbong.otaplatform.util.Constants;
 
@@ -37,7 +34,7 @@ public class RomUpdater implements Updater.UpdaterListener {
 
     public interface RomUpdaterListener {
 
-        public void checkRomCompleted(long newVersion);
+        public void checkRomCompleted(PackageInfo info);
     }
 
     protected RomUpdater(Context context, RomUpdaterListener listener, boolean fromAlarm) {
@@ -82,9 +79,7 @@ public class RomUpdater implements Updater.UpdaterListener {
     @Override
     public void versionFound(final PackageInfo info) {
         if (info != null && info.getVersion() > mRomVersion) {
-            if (!mFromAlarm) {
-                showNewRomFound(info);
-            } else {
+            if (mFromAlarm) {
                 Constants.showNotification(mContext, info,
                         Constants.NEWROMVERSION_NOTIFICATION_ID, R.string.new_rom_found_title,
                         R.string.new_package_name);
@@ -98,7 +93,7 @@ public class RomUpdater implements Updater.UpdaterListener {
             ((Activity) mContext).runOnUiThread(new Runnable() {
 
                 public void run() {
-                    mListener.checkRomCompleted(info == null ? -1 : info.getVersion());
+                    mListener.checkRomCompleted(info.getVersion() > mRomVersion ? info : null);
                 }
             });
         }
@@ -119,51 +114,9 @@ public class RomUpdater implements Updater.UpdaterListener {
             ((Activity) mContext).runOnUiThread(new Runnable() {
 
                 public void run() {
-                    mListener.checkRomCompleted(-1);
+                    mListener.checkRomCompleted(null);
                 }
             });
         }
-    }
-
-    private void showNewRomFound(final PackageInfo info) {
-        ((Activity) mContext).runOnUiThread(new Runnable() {
-
-            public void run() {
-                try {
-                    new AlertDialog.Builder(mContext)
-                            .setTitle(R.string.new_rom_found_title)
-                            .setMessage(
-                                    mContext.getResources().getString(
-                                            R.string.new_rom_found_summary,
-                                            new Object[] { info.getFilename(), info.getFolder() }))
-                            .setPositiveButton(android.R.string.ok,
-                                    new DialogInterface.OnClickListener() {
-
-                                        public void onClick(DialogInterface dialog, int whichButton) {
-                                            dialog.dismiss();
-
-                                            ((Activity) mContext).runOnUiThread(new Runnable() {
-
-                                                public void run() {
-                                                    ManagerFactory.getFileManager(mContext).download(
-                                                            mContext, info.getPath(), info.getFilename(),
-                                                            info.getMd5(),
-                                                            Constants.DOWNLOADROM_NOTIFICATION_ID);
-                                                }
-                                            });
-                                        }
-                                    })
-                            .setNegativeButton(android.R.string.cancel,
-                                    new DialogInterface.OnClickListener() {
-
-                                        public void onClick(DialogInterface dialog, int whichButton) {
-                                            dialog.dismiss();
-                                        }
-                                    }).show();
-                } catch (Exception ex) {
-                    // app closed?
-                }
-            }
-        });
     }
 }

@@ -16,11 +16,16 @@
 
 package com.beerbong.otaplatform.updater;
 
+import java.io.Serializable;
+
 import org.json.JSONObject;
 
+import android.content.Context;
+
+import com.beerbong.otaplatform.R;
 import com.beerbong.otaplatform.updater.Updater.PackageInfo;
 
-public class GooPackage implements PackageInfo {
+public class GooPackage implements PackageInfo, Serializable {
 
     private String md5 = null;
     private String filename = null;
@@ -68,6 +73,12 @@ public class GooPackage implements PackageInfo {
             gapps_package = result.optInt("gapps_package");
             incremental_file = result.optInt("incremental_file");
         }
+    }
+
+    @Override
+    public String getMessage(Context context) {
+        return context.getResources().getString(R.string.goo_package_description,
+                new Object[] { filename, md5, folder, description });
     }
 
     @Override

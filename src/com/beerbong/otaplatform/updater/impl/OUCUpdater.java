@@ -22,6 +22,7 @@ import org.apache.http.client.utils.URLEncodedUtils;
 import org.apache.http.message.BasicNameValuePair;
 import org.json.JSONObject;
 
+import com.beerbong.otaplatform.updater.OUCPackage;
 import com.beerbong.otaplatform.updater.Updater;
 import com.beerbong.otaplatform.util.Constants;
 import com.beerbong.otaplatform.util.HttpStringReader;
@@ -75,61 +76,7 @@ public class OUCUpdater extends Updater {
                 return;
             }
 
-            PackageInfo info = new PackageInfo(){
-
-                @Override
-                public String getMd5() {
-                    try {
-                        return json.getString("md5");
-                    } catch (Exception ex) {
-                        ex.printStackTrace();
-                        mListener.versionError(null);
-                        return null;
-                    }
-                }
-
-                @Override
-                public String getFilename() {
-                    try {
-                        return json.getString("rom") + "-" + json.getString("date") + ".zip";
-                    } catch (Exception ex) {
-                        ex.printStackTrace();
-                        mListener.versionError(null);
-                        return null;
-                    }
-                }
-
-                @Override
-                public String getPath() {
-                    try {
-                        return json.getString("url");
-                    } catch (Exception ex) {
-                        ex.printStackTrace();
-                        mListener.versionError(null);
-                        return null;
-                    }
-                }
-
-                @Override
-                public String getFolder() {
-                    return null;
-                }
-
-                @Override
-                public long getVersion() {
-                    try {
-
-                        String date = json.getString("date");
-                        date = date.replace("-", "");
-                        return Long.parseLong(date);
-                    } catch (Exception ex) {
-                        ex.printStackTrace();
-                        mListener.versionError(null);
-                        return -1;
-                    }
-                }
-                
-            };
+            PackageInfo info = new OUCPackage(json);
 
             mListener.versionFound(info);
         } catch (Exception ex) {

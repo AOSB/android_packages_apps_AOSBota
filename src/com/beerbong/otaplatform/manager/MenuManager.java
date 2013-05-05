@@ -21,6 +21,7 @@ import com.beerbong.otaplatform.activity.GooActivity;
 import com.beerbong.otaplatform.activity.LoginActivity;
 import com.beerbong.otaplatform.activity.RecoveryActivity;
 import com.beerbong.otaplatform.activity.SettingsActivity;
+import com.beerbong.otaplatform.ui.UI;
 
 import android.app.Activity;
 import android.content.Context;
@@ -48,6 +49,9 @@ public class MenuManager extends Manager {
         switch (item.getItemId()) {
             case R.id.settings:
                 activity.startActivity(new Intent(activity, SettingsActivity.class));
+                break;
+            case R.id.twrp:
+                UI.getInstance().checkTwrp(activity);
                 break;
             case R.id.recovery:
                 activity.startActivity(new Intent(activity, RecoveryActivity.class));

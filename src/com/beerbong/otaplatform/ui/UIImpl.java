@@ -20,6 +20,7 @@ import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
+import android.text.method.ScrollingMovementMethod;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -35,24 +36,27 @@ import com.beerbong.otaplatform.updater.GappsUpdater;
 import com.beerbong.otaplatform.updater.RomUpdater;
 import com.beerbong.otaplatform.updater.TWRPUpdater;
 import com.beerbong.otaplatform.updater.Updater;
+import com.beerbong.otaplatform.updater.Updater.PackageInfo;
 import com.beerbong.otaplatform.util.Constants;
 
 public class UIImpl extends UI implements RomUpdater.RomUpdaterListener,
         GappsUpdater.GappsUpdaterListener, TWRPUpdater.TWRPUpdaterListener {
 
-    private static long mNewRomVersion = -1L;
+    private static PackageInfo mNewRom = null;
+    private static boolean mReCheck = true;
 
     private Activity mActivity;
     private OnNewIntentListener mOnNewIntentListener;
     private RomUpdater mRomUpdater;
     private GappsUpdater mGappsUpdater;
-    private TWRPUpdater mTwrpUpdater;
     private ProgressDialog mProgress;
     private TextView mRemoteVersionHeader;
+    private TextView mRemoteVersionBody;
     private Button mButtonCheckRom;
     private Button mButtonCheckGapps;
-    private Button mButtonCheckTwrp;
     private Button mButtonFlashQueue;
+    private Button mButtonDownload;
+    private boolean mRomCanUpdate = true;
 
     protected UIImpl(Activity activity) {
 
@@ -64,6 +68,8 @@ public class UIImpl extends UI implements RomUpdater.RomUpdaterListener,
 
         PreferencesManager pManager = ManagerFactory.getPreferencesManager(activity);
 
+        setOnNewIntentListener(ManagerFactory.getFileManager(activity));
+
         boolean useDarkTheme = pManager.isDarkTheme();
         activity.setTheme(useDarkTheme ? R.style.Theme_Dark : R.style.Theme_Light);
 
@@ -73,39 +79,36 @@ public class UIImpl extends UI implements RomUpdater.RomUpdaterListener,
         TextView devHeader = null;
         TextView versionHeader = null;
 
-        mActivity.setContentView(R.layout.main_activity);
+        mActivity.setContentView(R.layout.main);
 
         mRomUpdater = Updater.getRomUpdater(mActivity, this, false);
 
         mGappsUpdater = new GappsUpdater(mActivity, this, false);
 
-        mTwrpUpdater = new TWRPUpdater(mActivity, this);
-
-        boolean romCanUpdate = mRomUpdater != null && mRomUpdater.canUpdate();
+        mRomCanUpdate = mRomUpdater != null && mRomUpdater.canUpdate();
 
         romHeader = (TextView) mActivity.findViewById(R.id.rom_header);
         devHeader = (TextView) mActivity.findViewById(R.id.developer_header);
         versionHeader = (TextView) mActivity.findViewById(R.id.version_header);
         mRemoteVersionHeader = (TextView) mActivity.findViewById(R.id.remoteversion_header);
+        mRemoteVersionBody = (TextView) mActivity.findViewById(R.id.remoteversion_body);
         mButtonCheckRom = (Button) mActivity.findViewById(R.id.button_checkupdates);
         mButtonCheckGapps = (Button) mActivity.findViewById(R.id.button_checkupdatesgapps);
-        mButtonCheckTwrp = (Button) mActivity.findViewById(R.id.button_checkupdatestwrp);
         mButtonFlashQueue = (Button) mActivity.findViewById(R.id.button_flashqueue);
+        mButtonDownload = (Button) mActivity.findViewById(R.id.button_download);
 
-        romHeader.setText(romCanUpdate ? mRomUpdater.getRomName() : mActivity.getResources()
+        romHeader.setText(mRomCanUpdate ? mRomUpdater.getRomName() : mActivity.getResources()
                 .getString(R.string.not_available));
 
-        devHeader.setText(romCanUpdate ? mRomUpdater.getDeveloperId() : mActivity.getResources()
+        devHeader.setText(mRomCanUpdate ? mRomUpdater.getDeveloperId() : mActivity.getResources()
                 .getString(R.string.not_available));
 
-        versionHeader.setText(romCanUpdate ? String.valueOf(mRomUpdater.getRomVersion())
+        versionHeader.setText(mRomCanUpdate ? String.valueOf(mRomUpdater.getRomVersion())
                 : mActivity.getResources().getString(R.string.not_available));
 
-        if (mNewRomVersion >= 0) {
-            mRemoteVersionHeader.setText(String.valueOf(mNewRomVersion));
-        }
+        mRemoteVersionBody.setMovementMethod(new ScrollingMovementMethod());
 
-        mButtonCheckRom.setEnabled(romCanUpdate);
+        mButtonCheckRom.setEnabled(mRomCanUpdate);
         mButtonCheckRom.setOnClickListener(new OnClickListener() {
 
             @Override
@@ -123,14 +126,6 @@ public class UIImpl extends UI implements RomUpdater.RomUpdaterListener,
             }
         });
 
-        mButtonCheckTwrp.setOnClickListener(new OnClickListener() {
-
-            @Override
-            public void onClick(View v) {
-                checkTwrp();
-            }
-        });
-
         mButtonFlashQueue.setOnClickListener(new OnClickListener() {
 
             @Override
@@ -140,16 +135,36 @@ public class UIImpl extends UI implements RomUpdater.RomUpdaterListener,
         });
         updateFlashQueueText();
 
+        mButtonDownload.setOnClickListener(new OnClickListener() {
+
+            @Override
+            public void onClick(View v) {
+                ManagerFactory.getFileManager(mActivity).download(
+                        mActivity, mNewRom.getPath(), mNewRom.getFilename(),
+                        mNewRom.getMd5(),
+                        Constants.DOWNLOADROM_NOTIFICATION_ID);
+            }
+        });
+
         Intent intent = activity.getIntent();
         if (intent != null && intent.getExtras() != null
                 && intent.getExtras().get("NOTIFICATION_ID") != null) {
             if (mOnNewIntentListener != null) {
-                mOnNewIntentListener.onNewIntent(activity, intent);
+                mNewRom = mOnNewIntentListener.onNewIntent(activity, intent);
             }
         }
 
         if (!Constants.alarmExists(activity)) {
             Constants.setAlarm(mActivity, pManager.getTimeNotifications(), true);
+        }
+        if (mNewRom != null || !mReCheck) {
+            checkRomCompleted(mNewRom);
+        } else if (mRomCanUpdate) {
+            checkRom();
+        }
+
+        if (!mRomCanUpdate) {
+            Constants.showSimpleDialog(mActivity, R.string.unsupported_rom_title, R.string.unsupported_rom_message);
         }
     }
 
@@ -170,10 +185,11 @@ public class UIImpl extends UI implements RomUpdater.RomUpdaterListener,
         mGappsUpdater.check();
     }
 
-    private void checkTwrp() {
-        mProgress = ProgressDialog.show(mActivity, null,
+    public void checkTwrp(Context context) {
+        mProgress = ProgressDialog.show(context, null,
                 mActivity.getResources().getString(R.string.checking_twrp), true, true);
-        mTwrpUpdater.check();
+        TWRPUpdater twrpUpdater = new TWRPUpdater(context, this);
+        twrpUpdater.check();
     }
 
     @Override
@@ -185,21 +201,38 @@ public class UIImpl extends UI implements RomUpdater.RomUpdaterListener,
     public void onNewIntent(Context context, Intent intent) {
 
         if (mOnNewIntentListener != null) {
-            mOnNewIntentListener.onNewIntent(context, intent);
+            mNewRom = mOnNewIntentListener.onNewIntent(context, intent);
+            if (mNewRom != null || mReCheck) {
+                checkRomCompleted(mNewRom);
+            } else if (mRomCanUpdate) {
+                checkRom();
+            }
         }
     }
 
     @Override
-    public void checkRomCompleted(long newVersion) {
+    public void checkRomCompleted(PackageInfo info) {
         if (mProgress != null) {
             mProgress.dismiss();
             mProgress = null;
         }
 
-        mNewRomVersion = newVersion;
-
-        mRemoteVersionHeader.setText(newVersion == -1 ? "" : String.valueOf(mNewRomVersion));
-
+        mReCheck = false;
+        if (info == null) {
+            mNewRom = null;
+            mRemoteVersionHeader.setText("");
+            mRemoteVersionBody.setText(R.string.no_new_rom_found);
+            mRemoteVersionHeader.setVisibility(View.GONE);
+            mRemoteVersionBody.setVisibility(View.VISIBLE);
+            mButtonDownload.setVisibility(View.GONE);
+        } else {
+            mNewRom = info;
+            mRemoteVersionHeader.setText(mActivity.getResources().getString(R.string.new_rom_found_title, new Object[] {info.getVersion()}));
+            mRemoteVersionBody.setText(info.getMessage(mActivity));
+            mRemoteVersionHeader.setVisibility(View.VISIBLE);
+            mRemoteVersionBody.setVisibility(View.VISIBLE);
+            mButtonDownload.setVisibility(View.VISIBLE);
+        }
         mButtonCheckRom.setEnabled(mRomUpdater != null && mRomUpdater.canUpdate());
     }
 
@@ -238,5 +271,10 @@ public class UIImpl extends UI implements RomUpdater.RomUpdaterListener,
                 R.string.flash_queue_number,
                 new Object[] { String.valueOf(ManagerFactory.getPreferencesManager(mActivity)
                         .getFlashQueueSize()) }));
+    }
+
+    @Override
+    public int getOrientation() {
+        return mActivity.getResources().getConfiguration().orientation;
     }
 }

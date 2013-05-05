@@ -47,6 +47,8 @@ import com.beerbong.otaplatform.MainActivity;
 import com.beerbong.otaplatform.R;
 import com.beerbong.otaplatform.activity.FlashActivity;
 import com.beerbong.otaplatform.ui.UI;
+import com.beerbong.otaplatform.updater.Updater;
+import com.beerbong.otaplatform.updater.Updater.PackageInfo;
 import com.beerbong.otaplatform.util.Constants;
 import com.beerbong.otaplatform.util.DownloadTask;
 import com.beerbong.otaplatform.util.DownloadTask.DownloadTaskListener;
@@ -64,8 +66,6 @@ public class FileManager extends Manager implements UI.OnNewIntentListener {
 
     protected FileManager(Context context) {
         super(context);
-
-        UI.getInstance().setOnNewIntentListener(this);
 
         calculateItems();
         readMounts();
@@ -115,15 +115,17 @@ public class FileManager extends Manager implements UI.OnNewIntentListener {
     }
 
     @Override
-    public void onNewIntent(Context context, Intent intent) {
+    public Updater.PackageInfo onNewIntent(Context context, Intent intent) {
         int notificationId = intent.getExtras() != null
                 && intent.getExtras().get("NOTIFICATION_ID") != null ? Integer.parseInt(intent
                 .getExtras().get("NOTIFICATION_ID").toString()) : -1;
+                android.util.Log.d("*******************", "FileManager " + intent.getExtras().get("NOTIFICATION_ID"));
         if (notificationId == Constants.NEWROMVERSION_NOTIFICATION_ID
                 || notificationId == Constants.NEWGAPPSVERSION_NOTIFICATION_ID) {
-            String url = intent.getExtras().getString("URL");
-            String md5 = intent.getStringExtra("MD5");
-            String name = intent.getStringExtra("ZIP_NAME");
+//            String url = intent.getExtras().getString("URL");
+//            String md5 = intent.getStringExtra("MD5");
+//            String name = intent.getStringExtra("ZIP_NAME");
+            PackageInfo info = (PackageInfo)intent.getExtras().get("PACKAGE");
 
             NotificationManager nMgr = (NotificationManager) context
                     .getSystemService(Context.NOTIFICATION_SERVICE);
@@ -134,8 +136,8 @@ public class FileManager extends Manager implements UI.OnNewIntentListener {
             } else {
                 notificationId = Constants.DOWNLOADGAPPS_NOTIFICATION_ID;
             }
-            ManagerFactory.getFileManager(context)
-                    .download(context, url, name, md5, notificationId);
+//            requestDownload(context, info, notificationId);
+            return info;
         } else if (notificationId == Constants.DOWNLOADROM_NOTIFICATION_ID
                 || notificationId == Constants.DOWNLOADGAPPS_NOTIFICATION_ID
                 || notificationId == Constants.DOWNLOADTWRP_NOTIFICATION_ID) {
@@ -163,10 +165,11 @@ public class FileManager extends Manager implements UI.OnNewIntentListener {
                         .getSystemService(Context.NOTIFICATION_SERVICE);
                 nMgr.cancel(notificationId);
 
-                return;
+                return null;
             }
             cancelDownload(notificationId, intent.getExtras());
         }
+        return null;
     }
 
     public boolean addItem(String filePath) {

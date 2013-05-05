@@ -16,6 +16,8 @@
 
 package com.beerbong.otaplatform.ui;
 
+import com.beerbong.otaplatform.updater.Updater;
+
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
@@ -40,7 +42,7 @@ public abstract class UI {
 
     public interface OnNewIntentListener {
 
-        public void onNewIntent(Context context, Intent intent);
+        public Updater.PackageInfo onNewIntent(Context context, Intent intent);
     }
 
     public abstract void redraw(Activity activity);
@@ -54,4 +56,8 @@ public abstract class UI {
     public abstract void onNewIntent(Context context, Intent intent);
 
     public abstract void onListChanged();
+
+    public abstract void checkTwrp(Context context);
+
+    public abstract int getOrientation();
 }
