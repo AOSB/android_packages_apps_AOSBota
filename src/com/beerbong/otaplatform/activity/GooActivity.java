@@ -39,7 +39,6 @@ import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.Toast;
 
-import com.beerbong.otaplatform.MainActivity;
 import com.beerbong.otaplatform.R;
 import com.beerbong.otaplatform.manager.ManagerFactory;
 import com.beerbong.otaplatform.manager.PreferencesManager;
@@ -237,15 +236,14 @@ public class GooActivity extends PreferenceActivity implements URLStringReaderLi
 
                                                     public void run() {
 
-                                                        Intent intent = new Intent(GooActivity.this,
-                                                                MainActivity.class);
-                                                        intent.putExtra("NOTIFICATION_ID",
-                                                                Constants.NEWROMVERSION_NOTIFICATION_ID);
-//                                                        intent.putExtra("URL", info.getPath());
-//                                                        intent.putExtra("ZIP_NAME", info.getFilename());
-//                                                        intent.putExtra("MD5", info.getMd5());
-                                                        intent.putExtra("PACKAGE", info);
-                                                        startActivity(intent);
+                                                        ManagerFactory
+                                                                .getFileManager(GooActivity.this)
+                                                                .download(
+                                                                        GooActivity.this,
+                                                                        info.getPath(),
+                                                                        info.getFilename(),
+                                                                        info.getMd5(),
+                                                                        Constants.DOWNLOADROM_NOTIFICATION_ID);
                                                     }
                                                 });
                                             }

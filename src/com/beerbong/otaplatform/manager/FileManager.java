@@ -122,9 +122,6 @@ public class FileManager extends Manager implements UI.OnNewIntentListener {
                 android.util.Log.d("*******************", "FileManager " + intent.getExtras().get("NOTIFICATION_ID"));
         if (notificationId == Constants.NEWROMVERSION_NOTIFICATION_ID
                 || notificationId == Constants.NEWGAPPSVERSION_NOTIFICATION_ID) {
-//            String url = intent.getExtras().getString("URL");
-//            String md5 = intent.getStringExtra("MD5");
-//            String name = intent.getStringExtra("ZIP_NAME");
             PackageInfo info = (PackageInfo)intent.getExtras().get("PACKAGE");
 
             NotificationManager nMgr = (NotificationManager) context
@@ -136,7 +133,6 @@ public class FileManager extends Manager implements UI.OnNewIntentListener {
             } else {
                 notificationId = Constants.DOWNLOADGAPPS_NOTIFICATION_ID;
             }
-//            requestDownload(context, info, notificationId);
             return info;
         } else if (notificationId == Constants.DOWNLOADROM_NOTIFICATION_ID
                 || notificationId == Constants.DOWNLOADGAPPS_NOTIFICATION_ID

@@ -141,9 +141,6 @@ public class Constants {
 
         Intent intent = new Intent(context, MainActivity.class);
         intent.putExtra("NOTIFICATION_ID", notificationId);
-//        intent.putExtra("URL", info.getPath());
-//        intent.putExtra("ZIP_NAME", info.getFilename());
-//        intent.putExtra("MD5", info.getMd5());
         intent.putExtra("PACKAGE", info);
         PendingIntent pIntent = PendingIntent.getActivity(context, 0, intent,
                 PendingIntent.FLAG_UPDATE_CURRENT);
