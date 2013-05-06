@@ -32,6 +32,7 @@ import com.beerbong.otaplatform.R;
 import com.beerbong.otaplatform.activity.FlashActivity;
 import com.beerbong.otaplatform.manager.ManagerFactory;
 import com.beerbong.otaplatform.manager.PreferencesManager;
+import com.beerbong.otaplatform.updater.CancelPackage;
 import com.beerbong.otaplatform.updater.GappsUpdater;
 import com.beerbong.otaplatform.updater.RomUpdater;
 import com.beerbong.otaplatform.updater.TWRPUpdater;
@@ -57,6 +58,7 @@ public class UIImpl extends UI implements RomUpdater.RomUpdaterListener,
     private Button mButtonFlashQueue;
     private Button mButtonDownload;
     private boolean mRomCanUpdate = true;
+    private boolean mShowProgress = true;
 
     protected UIImpl(Activity activity) {
 
@@ -150,7 +152,13 @@ public class UIImpl extends UI implements RomUpdater.RomUpdaterListener,
         if (intent != null && intent.getExtras() != null
                 && intent.getExtras().get("NOTIFICATION_ID") != null) {
             if (mOnNewIntentListener != null) {
-                mNewRom = mOnNewIntentListener.onNewIntent(activity, intent);
+                PackageInfo info = mOnNewIntentListener.onNewIntent(activity, intent);
+                if (info instanceof CancelPackage) {
+                    mShowProgress = false;
+                    mReCheck = true;
+                } else {
+                    mNewRom = info;
+                }
             }
         }
 
@@ -174,8 +182,11 @@ public class UIImpl extends UI implements RomUpdater.RomUpdaterListener,
     }
 
     private void checkRom() {
-        mProgress = ProgressDialog.show(mActivity, null,
-                mActivity.getResources().getString(R.string.checking), true, true);
+        if (mShowProgress) {
+            mProgress = ProgressDialog.show(mActivity, null,
+                    mActivity.getResources().getString(R.string.checking), true, true);
+        }
+        mShowProgress = true;
         mRomUpdater.check();
     }
 
@@ -201,7 +212,13 @@ public class UIImpl extends UI implements RomUpdater.RomUpdaterListener,
     public void onNewIntent(Context context, Intent intent) {
 
         if (mOnNewIntentListener != null) {
-            mNewRom = mOnNewIntentListener.onNewIntent(context, intent);
+            PackageInfo info = mOnNewIntentListener.onNewIntent(context, intent);
+            if (info instanceof CancelPackage) {
+                mShowProgress = false;
+                mReCheck = true;
+            } else {
+                mNewRom = info;
+            }
             if (mNewRom != null || mReCheck) {
                 checkRomCompleted(mNewRom);
             } else if (mRomCanUpdate) {

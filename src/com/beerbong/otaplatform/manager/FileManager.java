@@ -47,6 +47,7 @@ import com.beerbong.otaplatform.MainActivity;
 import com.beerbong.otaplatform.R;
 import com.beerbong.otaplatform.activity.FlashActivity;
 import com.beerbong.otaplatform.ui.UI;
+import com.beerbong.otaplatform.updater.CancelPackage;
 import com.beerbong.otaplatform.updater.Updater;
 import com.beerbong.otaplatform.updater.Updater.PackageInfo;
 import com.beerbong.otaplatform.util.Constants;
@@ -163,6 +164,7 @@ public class FileManager extends Manager implements UI.OnNewIntentListener {
                 return null;
             }
             cancelDownload(notificationId, intent.getExtras());
+            return new CancelPackage();
         }
         return null;
     }
