@@ -253,4 +253,9 @@ public class TWRPUpdater extends Updater implements Updater.UpdaterListener {
         });
     }
 
+    @Override
+    public int getDrawable() {
+        return -1;
+    }
+
 }

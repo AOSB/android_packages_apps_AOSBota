@@ -23,6 +23,7 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 import org.json.JSONTokener;
 
+import com.beerbong.otaplatform.R;
 import com.beerbong.otaplatform.updater.GooPackage;
 import com.beerbong.otaplatform.updater.Updater;
 import com.beerbong.otaplatform.util.Constants;
@@ -138,6 +139,11 @@ public class GooUpdater extends Updater {
     @Override
     public void onReadError(Exception ex) {
         mListener.versionError(null);
+    }
+
+    @Override
+    public int getDrawable() {
+        return R.drawable.goo;
     }
 
 }
