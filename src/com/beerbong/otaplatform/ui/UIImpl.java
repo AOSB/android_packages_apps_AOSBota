@@ -20,12 +20,14 @@ import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
+import android.content.res.Resources;
 import android.text.method.ScrollingMovementMethod;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.beerbong.otaplatform.R;
@@ -80,6 +82,7 @@ public class UIImpl extends UI implements RomUpdater.RomUpdaterListener,
         TextView romHeader = null;
         TextView devHeader = null;
         TextView versionHeader = null;
+        ImageView updaterImage = null;
 
         mActivity.setContentView(R.layout.main);
 
@@ -92,6 +95,7 @@ public class UIImpl extends UI implements RomUpdater.RomUpdaterListener,
         romHeader = (TextView) mActivity.findViewById(R.id.rom_header);
         devHeader = (TextView) mActivity.findViewById(R.id.developer_header);
         versionHeader = (TextView) mActivity.findViewById(R.id.version_header);
+        updaterImage = (ImageView) mActivity.findViewById(R.id.updaterImage);
         mRemoteVersionHeader = (TextView) mActivity.findViewById(R.id.remoteversion_header);
         mRemoteVersionBody = (TextView) mActivity.findViewById(R.id.remoteversion_body);
         mButtonCheckRom = (Button) mActivity.findViewById(R.id.button_checkupdates);
@@ -99,14 +103,19 @@ public class UIImpl extends UI implements RomUpdater.RomUpdaterListener,
         mButtonFlashQueue = (Button) mActivity.findViewById(R.id.button_flashqueue);
         mButtonDownload = (Button) mActivity.findViewById(R.id.button_download);
 
-        romHeader.setText(mRomCanUpdate ? mRomUpdater.getRomName() : mActivity.getResources()
+        Resources res = mActivity.getResources();
+
+        romHeader.setText(mRomCanUpdate ? mRomUpdater.getRomName() : res
                 .getString(R.string.not_available));
 
-        devHeader.setText(mRomCanUpdate ? mRomUpdater.getDeveloperId() : mActivity.getResources()
+        devHeader.setText(mRomCanUpdate ? mRomUpdater.getDeveloperId() : res
                 .getString(R.string.not_available));
 
         versionHeader.setText(mRomCanUpdate ? String.valueOf(mRomUpdater.getRomVersion())
-                : mActivity.getResources().getString(R.string.not_available));
+                : res.getString(R.string.not_available));
+
+        updaterImage.setImageDrawable(mRomCanUpdate ? res.getDrawable(mRomUpdater.getDrawable())
+                : res.getDrawable(R.drawable.ic_launcher_goo));
 
         mRemoteVersionBody.setMovementMethod(new ScrollingMovementMethod());
 

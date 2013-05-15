@@ -33,11 +33,10 @@
                 android:layout_weight="1" >
 
                 <ImageView
-                    android:id="@+id/imageView1"
+                    android:id="@+id/updaterImage"
                     android:layout_width="59dp"
                     android:layout_height="59dp"
-                    android:layout_marginTop="10dp"
-                    android:src="@drawable/goo" />
+                    android:layout_marginTop="10dp" />
 
                 <LinearLayout
                     android:layout_width="match_parent"

@@ -22,6 +22,7 @@ import org.apache.http.client.utils.URLEncodedUtils;
 import org.apache.http.message.BasicNameValuePair;
 import org.json.JSONObject;
 
+import com.beerbong.otaplatform.R;
 import com.beerbong.otaplatform.updater.OUCPackage;
 import com.beerbong.otaplatform.updater.Updater;
 import com.beerbong.otaplatform.util.Constants;
@@ -102,6 +103,11 @@ public class OUCUpdater extends Updater {
     @Override
     public boolean isScanning() {
         return mScanning;
+    }
+
+    @Override
+    public int getDrawable() {
+        return R.drawable.ouc;
     }
 
 }

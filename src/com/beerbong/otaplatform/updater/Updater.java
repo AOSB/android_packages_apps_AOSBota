@@ -98,4 +98,6 @@ public abstract class Updater implements URLStringReaderListener, HttpStringRead
     public abstract void searchVersion();
 
     public abstract boolean isScanning();
+
+    public abstract int getDrawable();
 }
