@@ -61,7 +61,7 @@ public class TWRPUpdater extends Updater implements Updater.UpdaterListener {
             GooPackage info = null;
             if (!"false".equals(buffer)) {
                 JSONObject result = (JSONObject) new JSONTokener(buffer).nextValue();
-                info = new GooPackage(result);
+                info = new GooPackage(result, -1);
             }
 
             versionFound(info);

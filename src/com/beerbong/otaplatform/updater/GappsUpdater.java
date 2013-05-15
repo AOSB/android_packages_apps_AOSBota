@@ -86,18 +86,18 @@ public class GappsUpdater extends Updater implements Updater.UpdaterListener {
         try {
             GooPackage info;
             if ("false".equals(buffer)) {
-                info = new GooPackage(null);
+                info = new GooPackage(null, -1);
             } else {
                 if (!mCustomGapps) {
                     JSONObject result = (JSONObject) new JSONTokener(buffer).nextValue();
-                    info = new GooPackage(result);
+                    info = new GooPackage(result, -1);
                 } else {
                     JSONObject object = (JSONObject) new JSONTokener(buffer).nextValue();
-                    info = new GooPackage(null);
+                    info = new GooPackage(null, -1);
                     if (!object.isNull("list")) {
                         JSONArray list = object.getJSONArray("list");
                         if (list.length() > 0) {
-                            info = new GooPackage(list.getJSONObject(0));
+                            info = new GooPackage(list.getJSONObject(0), -1);
                         }
                     }
                 }

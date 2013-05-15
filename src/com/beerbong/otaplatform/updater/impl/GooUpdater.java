@@ -16,12 +16,7 @@
 
 package com.beerbong.otaplatform.updater.impl;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import org.json.JSONArray;
 import org.json.JSONObject;
-import org.json.JSONTokener;
 
 import com.beerbong.otaplatform.updater.GooPackage;
 import com.beerbong.otaplatform.updater.Updater;
@@ -35,8 +30,7 @@ public class GooUpdater extends Updater {
     public static final String PROPERTY_GOO_VERSION = "ro.goo.version";
 
     private UpdaterListener mListener;
-    private List<PackageInfo> mFoundRoms;
-    private int mScanning = 0;
+    private boolean mScanning = false;
 
     public GooUpdater(UpdaterListener listener) {
         mListener = listener;
@@ -66,20 +60,20 @@ public class GooUpdater extends Updater {
 
     @Override
     public void searchVersion() {
-        mScanning = 0;
-        mFoundRoms = new ArrayList<PackageInfo>();
+        mScanning = false;
         searchGoo("/devs/" + getDeveloperId());
     }
 
     @Override
     public boolean isScanning() {
-        return mScanning > 0;
+        return mScanning;
     }
 
     private void searchGoo(String path) {
-        mScanning++;
-        new URLStringReader(this).execute("http://goo.im/json2&path=" + path + "&ro_board="
-                + getDevice());
+        mScanning = true;
+        new URLStringReader(this).execute("http://goo.im/json2&action=update&ro_developerid="
+                + getDeveloperId() + "&ro_board=" + getDevice() + "&ro_rom=" + getName()
+                + "&ro_version=" + getVersion());
     }
 
     private String getDevice() {
@@ -89,47 +83,15 @@ public class GooUpdater extends Updater {
     @Override
     public void onReadEnd(String buffer) {
         try {
-            String developerId = getDeveloperId();
-            String romName = getName();
-            String device = getDevice();
-            mScanning--;
-            JSONObject object = (JSONObject) new JSONTokener(buffer).nextValue();
-            if (!object.isNull("list")) {
-                JSONArray list = object.getJSONArray("list");
-                for (int i = 0; i < list.length(); i++) {
-                    JSONObject result = list.getJSONObject(i);
-                    String fileName = result.optString("filename");
-                    if (fileName != null && !"".equals(fileName.trim())) {
-                        String developerid = result.optString("ro_developerid");
-                        String board = result.optString("ro_board");
-                        String rom = result.optString("ro_rom");
-                        int version = result.optInt("ro_version");
-                        if (!developerId.equals(developerid) || !romName.equals(rom)
-                                || !device.equals(board) || version <= 0) {
-                            continue;
-                        }
-                        mFoundRoms.add(new GooPackage(result));
-                    } else {
-                        String folder = result.getString("folder");
-                        searchGoo(folder);
-                    }
-                }
+            mScanning = false;
+            PackageInfo newRom = null;
+            if (buffer != null && !"".equals(buffer)) {
+                JSONObject update_info = new JSONObject(buffer);
+                newRom = new GooPackage(update_info, getVersion());
             }
-            if (mScanning == 0) {
-                long newVersion = -2;
-                PackageInfo newRom = null;
-                for (int i = 0; i < mFoundRoms.size(); i++) {
-                    PackageInfo info = mFoundRoms.get(i);
-                    if (info.getVersion() > newVersion) {
-                        newRom = info;
-                    }
-                    newVersion = Math.max(newVersion, info.getVersion());
-                }
-                mListener.versionFound(newRom);
-            }
+            mListener.versionFound(newRom);
         } catch (Exception ex) {
-            mScanning = 0;
-            mFoundRoms = new ArrayList<PackageInfo>();
+            mScanning = false;
             ex.printStackTrace();
             mListener.versionError(null);
         }

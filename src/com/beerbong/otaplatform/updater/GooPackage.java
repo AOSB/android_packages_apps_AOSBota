@@ -18,6 +18,7 @@ package com.beerbong.otaplatform.updater;
 
 import java.io.Serializable;
 
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import android.content.Context;
@@ -28,8 +29,10 @@ import com.beerbong.otaplatform.updater.Updater.PackageInfo;
 public class GooPackage implements PackageInfo, Serializable {
 
     private String md5 = null;
+    private String incremental_md5 = null;
     private String filename = null;
     private String path = null;
+    private String incremental_path = null;
     private String folder = null;
     private long version = -1;
     private int id;
@@ -47,38 +50,70 @@ public class GooPackage implements PackageInfo, Serializable {
     private String rom;
     private int gapps_package;
     private int incremental_file;
+    private boolean isDelta = false;
 
-    public GooPackage(JSONObject result) {
+    public GooPackage(JSONObject result, int previousVersion) {
         if (result == null) {
             version = -1;
         } else {
-            developerid = result.optString("ro_developerid");
-            board = result.optString("ro_board");
-            rom = result.optString("ro_rom");
-            version = result.optInt("ro_version");
-            id = result.optInt("id");
-            filename = result.optString("filename");
-            path = "http://goo.im" + result.optString("path");
-            folder = result.optString("folder");
-            md5 = result.optString("md5");
-            type = result.optString("type");
-            description = result.optString("description");
-            is_flashable = result.optInt("is_flashable");
-            modified = result.optLong("modified");
-            downloads = result.optInt("downloads");
-            status = result.optInt("status");
-            additional_info = result.optString("additional_info");
-            short_url = result.optString("short_url");
-            developer_id = result.optInt("developer_id");
-            gapps_package = result.optInt("gapps_package");
-            incremental_file = result.optInt("incremental_file");
+            try {
+                JSONObject update = result.getJSONObject("update_info");
+                developerid = update.optString("ro_developerid");
+                board = update.optString("ro_board");
+                rom = update.optString("ro_rom");
+                version = update.optInt("ro_version");
+                id = update.optInt("id");
+                filename = update.optString("filename");
+                path = "http://goo.im" + update.optString("path");
+                folder = update.optString("folder");
+                md5 = update.optString("md5");
+                type = update.optString("type");
+                description = update.optString("description");
+                is_flashable = update.optInt("is_flashable");
+                modified = update.optLong("modified");
+                downloads = update.optInt("downloads");
+                status = update.optInt("status");
+                additional_info = update.optString("additional_info");
+                short_url = update.optString("short_url");
+                developer_id = update.optInt("developer_id");
+                gapps_package = update.optInt("gapps_package");
+                incremental_file = update.optInt("incremental_file");
+                if (incremental_file > 0) {
+                    JSONObject incremental = result.getJSONObject("incremental_package");
+                    int previous = incremental.getInt("previous_ro_version");
+                    isDelta = previousVersion == previous;
+                    if (isDelta) {
+                        incremental_path = "http://goo.im/incremental/" + incremental.optString("filename");
+                        incremental_md5 = incremental.getString("md5");
+                    }
+                }
+            } catch (JSONException ex) {
+                // ignore
+                ex.printStackTrace();
+                version = -1;
+            }
         }
+    }
+
+    @Override
+    public boolean isDelta() {
+        return isDelta;
     }
 
     @Override
     public String getMessage(Context context) {
         return context.getResources().getString(R.string.goo_package_description,
                 new Object[] { filename, md5, folder, description });
+    }
+
+    @Override
+    public String getDeltaMd5() {
+        return incremental_md5;
+    }
+
+    @Override
+    public String getDeltaPath() {
+        return incremental_path;
     }
 
     @Override

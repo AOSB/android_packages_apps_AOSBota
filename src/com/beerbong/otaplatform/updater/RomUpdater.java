@@ -93,7 +93,7 @@ public class RomUpdater implements Updater.UpdaterListener {
             ((Activity) mContext).runOnUiThread(new Runnable() {
 
                 public void run() {
-                    mListener.checkRomCompleted(info.getVersion() > mRomVersion ? info : null);
+                    mListener.checkRomCompleted(info != null && info.getVersion() > mRomVersion ? info : null);
                 }
             });
         }

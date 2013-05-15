@@ -137,7 +137,7 @@ public class GooActivity extends PreferenceActivity implements URLStringReaderLi
                                 continue;
                             }
 
-                            GooPackage info = new GooPackage(result);
+                            GooPackage info = new GooPackage(result, -1);
                             mInfos.put(path, info);
 
                             Preference preference = new Preference(this);

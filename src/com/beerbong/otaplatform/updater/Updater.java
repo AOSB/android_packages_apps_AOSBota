@@ -37,6 +37,9 @@ public abstract class Updater implements URLStringReaderListener, HttpStringRead
         public String getFolder();
         public String getMessage(Context context);
         public long getVersion();
+        public boolean isDelta();
+        public String getDeltaMd5();
+        public String getDeltaPath();
     }
 
     public static final String PROPERTY_DEVICE = "ro.product.device";

@@ -23,6 +23,21 @@ import com.beerbong.otaplatform.updater.Updater.PackageInfo;
 public class CancelPackage implements PackageInfo {
 
     @Override
+    public boolean isDelta() {
+        return false;
+    }
+
+    @Override
+    public String getDeltaMd5() {
+        return null;
+    }
+
+    @Override
+    public String getDeltaPath() {
+        return null;
+    }
+
+    @Override
     public String getMd5() {
         return null;
     }
