@@ -22,6 +22,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import android.content.Context;
+import android.content.res.Resources;
 
 import com.beerbong.otaplatform.R;
 import com.beerbong.otaplatform.updater.Updater.PackageInfo;
@@ -103,8 +104,10 @@ public class GooPackage implements PackageInfo, Serializable {
 
     @Override
     public String getMessage(Context context) {
-        return context.getResources().getString(R.string.goo_package_description,
-                new Object[] { filename, md5, folder, description });
+        Resources res = context.getResources();
+        return res.getString(R.string.goo_package_description, new Object[] {
+                filename + (isDelta ? " " + res.getString(R.string.package_is_delta) : ""), md5,
+                folder, description });
     }
 
     @Override
