@@ -29,7 +29,7 @@ import com.beerbong.otaplatform.updater.Updater.PackageInfo;
 public class GooPackage implements PackageInfo, Serializable {
 
     private String md5 = null;
-    private String incremental_md5 = null;
+    // private String incremental_md5 = null;
     private String filename = null;
     private String path = null;
     private String incremental_path = null;
@@ -83,8 +83,9 @@ public class GooPackage implements PackageInfo, Serializable {
                     int previous = incremental.getInt("previous_ro_version");
                     isDelta = previousVersion == previous;
                     if (isDelta) {
-                        incremental_path = "http://goo.im/incremental/" + incremental.optString("filename");
-                        incremental_md5 = incremental.getString("md5");
+                        incremental_path = "http://goo.im/incremental/"
+                                + incremental.optString("filename");
+                        // incremental_md5 = incremental.getString("md5");
                     }
                 }
             } catch (JSONException ex) {
@@ -107,16 +108,6 @@ public class GooPackage implements PackageInfo, Serializable {
     }
 
     @Override
-    public String getDeltaMd5() {
-        return incremental_md5;
-    }
-
-    @Override
-    public String getDeltaPath() {
-        return incremental_path;
-    }
-
-    @Override
     public String getMd5() {
         return md5;
     }
@@ -128,7 +119,7 @@ public class GooPackage implements PackageInfo, Serializable {
 
     @Override
     public String getPath() {
-        return path;
+        return isDelta ? incremental_path : path;
     }
 
     @Override
@@ -141,77 +132,62 @@ public class GooPackage implements PackageInfo, Serializable {
         return version;
     }
 
-    
     public int getId() {
         return id;
     }
 
-    
     public String getType() {
         return type;
     }
 
-    
     public String getDescription() {
         return description;
     }
 
-    
     public int getIs_flashable() {
         return is_flashable;
     }
 
-    
     public long getModified() {
         return modified;
     }
 
-    
     public int getDownloads() {
         return downloads;
     }
 
-    
     public int getStatus() {
         return status;
     }
 
-    
     public String getAdditional_info() {
         return additional_info;
     }
 
-    
     public String getShort_url() {
         return short_url;
     }
 
-    
     public int getDeveloper_id() {
         return developer_id;
     }
 
-    
     public String getDeveloperid() {
         return developerid;
     }
 
-    
     public String getBoard() {
         return board;
     }
 
-    
     public String getRom() {
         return rom;
     }
 
-    
     public int getGapps_package() {
         return gapps_package;
     }
 
-    
     public int getIncremental_file() {
         return incremental_file;
     }

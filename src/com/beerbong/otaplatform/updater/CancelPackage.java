@@ -28,16 +28,6 @@ public class CancelPackage implements PackageInfo {
     }
 
     @Override
-    public String getDeltaMd5() {
-        return null;
-    }
-
-    @Override
-    public String getDeltaPath() {
-        return null;
-    }
-
-    @Override
     public String getMd5() {
         return null;
     }

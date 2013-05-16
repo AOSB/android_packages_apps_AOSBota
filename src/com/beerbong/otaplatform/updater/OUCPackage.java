@@ -41,16 +41,6 @@ public class OUCPackage implements PackageInfo, Serializable {
     }
 
     @Override
-    public String getDeltaMd5() {
-        return null;
-    }
-
-    @Override
-    public String getDeltaPath() {
-        return null;
-    }
-
-    @Override
     public String getMd5() {
         return md5;
     }
