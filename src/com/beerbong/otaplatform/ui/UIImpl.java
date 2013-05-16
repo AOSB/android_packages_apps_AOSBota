@@ -152,7 +152,7 @@ public class UIImpl extends UI implements RomUpdater.RomUpdaterListener,
             public void onClick(View v) {
                 ManagerFactory.getFileManager(mActivity).download(
                         mActivity, mNewRom.getPath(), mNewRom.getFilename(),
-                        mNewRom.getMd5(),
+                        mNewRom.getMd5(), mNewRom.isDelta(),
                         Constants.DOWNLOADROM_NOTIFICATION_ID);
             }
         });

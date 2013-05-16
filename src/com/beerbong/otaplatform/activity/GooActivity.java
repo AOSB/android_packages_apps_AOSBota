@@ -243,6 +243,7 @@ public class GooActivity extends PreferenceActivity implements URLStringReaderLi
                                                                         info.getPath(),
                                                                         info.getFilename(),
                                                                         info.getMd5(),
+                                                                        false,
                                                                         Constants.DOWNLOADROM_NOTIFICATION_ID);
                                                     }
                                                 });

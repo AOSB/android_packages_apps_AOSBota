@@ -122,7 +122,7 @@ public class FileManager extends Manager implements UI.OnNewIntentListener {
                 .getExtras().get("NOTIFICATION_ID").toString()) : -1;
         if (notificationId == Constants.NEWROMVERSION_NOTIFICATION_ID
                 || notificationId == Constants.NEWGAPPSVERSION_NOTIFICATION_ID) {
-            PackageInfo info = (PackageInfo)intent.getExtras().get("PACKAGE");
+            PackageInfo info = (PackageInfo) intent.getExtras().get("PACKAGE");
 
             NotificationManager nMgr = (NotificationManager) context
                     .getSystemService(Context.NOTIFICATION_SERVICE);
@@ -151,9 +151,10 @@ public class FileManager extends Manager implements UI.OnNewIntentListener {
                     break;
             }
             if (task != null) {
-                
+
                 if (addItem(task.getDestinationFile().getAbsolutePath())) {
-                    Toast.makeText(context, R.string.install_file_manager_zip_added, Toast.LENGTH_LONG).show();
+                    Toast.makeText(context, R.string.install_file_manager_zip_added,
+                            Toast.LENGTH_LONG).show();
                     context.startActivity(new Intent(context, FlashActivity.class));
                 }
 
@@ -255,7 +256,8 @@ public class FileManager extends Manager implements UI.OnNewIntentListener {
                     final ProgressDialog pDialog = new ProgressDialog(context);
                     pDialog.setIndeterminate(true);
                     pDialog.setMessage(context.getResources().getString(
-                            R.string.alert_deleting_folder, new Object[] {backups[mSelectedBackup]}));
+                            R.string.alert_deleting_folder,
+                            new Object[] { backups[mSelectedBackup] }));
                     pDialog.setCancelable(false);
                     pDialog.setCanceledOnTouchOutside(false);
                     pDialog.show();
@@ -315,12 +317,12 @@ public class FileManager extends Manager implements UI.OnNewIntentListener {
                 }).show();
     }
 
-    public void download(Context context, String url, String fileName, String md5,
+    public void download(Context context, String url, String fileName, String md5, boolean isDelta,
             int notificationId) {
-        download(context, url, fileName, md5, notificationId, null);
+        download(context, url, fileName, md5, isDelta, notificationId, null);
     }
 
-    public void download(Context context, String url, String fileName, String md5,
+    public void download(Context context, String url, String fileName, String md5, boolean isDelta,
             int notificationId, DownloadTaskListener listener) {
 
         Resources resources = context.getResources();
@@ -329,7 +331,8 @@ public class FileManager extends Manager implements UI.OnNewIntentListener {
         intent.putExtra("NOTIFICATION_ID", notificationId);
         intent.putExtra("MD5", md5);
         if (notificationId == Constants.DOWNLOADTWRP_NOTIFICATION_ID) {
-            mDownloadTWRP = new DownloadTask(null, notificationId, context, url, fileName, md5);
+            mDownloadTWRP = new DownloadTask(null, notificationId, context, url, fileName, md5,
+                    false);
             mDownloadTWRP.setDownloadTaskListener(listener);
             intent.putExtra("DESTINATION_FILE", mDownloadTWRP.getDestinationFile());
         }
@@ -346,12 +349,12 @@ public class FileManager extends Manager implements UI.OnNewIntentListener {
         switch (notificationId) {
             case Constants.DOWNLOADROM_NOTIFICATION_ID:
                 mDownloadRom = new DownloadTask(notification, notificationId, context, url,
-                        fileName, md5);
+                        fileName, md5, isDelta);
                 mDownloadRom.execute();
                 break;
             case Constants.DOWNLOADGAPPS_NOTIFICATION_ID:
                 mDownloadGapps = new DownloadTask(notification, notificationId, context, url,
-                        fileName, md5);
+                        fileName, md5, false);
                 mDownloadGapps.execute();
                 break;
             case Constants.DOWNLOADTWRP_NOTIFICATION_ID:

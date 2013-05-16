@@ -253,6 +253,7 @@ public class GappsUpdater extends Updater implements Updater.UpdaterListener {
                                                                     info.getPath(),
                                                                     info.getFilename(),
                                                                     info.getMd5(),
+                                                                    false,
                                                                     Constants.DOWNLOADGAPPS_NOTIFICATION_ID);
                                                 }
                                             });
@@ -299,6 +300,7 @@ public class GappsUpdater extends Updater implements Updater.UpdaterListener {
                                                                     info.getPath(),
                                                                     info.getFilename(),
                                                                     info.getMd5(),
+                                                                    false,
                                                                     Constants.DOWNLOADGAPPS_NOTIFICATION_ID);
                                                 }
                                             });

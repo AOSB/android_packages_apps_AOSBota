@@ -218,7 +218,7 @@ public class TWRPUpdater extends Updater implements Updater.UpdaterListener {
                                                 public void run() {
                                                     ManagerFactory.getFileManager(mContext).download(
                                                             mContext, info.getPath(), info.getFilename(),
-                                                            info.getMd5(),
+                                                            info.getMd5(), false, 
                                                             Constants.DOWNLOADTWRP_NOTIFICATION_ID, new DownloadTaskListener() {
 
                                                                 @Override

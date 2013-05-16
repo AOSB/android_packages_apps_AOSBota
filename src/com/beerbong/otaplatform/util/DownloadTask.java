@@ -37,7 +37,7 @@ import com.beerbong.otaplatform.R;
 import com.beerbong.otaplatform.manager.ManagerFactory;
 import com.beerbong.otaplatform.manager.PreferencesManager;
 
-public class DownloadTask extends AsyncTask<Void, Integer, Integer> {
+public class DownloadTask extends AsyncTask<Void, Integer, Integer> implements FilePatcher.FilePatcherListener {
 
     public interface DownloadTaskListener {
         public void downloadComplete(int status, File file);
@@ -53,14 +53,16 @@ public class DownloadTask extends AsyncTask<Void, Integer, Integer> {
     private String mUrl;
     private String mFileName;
     private String mMd5;
+    private boolean mIsDelta;
     private final WakeLock mWakeLock;
     private int mNotificationId;
+    private int mLengthOfFile;
 
     private boolean mDone = false;
 
     @SuppressWarnings("deprecation")
     public DownloadTask(Notification.Builder notification, int notificationId, Context context,
-            String url, String fileName, String md5) {
+            String url, String fileName, String md5, boolean isDelta) {
         this.attach(notification, notificationId, context);
 
         PreferencesManager pManager = ManagerFactory.getPreferencesManager(context);
@@ -71,6 +73,7 @@ public class DownloadTask extends AsyncTask<Void, Integer, Integer> {
         mUrl = url;
         mFileName = fileName;
         mMd5 = md5;
+        mIsDelta = isDelta;
 
         mDestFile = new File(pManager.getDownloadPath(), mFileName);
         String extension = mFileName.substring(mFileName.lastIndexOf("."));
@@ -176,31 +179,36 @@ public class DownloadTask extends AsyncTask<Void, Integer, Integer> {
                 getUrl = new URL(url);
                 conn = getUrl.openConnection();
             }
-            final int lengthOfFile = conn.getContentLength();
+            mLengthOfFile = conn.getContentLength();
             StatFs stat = new StatFs(pManager.getDownloadPath());
             long availSpace = ((long) stat.getAvailableBlocks()) * ((long) stat.getBlockSize());
-            if (lengthOfFile >= availSpace) {
+            if (mLengthOfFile >= availSpace) {
                 mDestFile.delete();
                 if (mListener != null) {
                     mListener.downloadComplete(3, null);
                 }
                 return 3;
             }
-            if (lengthOfFile < 10000000)
+            if (mLengthOfFile < 10000000)
                 mScale = 1024;
-            publishProgress(0, lengthOfFile);
+            publishProgress(0, mLengthOfFile);
             conn.connect();
             is = new BufferedInputStream(conn.getInputStream());
             os = new FileOutputStream(mDestFile);
-            byte[] buf = new byte[4096];
-            int nRead = -1;
-            int totalRead = 0;
-            while ((nRead = is.read(buf)) != -1) {
-                if (this.isCancelled())
-                    break;
-                os.write(buf, 0, nRead);
-                totalRead += nRead;
-                publishProgress(totalRead, lengthOfFile);
+            if (mIsDelta) {
+                FilePatcher patcher = new FilePatcher(this, mFileName, is, os);
+                patcher.patch();
+            } else {
+                byte[] buf = new byte[4096];
+                int nRead = -1;
+                int totalRead = 0;
+                while ((nRead = is.read(buf)) != -1) {
+                    if (this.isCancelled())
+                        break;
+                    os.write(buf, 0, nRead);
+                    totalRead += nRead;
+                    publishProgress(totalRead, mLengthOfFile);
+                }
             }
 
             if (isCancelled()) {
@@ -314,5 +322,10 @@ public class DownloadTask extends AsyncTask<Void, Integer, Integer> {
             mNotification.setContentInfo(String.valueOf(progress * 100 / total) + "%");
             mNotificationManager.notify(mNotificationId, mNotification.build());
         }
+    }
+
+    @Override
+    public void patchPogress(int totalRead) {
+        publishProgress(totalRead, mLengthOfFile);
     }
 }
