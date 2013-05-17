@@ -30,8 +30,9 @@ import com.beerbong.otaplatform.updater.Updater.PackageInfo;
 public class GooPackage implements PackageInfo, Serializable {
 
     private String md5 = null;
-    // private String incremental_md5 = null;
+    private String incremental_md5 = null;
     private String filename = null;
+    private String incremental_filename = null;
     private String path = null;
     private String incremental_path = null;
     private String folder = null;
@@ -84,9 +85,9 @@ public class GooPackage implements PackageInfo, Serializable {
                     int previous = incremental.getInt("previous_ro_version");
                     isDelta = previousVersion == previous;
                     if (isDelta) {
-                        incremental_path = "http://goo.im/incremental/"
-                                + incremental.optString("filename");
-                        // incremental_md5 = incremental.getString("md5");
+                        incremental_filename = incremental.optString("filename");
+                        incremental_path = "http://goo.im/incremental/" + incremental_filename;
+                        incremental_md5 = incremental.getString("md5");
                     }
                 }
             } catch (JSONException ex) {
@@ -103,11 +104,25 @@ public class GooPackage implements PackageInfo, Serializable {
     }
 
     @Override
+    public String getDeltaFilename() {
+        return incremental_filename;
+    }
+
+    @Override
+    public String getDeltaPath() {
+        return incremental_path;
+    }
+
+    @Override
+    public String getDeltaMd5() {
+        return incremental_md5;
+    }
+
+    @Override
     public String getMessage(Context context) {
         Resources res = context.getResources();
         return res.getString(R.string.goo_package_description, new Object[] {
-                filename + (isDelta ? " " + res.getString(R.string.package_is_delta) : ""), md5,
-                folder, description });
+                filename, md5, folder, description });
     }
 
     @Override
@@ -122,7 +137,7 @@ public class GooPackage implements PackageInfo, Serializable {
 
     @Override
     public String getPath() {
-        return isDelta ? incremental_path : path;
+        return path;
     }
 
     @Override

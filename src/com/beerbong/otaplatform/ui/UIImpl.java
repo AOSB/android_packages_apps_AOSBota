@@ -59,6 +59,7 @@ public class UIImpl extends UI implements RomUpdater.RomUpdaterListener,
     private Button mButtonCheckGapps;
     private Button mButtonFlashQueue;
     private Button mButtonDownload;
+    private Button mButtonDownloadDelta;
     private boolean mRomCanUpdate = true;
     private boolean mShowProgress = true;
 
@@ -102,6 +103,7 @@ public class UIImpl extends UI implements RomUpdater.RomUpdaterListener,
         mButtonCheckGapps = (Button) mActivity.findViewById(R.id.button_checkupdatesgapps);
         mButtonFlashQueue = (Button) mActivity.findViewById(R.id.button_flashqueue);
         mButtonDownload = (Button) mActivity.findViewById(R.id.button_download);
+        mButtonDownloadDelta = (Button) mActivity.findViewById(R.id.button_download_delta);
 
         Resources res = mActivity.getResources();
 
@@ -152,7 +154,18 @@ public class UIImpl extends UI implements RomUpdater.RomUpdaterListener,
             public void onClick(View v) {
                 ManagerFactory.getFileManager(mActivity).download(
                         mActivity, mNewRom.getPath(), mNewRom.getFilename(),
-                        mNewRom.getMd5(), mNewRom.isDelta(),
+                        mNewRom.getMd5(), false,
+                        Constants.DOWNLOADROM_NOTIFICATION_ID);
+            }
+        });
+
+        mButtonDownloadDelta.setOnClickListener(new OnClickListener() {
+
+            @Override
+            public void onClick(View v) {
+                ManagerFactory.getFileManager(mActivity).download(
+                        mActivity, mNewRom.getDeltaPath(), mNewRom.getFilename(),
+                        mNewRom.getDeltaMd5(), true,
                         Constants.DOWNLOADROM_NOTIFICATION_ID);
             }
         });
@@ -251,6 +264,7 @@ public class UIImpl extends UI implements RomUpdater.RomUpdaterListener,
             mRemoteVersionHeader.setVisibility(View.GONE);
             mRemoteVersionBody.setVisibility(View.VISIBLE);
             mButtonDownload.setVisibility(View.GONE);
+            mButtonDownloadDelta.setVisibility(View.GONE);
         } else {
             mNewRom = info;
             mRemoteVersionHeader.setText(mActivity.getResources().getString(R.string.new_rom_found_title, new Object[] {info.getVersion()}));
@@ -258,6 +272,7 @@ public class UIImpl extends UI implements RomUpdater.RomUpdaterListener,
             mRemoteVersionHeader.setVisibility(View.VISIBLE);
             mRemoteVersionBody.setVisibility(View.VISIBLE);
             mButtonDownload.setVisibility(View.VISIBLE);
+            mButtonDownloadDelta.setVisibility(info.isDelta() ? View.VISIBLE : View.GONE);
         }
         mButtonCheckRom.setEnabled(mRomUpdater != null && mRomUpdater.canUpdate());
     }

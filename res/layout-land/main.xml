@@ -86,6 +86,13 @@
                 android:visibility="gone" />
 
             <Button
+                android:id="@+id/button_download_delta"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/delta_download"
+                android:visibility="gone" />
+
+            <Button
                 android:id="@+id/button_download"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
