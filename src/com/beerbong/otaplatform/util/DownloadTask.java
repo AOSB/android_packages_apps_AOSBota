@@ -196,7 +196,7 @@ public class DownloadTask extends AsyncTask<Void, Integer, Integer> implements F
             is = new BufferedInputStream(conn.getInputStream());
             os = new FileOutputStream(mDestFile);
             if (mIsDelta) {
-                FilePatcher patcher = new FilePatcher(this, mDestFile.getPath() + ".delta", is, os);
+                FilePatcher patcher = new FilePatcher(this, mDestFile.getPath(), is, os);
                 patcher.patch();
             } else {
                 byte[] buf = new byte[4096];
