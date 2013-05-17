@@ -195,10 +195,10 @@ public class DownloadTask extends AsyncTask<Void, Integer, Integer> implements F
             conn.connect();
             is = new BufferedInputStream(conn.getInputStream());
             os = new FileOutputStream(mDestFile);
-            if (mIsDelta) {
-                FilePatcher patcher = new FilePatcher(this, mDestFile.getPath(), is, os);
-                patcher.patch();
-            } else {
+//            if (mIsDelta) {
+//                FilePatcher patcher = new FilePatcher(this, mDestFile.getPath(), is, os);
+//                patcher.patch();
+//            } else {
                 byte[] buf = new byte[4096];
                 int nRead = -1;
                 int totalRead = 0;
@@ -209,7 +209,7 @@ public class DownloadTask extends AsyncTask<Void, Integer, Integer> implements F
                     totalRead += nRead;
                     publishProgress(totalRead, mLengthOfFile);
                 }
-            }
+//            }
 
             if (isCancelled()) {
                 mDestFile.delete();
