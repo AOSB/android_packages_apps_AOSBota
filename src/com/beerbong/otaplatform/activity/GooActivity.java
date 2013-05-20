@@ -42,13 +42,13 @@ import android.widget.Toast;
 import com.beerbong.otaplatform.R;
 import com.beerbong.otaplatform.manager.ManagerFactory;
 import com.beerbong.otaplatform.manager.PreferencesManager;
+import com.beerbong.otaplatform.ui.component.FolderPreference;
 import com.beerbong.otaplatform.updater.GooPackage;
 import com.beerbong.otaplatform.updater.Updater;
 import com.beerbong.otaplatform.updater.Updater.PackageInfo;
 import com.beerbong.otaplatform.util.Constants;
 import com.beerbong.otaplatform.util.URLStringReader;
 import com.beerbong.otaplatform.util.URLStringReader.URLStringReaderListener;
-import com.beerbong.otaplatform.widget.FolderPreference;
 
 public class GooActivity extends PreferenceActivity implements URLStringReaderListener {
 
@@ -65,8 +65,8 @@ public class GooActivity extends PreferenceActivity implements URLStringReaderLi
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
-        boolean useDarkTheme = ManagerFactory.getPreferencesManager(this).isDarkTheme();
-        setTheme(useDarkTheme ? R.style.Theme_Dark : R.style.Theme_Light);
+//        boolean useDarkTheme = ManagerFactory.getPreferencesManager(this).isDarkTheme();
+//        setTheme(useDarkTheme ? R.style.Theme_Dark : R.style.Theme_Light);
 
         super.onCreate(savedInstanceState);
 

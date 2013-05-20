@@ -26,7 +26,6 @@ import android.os.PowerManager;
 import android.widget.EditText;
 
 import com.beerbong.otaplatform.R;
-import com.beerbong.otaplatform.ui.UI;
 import com.beerbong.otaplatform.util.Constants;
 import com.beerbong.otaplatform.util.InstallOptionsCursor;
 
@@ -89,14 +88,14 @@ public class RebootManager extends Manager {
     public void simpleReboot(Context context, boolean wipeData, boolean wipeCaches, boolean fixPermissions) {
         ManagerFactory.getFileManager(mContext).clearItems();
         ManagerFactory.getPreferencesManager(mContext).setFlashQueue(null);
-        UI.getInstance().onListChanged();
+//        UI.getInstance().onListChanged();
         reboot(context, false, wipeData, wipeCaches, fixPermissions, null, null, false);
     }
 
     public void fixPermissions(Context context) {
         ManagerFactory.getFileManager(mContext).clearItems();
         ManagerFactory.getPreferencesManager(mContext).setFlashQueue(null);
-        UI.getInstance().onListChanged();
+//        UI.getInstance().onListChanged();
         reboot(context, false, false, false, true, null, null, false);
     }
 
@@ -147,7 +146,7 @@ public class RebootManager extends Manager {
         if (removePreferences) {
             ManagerFactory.getFileManager(context).clearItems();
             ManagerFactory.getPreferencesManager(context).setFlashQueue(null);
-            UI.getInstance().onListChanged();
+//            UI.getInstance().onListChanged();
         }
 
         AlertDialog.Builder alert = new AlertDialog.Builder(context);

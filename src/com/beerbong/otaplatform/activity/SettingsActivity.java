@@ -19,7 +19,9 @@ package com.beerbong.otaplatform.activity;
 import java.util.List;
 
 import android.app.AlertDialog;
+import android.app.ProgressDialog;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
 import android.preference.CheckBoxPreference;
 import android.preference.ListPreference;
@@ -33,12 +35,15 @@ import com.beerbong.otaplatform.R;
 import com.beerbong.otaplatform.manager.ManagerFactory;
 import com.beerbong.otaplatform.manager.PreferencesManager;
 import com.beerbong.otaplatform.manager.RecoveryManager;
+import com.beerbong.otaplatform.updater.TWRPUpdater;
 import com.beerbong.otaplatform.util.Constants;
 import com.beerbong.otaplatform.util.RecoveryInfo;
 
-public class SettingsActivity extends PreferenceActivity implements OnPreferenceChangeListener {
+public class SettingsActivity extends PreferenceActivity implements OnPreferenceChangeListener,
+        TWRPUpdater.TWRPUpdaterListener {
 
-    private CheckBoxPreference mDarkTheme;
+    private ProgressDialog mProgress;
+    // private CheckBoxPreference mDarkTheme;
     private ListPreference mCheckTime;
     private Preference mDownloadPath;
     private Preference mGappsFolder;
@@ -52,14 +57,16 @@ public class SettingsActivity extends PreferenceActivity implements OnPreference
     @SuppressWarnings("deprecation")
     protected void onCreate(Bundle savedInstanceState) {
 
-        boolean useDarkTheme = ManagerFactory.getPreferencesManager(this).isDarkTheme();
-        setTheme(useDarkTheme ? R.style.Theme_Dark : R.style.Theme_Light);
+        // boolean useDarkTheme =
+        // ManagerFactory.getPreferencesManager(this).isDarkTheme();
+        // setTheme(useDarkTheme ? R.style.Theme_Dark : R.style.Theme_Light);
 
         super.onCreate(savedInstanceState);
 
         addPreferencesFromResource(R.layout.settings);
 
-        mDarkTheme = (CheckBoxPreference) findPreference(Constants.PREFERENCE_SETTINGS_DARK_THEME);
+        // mDarkTheme = (CheckBoxPreference)
+        // findPreference(Constants.PREFERENCE_SETTINGS_DARK_THEME);
         mDownloadPath = findPreference(Constants.PREFERENCE_SETTINGS_DOWNLOAD_PATH);
         mCheckTime = (ListPreference) findPreference(Constants.PREFERENCE_SETTINGS_CHECK_TIME);
         mGappsFolder = findPreference(Constants.PREFERENCE_SETTINGS_GAPPS_FOLDER);
@@ -74,11 +81,11 @@ public class SettingsActivity extends PreferenceActivity implements OnPreference
         mCheckTime.setValue(String.valueOf(pManager.getTimeNotifications()));
         mCheckTime.setOnPreferenceChangeListener(this);
 
-        mDarkTheme.setChecked(pManager.isDarkTheme());
+        // mDarkTheme.setChecked(pManager.isDarkTheme());
 
         mOptions.setValue(pManager.getShowOptions());
         mOptions.setOnPreferenceChangeListener(this);
-        
+
         if (!ManagerFactory.getFileManager(this).hasExternalStorage()) {
             getPreferenceScreen().removePreference(mExternalSdcard);
         }
@@ -128,6 +135,21 @@ public class SettingsActivity extends PreferenceActivity implements OnPreference
             rManager.selectSdcard(this, false);
             updateSummaries();
 
+        } else if ("installtwrp".equals(key)) {
+            
+            checkTwrp();
+
+        } else if ("browsegoo".equals(key)) {
+
+            GooActivity.CURRENT_NAVIGATION = null;
+            startActivity(new Intent(this, GooActivity.class));
+            
+        } else if ("logingoo".equals(key)) {
+
+        } else if ("recoveryactivity".equals(key)) {
+            
+            startActivity(new Intent(this, RecoveryActivity.class));
+            
         }
 
         return true;
@@ -192,10 +214,8 @@ public class SettingsActivity extends PreferenceActivity implements OnPreference
         input.setText(folder);
         input.setSelection(folder.length());
 
-        new AlertDialog.Builder(this)
-                .setTitle(R.string.gapps_folder_alert_title)
-                .setMessage(R.string.gapps_folder_alert_summary)
-                .setView(input)
+        new AlertDialog.Builder(this).setTitle(R.string.gapps_folder_alert_title)
+                .setMessage(R.string.gapps_folder_alert_summary).setView(input)
                 .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
 
                     public void onClick(DialogInterface dialog, int whichButton) {
@@ -218,5 +238,20 @@ public class SettingsActivity extends PreferenceActivity implements OnPreference
                         dialog.dismiss();
                     }
                 }).show();
+    }
+
+    public void checkTwrp() {
+        mProgress = ProgressDialog.show(this, null,
+                getResources().getString(R.string.checking_twrp), true, true);
+        TWRPUpdater twrpUpdater = new TWRPUpdater(this, this);
+        twrpUpdater.check();
+    }
+
+    @Override
+    public void checkTWRPCompleted(long newVersion) {
+        if (mProgress != null) {
+            mProgress.dismiss();
+            mProgress = null;
+        }
     }
 }

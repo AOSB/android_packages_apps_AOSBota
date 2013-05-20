@@ -1,0 +1,67 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:background="@color/main_background_color"
+    android:orientation="vertical"
+    android:padding="20dp" >
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@drawable/white_background"
+        android:orientation="vertical"
+        android:padding="10dp" >
+
+	    <com.beerbong.otaplatform.ui.component.TouchInterceptor
+	        android:id="@+id/file_list"
+	        android:layout_width="match_parent"
+	        android:layout_height="wrap_content"
+	        android:layout_weight="1" />
+
+        <include layout="@layout/vseparator" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" >
+
+            <Button
+                android:id="@+id/button_flash_now"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:background="@drawable/light_blue_background"
+                android:enabled="false"
+                android:paddingBottom="5dp"
+                android:paddingTop="5dp"
+                android:text="@string/flash_now"
+                android:textColor="@color/light_blue_text_color" />
+
+            <Button
+                android:id="@+id/button_add_zip"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="10dp"
+                android:layout_weight="1"
+                android:background="@drawable/light_blue_background"
+                android:paddingBottom="5dp"
+                android:paddingTop="5dp"
+                android:text="@string/add_zip"
+                android:textColor="@color/light_blue_text_color" />
+
+            <Button
+                android:id="@+id/button_clear_queue"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="10dp"
+                android:layout_weight="1"
+                android:background="@drawable/light_blue_background"
+                android:paddingBottom="5dp"
+                android:paddingTop="5dp"
+                android:text="@string/clear_queue"
+                android:textColor="@color/light_blue_text_color" />
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+</LinearLayout>

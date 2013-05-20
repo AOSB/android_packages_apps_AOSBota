@@ -18,7 +18,6 @@ package com.beerbong.otaplatform.updater.impl;
 
 import org.json.JSONObject;
 
-import com.beerbong.otaplatform.R;
 import com.beerbong.otaplatform.updater.GooPackage;
 import com.beerbong.otaplatform.updater.Updater;
 import com.beerbong.otaplatform.util.Constants;
@@ -101,11 +100,6 @@ public class GooUpdater extends Updater {
     @Override
     public void onReadError(Exception ex) {
         mListener.versionError(null);
-    }
-
-    @Override
-    public int getDrawable() {
-        return R.drawable.goo;
     }
 
 }

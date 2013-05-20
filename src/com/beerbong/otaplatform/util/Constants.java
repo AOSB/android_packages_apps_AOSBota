@@ -24,7 +24,9 @@ import java.io.InputStreamReader;
 import java.math.BigInteger;
 import java.security.MessageDigest;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 import android.app.Activity;
 import android.app.AlarmManager;
@@ -48,6 +50,7 @@ import com.beerbong.otaplatform.MainActivity;
 import com.beerbong.otaplatform.NotificationAlarm;
 import com.beerbong.otaplatform.R;
 import com.beerbong.otaplatform.updater.Updater;
+import com.beerbong.otaplatform.util.RequestFileActivity.RequestFileCallback;
 
 public class Constants {
 
@@ -95,10 +98,22 @@ public class Constants {
     private static final long G = M * K;
     private static final long T = G * K;
 
+    private static List<RequestFileCallback> mRequestFileCallbacks = new ArrayList<RequestFileCallback>();
+    
     private static int isSystemApp = -1;
 
     private static final SimpleDateFormat SDF = new SimpleDateFormat("yyyy-MM-dd.HH.mm.ss");
 
+    public static void addRequestFileCallback(RequestFileCallback observer) {
+        mRequestFileCallbacks.add(observer);
+    }
+
+    public static void fileRequested(String filePath) {
+        for (RequestFileCallback observer : mRequestFileCallbacks) {
+            observer.fileRequested(filePath);
+        }
+    }
+    
     public static String getDateAndTime() {
         return SDF.format(new Date(System.currentTimeMillis()));
     }
@@ -148,7 +163,7 @@ public class Constants {
         Notification noti = new Notification.Builder(context)
                 .setContentTitle(resources.getString(resourceTitle, new Object[] { info.getVersion() }))
                 .setContentText(resources.getString(resourceText, new Object[] { info.getFilename() }))
-                .setSmallIcon(R.drawable.ic_launcher_goo).setContentIntent(pIntent).build();
+                .setSmallIcon(R.drawable.ic_launcher).setContentIntent(pIntent).build();
 
         NotificationManager notificationManager = (NotificationManager) context
                 .getSystemService(Service.NOTIFICATION_SERVICE);

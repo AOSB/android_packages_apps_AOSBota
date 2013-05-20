@@ -14,15 +14,37 @@
      See the License for the specific language governing permissions and
      limitations under the License.
 -->
-<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android" >
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content" >
 
-    <PreferenceCategory android:title="@string/settings_interface" >
+    <PreferenceCategory android:title="@string/settings" >  
+
+        <Preference
+            android:key="installtwrp"
+            android:title="@string/check_twrp_updates" />
+
+        <Preference
+            android:key="browsegoo"
+            android:title="@string/goo_browse" />
+
+        <Preference
+            android:key="logingoo"
+            android:title="@string/menu_login" />
+
+        <Preference
+            android:key="recoveryactivity"
+            android:title="@string/settings_recovery" />
+
+    </PreferenceCategory>
+
+    <!--PreferenceCategory android:title="@string/settings_interface" >
 
         <CheckBoxPreference
             android:key="darktheme"
             android:summary="@string/settings_theme_summary"
             android:title="@string/settings_theme_title" />
-    </PreferenceCategory>
+    </PreferenceCategory-->
 
     <PreferenceCategory
         android:key="settings_update"
@@ -71,7 +93,7 @@
             android:summary="@string/externalsdcard_summary"
             android:title="@string/externalsdcard_title" />
 
-        <com.beerbong.otaplatform.widget.ListPreferenceMultiSelect
+        <com.beerbong.otaplatform.ui.component.ListPreferenceMultiSelect
             android:defaultValue="BACKUP|WIPESYSTEM|WIPEDATA|WIPECACHES|FIXPERM"
             android:entries="@array/wipe_options"
             android:entryValues="@array/wipe_options_values"

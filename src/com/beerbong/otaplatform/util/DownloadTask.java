@@ -53,7 +53,7 @@ public class DownloadTask extends AsyncTask<Void, Integer, Integer> implements F
     private String mUrl;
     private String mFileName;
     private String mMd5;
-    private boolean mIsDelta;
+//    private boolean mIsDelta;
     private final WakeLock mWakeLock;
     private int mNotificationId;
     private int mLengthOfFile;
@@ -73,7 +73,7 @@ public class DownloadTask extends AsyncTask<Void, Integer, Integer> implements F
         mUrl = url;
         mFileName = fileName;
         mMd5 = md5;
-        mIsDelta = isDelta;
+//        mIsDelta = isDelta;
 
         mDestFile = new File(pManager.getDownloadPath(), mFileName);
         String extension = mFileName.substring(mFileName.lastIndexOf("."));

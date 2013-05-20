@@ -1,0 +1,6 @@
+<resources>
+
+    <dimen name="header_title_size">32dp</dimen>
+    <dimen name="header_button_left_right_padding">15dp</dimen>
+
+</resources>

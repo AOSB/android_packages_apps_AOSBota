@@ -34,8 +34,8 @@ public class RecoveryActivity extends PreferenceActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
-        boolean useDarkTheme = ManagerFactory.getPreferencesManager(this).isDarkTheme();
-        setTheme(useDarkTheme ? R.style.Theme_Dark : R.style.Theme_Light);
+//        boolean useDarkTheme = ManagerFactory.getPreferencesManager(this).isDarkTheme();
+//        setTheme(useDarkTheme ? R.style.Theme_Dark : R.style.Theme_Light);
 
         super.onCreate(savedInstanceState);
 

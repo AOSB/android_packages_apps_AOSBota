@@ -45,8 +45,6 @@ import android.widget.Toast;
 
 import com.beerbong.otaplatform.MainActivity;
 import com.beerbong.otaplatform.R;
-import com.beerbong.otaplatform.activity.FlashActivity;
-import com.beerbong.otaplatform.ui.UI;
 import com.beerbong.otaplatform.updater.CancelPackage;
 import com.beerbong.otaplatform.updater.Updater;
 import com.beerbong.otaplatform.updater.Updater.PackageInfo;
@@ -55,7 +53,7 @@ import com.beerbong.otaplatform.util.DownloadTask;
 import com.beerbong.otaplatform.util.DownloadTask.DownloadTaskListener;
 import com.beerbong.otaplatform.util.FileItem;
 
-public class FileManager extends Manager implements UI.OnNewIntentListener {
+public class FileManager extends Manager {
 
     private List<FileItem> mItems;
     private String mInternalStoragePath;
@@ -115,7 +113,6 @@ public class FileManager extends Manager implements UI.OnNewIntentListener {
         }
     }
 
-    @Override
     public Updater.PackageInfo onNewIntent(Context context, Intent intent) {
         int notificationId = intent.getExtras() != null
                 && intent.getExtras().get("NOTIFICATION_ID") != null ? Integer.parseInt(intent
@@ -155,7 +152,8 @@ public class FileManager extends Manager implements UI.OnNewIntentListener {
                 if (addItem(task.getDestinationFile().getAbsolutePath())) {
                     Toast.makeText(context, R.string.install_file_manager_zip_added,
                             Toast.LENGTH_LONG).show();
-                    context.startActivity(new Intent(context, FlashActivity.class));
+                    // TODO seleccionar boto install de header
+//                    context.startActivity(new Intent(context, FlashActivity.class));
                 }
 
                 NotificationManager nMgr = (NotificationManager) context
@@ -343,7 +341,7 @@ public class FileManager extends Manager implements UI.OnNewIntentListener {
                 .setContentTitle(resources.getString(R.string.downloading))
                 .setContentText(
                         resources.getString(R.string.new_package_name, new Object[] { fileName }))
-                .setSmallIcon(R.drawable.ic_launcher_goo).setContentIntent(pendingIntent)
+                .setSmallIcon(R.drawable.ic_launcher).setContentIntent(pendingIntent)
                 .setProgress(100, 0, true);
 
         switch (notificationId) {

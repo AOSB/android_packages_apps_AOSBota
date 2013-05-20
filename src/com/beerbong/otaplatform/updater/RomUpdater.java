@@ -76,10 +76,6 @@ public class RomUpdater implements Updater.UpdaterListener {
         return mUpdater.getVersion();
     }
 
-    public int getDrawable() {
-        return mUpdater.getDrawable();
-    }
-
     @Override
     public void versionFound(final PackageInfo info) {
         if (info != null && info.getVersion() > mRomVersion) {

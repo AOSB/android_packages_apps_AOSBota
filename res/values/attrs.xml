@@ -1,0 +1,6 @@
+<resources>
+   <declare-styleable name="HeaderButton">
+       <attr name="text" format="string" />
+       <attr name="icon" format="integer" />
+   </declare-styleable>
+</resources>

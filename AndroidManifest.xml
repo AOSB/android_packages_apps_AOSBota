@@ -1,7 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.beerbong.otaplatform"
-    android:versionCode="200"
-    android:versionName="2.0.0" >
+    android:versionCode="210"
+    android:versionName="2.1.0" >
 
     <uses-sdk
         android:minSdkVersion="8"
@@ -17,9 +18,9 @@
     <application
         android:allowBackup="true"
         android:hardwareAccelerated="true"
-        android:icon="@drawable/ic_launcher_goo"
+        android:icon="@drawable/ic_launcher"
         android:label="@string/app_name"
-        android:theme="@style/Theme_Dark" >
+        android:theme="@style/AppTheme" >
         <activity android:name="com.beerbong.otaplatform.MainActivity"
             android:label="@string/app_name"
             android:launchMode="singleInstance" >
@@ -33,6 +34,8 @@
         <activity android:name="com.beerbong.otaplatform.activity.SettingsActivity" />
         <activity android:name="com.beerbong.otaplatform.activity.FlashActivity" />
         <activity android:name="com.beerbong.otaplatform.activity.RecoveryActivity" />
+        <activity android:name="com.beerbong.otaplatform.util.RequestFileActivity"
+            android:theme="@android:style/Theme.Translucent.NoTitleBar" />
 
         <receiver android:name="com.beerbong.otaplatform.NotificationAlarm" />
         <receiver
