@@ -152,8 +152,9 @@ public class FileManager extends Manager {
                 if (addItem(task.getDestinationFile().getAbsolutePath())) {
                     Toast.makeText(context, R.string.install_file_manager_zip_added,
                             Toast.LENGTH_LONG).show();
-                    // TODO seleccionar boto install de header
-//                    context.startActivity(new Intent(context, FlashActivity.class));
+                    if (context instanceof MainActivity) {
+                        ((MainActivity)context).headerSelect(1);
+                    }
                 }
 
                 NotificationManager nMgr = (NotificationManager) context

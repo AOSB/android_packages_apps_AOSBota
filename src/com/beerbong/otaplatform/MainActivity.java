@@ -20,6 +20,7 @@ public class MainActivity extends FragmentActivity implements Header.HeaderChang
 
     private static final String HEADER_SELECT = "HEADER_SELECT";
 
+    private Header mHeader;
     private Map<Integer, Fragment> mFragments = new HashMap<Integer, Fragment>();
     private int mSelectedHeaderButton = 0;
 
@@ -28,16 +29,16 @@ public class MainActivity extends FragmentActivity implements Header.HeaderChang
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        Header header = (Header) findViewById(R.id.header);
+        mHeader = (Header) findViewById(R.id.header);
 
         if (savedInstanceState == null) {
 
-            header.setHeaderChangeListener(this);
+            mHeader.setHeaderChangeListener(this);
 
-            header.select(0);
+            mHeader.select(0);
         } else {
             mSelectedHeaderButton = savedInstanceState.getInt(HEADER_SELECT);
-            header.select(mSelectedHeaderButton);
+            mHeader.select(mSelectedHeaderButton);
         }
 
         ManagerFactory.start(this);
@@ -50,6 +51,10 @@ public class MainActivity extends FragmentActivity implements Header.HeaderChang
     @Override
     protected void onNewIntent(Intent intent) {
         ManagerFactory.getFileManager(this).onNewIntent(this, intent);
+    }
+
+    public void headerSelect(int index) {
+        mHeader.select(index);
     }
 
     @Override
@@ -66,11 +71,8 @@ public class MainActivity extends FragmentActivity implements Header.HeaderChang
                     mSelectedHeaderButton = 1;
                     break;
                 case R.id.button_settings:
-//                    fragment = new SettingsFragment();
-//                    mSelectedHeaderButton = 2;
-                    this.startActivity(new Intent(this, SettingsActivity.class));
-                    Header header = (Header) findViewById(R.id.header);
-                    header.select(mSelectedHeaderButton, false);
+                    startActivity(new Intent(this, SettingsActivity.class));
+                    mHeader.select(mSelectedHeaderButton, false);
                     return;
             }
             mFragments.put(id, fragment);
