@@ -1,23 +1,14 @@
 <resources>
 
-    <color name="main_background_color">#efece3</color>
-    <color name="header_background_color">#da4936</color>
-    <color name="header_border_color">#b14636</color>
-    <color name="header_text_color">#ffffff</color>
-    <color name="light_blue">#99ccff</color>
-    <color name="light_blue_text_color">#ffffff</color>
-    <color name="black_text_color">#000000</color>
-    <!--
-        Base application theme, dependent on API level. This theme is replaced
-        by AppBaseTheme from res/values-vXX/styles.xml on newer devices.
-    -->
-    <style name="AppBaseTheme" parent="android:Theme.Holo.Light">
-        <!--item name="android:windowActionBar">false</item>
-        <item name="android:windowNoTitle">true</item-->
-    </style>
-
-    <!-- Application theme. -->
-    <style name="AppTheme" parent="AppBaseTheme">
-        <!-- All customizations that are NOT specific to a particular API-level can go here. -->
+    <!-- Application light theme -->
+    <style name="AppTheme" parent="android:Theme.Holo.Light">
+        <item name="backgroundColor">@color/main_background_color_light</item>
+        <item name="headerBackground">@drawable/red_header_background</item>
+        <item name="headerButtonBackground">@color/header_border_color_red</item>
+        <item name="headerButtonColor">@color/header_text_color_light</item>
+        <item name="titleBackground">@drawable/light_blue_background</item>
+        <item name="titleColor">@color/light_blue_text_color</item>
+        <item name="normalColor">@color/black_text_color</item>
+        <item name="panelBackground">@drawable/white_background</item>
     </style>
 </resources>

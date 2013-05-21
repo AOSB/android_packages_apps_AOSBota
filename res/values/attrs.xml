@@ -3,4 +3,13 @@
        <attr name="text" format="string" />
        <attr name="icon" format="integer" />
    </declare-styleable>
+
+   <attr name="backgroundColor" format="reference|color" />
+   <attr name="headerBackground" format="reference" />
+   <attr name="headerButtonBackground" format="reference|color" />
+   <attr name="headerButtonColor" format="reference|color" />
+   <attr name="titleBackground" format="reference" />
+   <attr name="titleColor" format="reference|color" />
+   <attr name="normalColor" format="reference|color" />
+   <attr name="panelBackground" format="reference" />
 </resources>

@@ -1,9 +1,11 @@
 package com.beerbong.otaplatform.ui.component;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
+import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -20,10 +22,12 @@ public class HeaderButton extends LinearLayout {
         public void onHeaderButtonSelected(int id, boolean fire);
     }
 
+    private Context mContext;
     private HeaderButtonListener mHeaderButtonListener;
 
     public HeaderButton(Context context, AttributeSet attrs) {
         super(context, attrs);
+        mContext = context;
 
         LayoutInflater inflater = (LayoutInflater) context
                 .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
@@ -62,7 +66,9 @@ public class HeaderButton extends LinearLayout {
     }
 
     public void select(boolean fire) {
-        this.setBackgroundColor(R.color.header_border_color);
+        TypedValue typedValue = new TypedValue(); 
+        ((Activity)mContext).getTheme().resolveAttribute(R.attr.headerButtonBackground, typedValue, true);
+        this.setBackgroundColor(typedValue.resourceId);
         if (mHeaderButtonListener != null) {
             mHeaderButtonListener.onHeaderButtonSelected(getId(), fire);
         }

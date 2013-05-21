@@ -1,7 +1,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
-    android:background="@color/main_background_color"
+    android:background="?backgroundColor"
     android:orientation="vertical"
     android:padding="20dp" >
 
@@ -9,21 +9,21 @@
         android:id="@+id/rom_header"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:background="@drawable/light_blue_background"
+        android:background="?titleBackground"
         android:gravity="center_horizontal"
         android:paddingBottom="15dp"
         android:paddingLeft="20dp"
         android:paddingRight="20dp"
         android:paddingTop="10dp"
         android:textAppearance="?android:attr/textAppearanceLarge"
-        android:textColor="@color/light_blue_text_color" />
+        android:textColor="?titleColor" />
 
     <include layout="@layout/vseparator"/>
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@drawable/white_background"
+        android:background="?panelBackground"
         android:orientation="vertical"
         android:padding="10dp" >
 
@@ -32,7 +32,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textAppearance="?android:attr/textAppearanceMedium"
-            android:textColor="@color/black_text_color" />
+            android:textColor="?normalColor" />
 
         <TextView
             android:id="@+id/version_header"
@@ -47,7 +47,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_weight="1"
-        android:background="@drawable/white_background"
+        android:background="?panelBackground"
         android:orientation="vertical"
         android:padding="10dp" >
 
@@ -66,7 +66,7 @@
             android:gravity="center_horizontal"
             android:text="@string/no_new_rom_found"
             android:textAppearance="?android:attr/textAppearanceMedium"
-            android:textColor="@color/black_text_color"
+            android:textColor="?normalColor"
             android:visibility="gone" />
 
         <TextView
@@ -74,7 +74,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:textAppearance="?android:attr/textAppearanceMedium"
-            android:textColor="@color/black_text_color" />
+            android:textColor="?normalColor" />
 
         <include layout="@layout/vseparator" />
 
@@ -95,12 +95,12 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:background="@drawable/light_blue_background"
+                android:background="?titleBackground"
                 android:enabled="false"
                 android:paddingBottom="5dp"
                 android:paddingTop="5dp"
                 android:text="@string/check_rom_updates"
-                android:textColor="@color/light_blue_text_color" />
+                android:textColor="?titleColor" />
 
             <Button
                 android:id="@+id/button_checkupdatesgapps"
@@ -108,12 +108,12 @@
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="10dp"
                 android:layout_weight="1"
-                android:background="@drawable/light_blue_background"
+                android:background="?titleBackground"
                 android:enabled="false"
                 android:paddingBottom="5dp"
                 android:paddingTop="5dp"
                 android:text="@string/check_gapps_updates"
-                android:textColor="@color/light_blue_text_color" />
+                android:textColor="?titleColor" />
 
             <Button
                 android:id="@+id/button_download"
@@ -121,11 +121,11 @@
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="10dp"
                 android:layout_weight="1"
-                android:background="@drawable/light_blue_background"
+                android:background="?titleBackground"
                 android:paddingBottom="5dp"
                 android:paddingTop="5dp"
                 android:text="@string/rom_download"
-                android:textColor="@color/light_blue_text_color"
+                android:textColor="?titleColor"
                 android:visibility="gone" />
 
             <Button
@@ -134,11 +134,11 @@
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="10dp"
                 android:layout_weight="1"
-                android:background="@drawable/light_blue_background"
+                android:background="?titleBackground"
                 android:paddingBottom="5dp"
                 android:paddingTop="5dp"
                 android:text="@string/delta_download"
-                android:textColor="@color/light_blue_text_color"
+                android:textColor="?titleColor"
                 android:visibility="gone" />
 
         </LinearLayout>

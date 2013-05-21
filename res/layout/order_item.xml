@@ -62,7 +62,7 @@
             android:paddingTop="9dip"
             android:singleLine="true"
             android:textAppearance="?android:attr/textAppearanceMedium"
-            android:textColor="@color/black_text_color" />
+            android:textColor="?normalColor" />
 
         <TextView android:id="@+id/summary"
             android:layout_width="wrap_content"
