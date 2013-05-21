@@ -40,6 +40,7 @@ public class UpdateFragment extends Fragment implements RomUpdater.RomUpdaterLis
     private TextView mRemoteVersionHeader;
     private TextView mRemoteVersionBody;
     private boolean mRomCanUpdate = true;
+    private boolean mStartup = true;
 
     public UpdateFragment() {
     }
@@ -127,11 +128,12 @@ public class UpdateFragment extends Fragment implements RomUpdater.RomUpdaterLis
             }
         }
 
-        if (mNewRom != null) {
+        if (mNewRom != null || !mStartup) {
             checkRomCompleted(mNewRom);
         } else if (mRomCanUpdate) {
             checkRom();
         }
+        mStartup = false;
 
         if (savedInstanceState == null) {
             if (!mRomCanUpdate) {
@@ -175,7 +177,11 @@ public class UpdateFragment extends Fragment implements RomUpdater.RomUpdaterLis
     }
 
     private void checkRom() {
+        mRemoteVersionHeader.setText("");
+        mRemoteVersionBody.setText("");
         mNoNewRom.setVisibility(View.GONE);
+        mButtonDownload.setVisibility(View.GONE);
+        mButtonDownloadDelta.setVisibility(View.GONE);
         mProgressBar.setVisibility(View.VISIBLE);
         mRomUpdater.check();
     }
