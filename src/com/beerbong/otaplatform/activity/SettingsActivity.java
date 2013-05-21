@@ -52,7 +52,7 @@ public class SettingsActivity extends PreferenceActivity implements OnPreference
 
     private ProgressDialog mProgress;
     private AlertDialog mLoginDialog;
-    // private CheckBoxPreference mDarkTheme;
+    private CheckBoxPreference mDarkTheme;
     private ListPreference mCheckTime;
     private Preference mDownloadPath;
     private Preference mGappsFolder;
@@ -66,16 +66,14 @@ public class SettingsActivity extends PreferenceActivity implements OnPreference
     @SuppressWarnings("deprecation")
     protected void onCreate(Bundle savedInstanceState) {
 
-        // boolean useDarkTheme =
-        // ManagerFactory.getPreferencesManager(this).isDarkTheme();
-        // setTheme(useDarkTheme ? R.style.Theme_Dark : R.style.Theme_Light);
+        boolean useDarkTheme = ManagerFactory.getPreferencesManager(this).isDarkTheme();
+        setTheme(useDarkTheme ? R.style.DarkTheme : R.style.AppTheme);
 
         super.onCreate(savedInstanceState);
 
         addPreferencesFromResource(R.layout.settings);
 
-        // mDarkTheme = (CheckBoxPreference)
-        // findPreference(Constants.PREFERENCE_SETTINGS_DARK_THEME);
+        mDarkTheme = (CheckBoxPreference)findPreference(Constants.PREFERENCE_SETTINGS_DARK_THEME);
         mDownloadPath = findPreference(Constants.PREFERENCE_SETTINGS_DOWNLOAD_PATH);
         mCheckTime = (ListPreference) findPreference(Constants.PREFERENCE_SETTINGS_CHECK_TIME);
         mGappsFolder = findPreference(Constants.PREFERENCE_SETTINGS_GAPPS_FOLDER);
@@ -90,7 +88,7 @@ public class SettingsActivity extends PreferenceActivity implements OnPreference
         mCheckTime.setValue(String.valueOf(pManager.getTimeNotifications()));
         mCheckTime.setOnPreferenceChangeListener(this);
 
-        // mDarkTheme.setChecked(pManager.isDarkTheme());
+        mDarkTheme.setChecked(pManager.isDarkTheme());
 
         mOptions.setValue(pManager.getShowOptions());
         mOptions.setOnPreferenceChangeListener(this);

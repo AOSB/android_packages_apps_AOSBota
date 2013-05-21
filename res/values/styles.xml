@@ -21,11 +21,27 @@
     <style name="AppTheme" parent="android:Theme.Holo.Light">
         <item name="backgroundColor">@color/main_background_color_light</item>
         <item name="headerBackground">@drawable/red_header_background</item>
-        <item name="headerButtonBackground">@color/header_border_color_red</item>
+        <item name="headerButtonBackground">@drawable/red_header_button_background</item>
         <item name="headerButtonColor">@color/header_text_color_light</item>
         <item name="titleBackground">@drawable/light_blue_background</item>
+        <item name="buttonBackground">@drawable/light_blue_background</item>
+        <item name="buttonColor">@color/light_blue_text_color</item>
         <item name="titleColor">@color/light_blue_text_color</item>
         <item name="normalColor">@color/black_text_color</item>
         <item name="panelBackground">@drawable/white_background</item>
+    </style>
+
+    <!-- Dark theme -->
+    <style name="DarkTheme" parent="android:Theme.Holo">
+        <item name="backgroundColor">?android:attr/windowBackground</item>
+        <item name="headerBackground">@drawable/dark_header_background</item>
+        <item name="headerButtonBackground">@drawable/dark_header_button_background</item>
+        <item name="headerButtonColor">@color/header_text_color_light</item>
+        <item name="titleBackground">@drawable/gray_background</item>
+        <item name="buttonBackground">@android:drawable/btn_default</item>
+        <item name="buttonColor">@android:color/primary_text_light</item>
+        <item name="titleColor">@color/light_blue_text_color</item>
+        <item name="normalColor">@android:color/primary_text_dark</item>
+        <item name="panelBackground">@drawable/gray_background</item>
     </style>
 </resources>

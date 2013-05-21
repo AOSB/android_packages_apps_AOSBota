@@ -46,12 +46,12 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:background="?titleBackground"
+                android:background="?buttonBackground"
                 android:enabled="false"
                 android:paddingBottom="5dp"
                 android:paddingTop="5dp"
                 android:text="@string/flash_now"
-                android:textColor="?titleColor" />
+                android:textColor="?buttonColor" />
 
             <Button
                 android:id="@+id/button_add_zip"
@@ -59,11 +59,11 @@
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="10dp"
                 android:layout_weight="1"
-                android:background="?titleBackground"
+                android:background="?buttonBackground"
                 android:paddingBottom="5dp"
                 android:paddingTop="5dp"
                 android:text="@string/add_zip"
-                android:textColor="?titleColor" />
+                android:textColor="?buttonColor" />
 
             <Button
                 android:id="@+id/button_clear_queue"
@@ -71,11 +71,11 @@
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="10dp"
                 android:layout_weight="1"
-                android:background="?titleBackground"
+                android:background="?buttonBackground"
                 android:paddingBottom="5dp"
                 android:paddingTop="5dp"
                 android:text="@string/clear_queue"
-                android:textColor="?titleColor" />
+                android:textColor="?buttonColor" />
 
         </LinearLayout>
 

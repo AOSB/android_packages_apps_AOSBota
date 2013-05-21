@@ -23,7 +23,6 @@
     android:orientation="horizontal" >
 
 	<LinearLayout
-	    xmlns:android="http://schemas.android.com/apk/res/android"
 	    android:layout_width="fill_parent"
 	    android:layout_height="fill_parent"
 	    android:layout_weight="1"
@@ -68,107 +67,115 @@
     </LinearLayout>
     
     <include layout="@layout/hseparator"/>
-	
+
     <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
         android:layout_weight="1"
-        android:background="?panelBackground"
-        android:orientation="vertical"
-        android:padding="10dp" >
-
-        <ProgressBar
-            android:id="@+id/progressBar"
-            style="?android:attr/progressBarStyle"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
-
-        <include layout="@layout/vseparator" />
-
-        <TextView
-            android:id="@+id/no_new_version"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:gravity="center_horizontal"
-            android:text="@string/no_new_rom_found"
-            android:textAppearance="?android:attr/textAppearanceMedium"
-            android:textColor="?normalColor"
-            android:visibility="gone" />
-
-        <TextView
-            android:id="@+id/remoteversion_header"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:textAppearance="?android:attr/textAppearanceMedium"
-            android:textColor="?normalColor" />
-
-        <include layout="@layout/vseparator" />
-
-        <TextView
-            android:id="@+id/remoteversion_body"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_weight="1" />
-
-        <include layout="@layout/vseparator" />
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content" >
-
-            <Button
-                android:id="@+id/button_checkupdates"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:background="?titleBackground"
-                android:enabled="false"
-                android:paddingBottom="5dp"
-                android:paddingTop="5dp"
-                android:text="@string/check_rom_updates"
-                android:textColor="?titleColor" />
-
-            <Button
-                android:id="@+id/button_checkupdatesgapps"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="10dp"
-                android:layout_weight="1"
-                android:background="?titleBackground"
-                android:enabled="false"
-                android:paddingBottom="5dp"
-                android:paddingTop="5dp"
-                android:text="@string/check_gapps_updates"
-                android:textColor="?titleColor" />
-
-            <Button
-                android:id="@+id/button_download"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="10dp"
-                android:layout_weight="1"
-                android:background="?titleBackground"
-                android:paddingBottom="5dp"
-                android:paddingTop="5dp"
-                android:text="@string/rom_download"
-                android:textColor="?titleColor"
-                android:visibility="gone" />
-
-            <Button
-                android:id="@+id/button_download_delta"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="10dp"
-                android:layout_weight="1"
-                android:background="?titleBackground"
-                android:paddingBottom="5dp"
-                android:paddingTop="5dp"
-                android:text="@string/delta_download"
-                android:textColor="?titleColor"
-                android:visibility="gone" />
-
+        android:orientation="vertical" >
+	
+	    <LinearLayout
+	        android:layout_width="match_parent"
+	        android:layout_height="match_parent"
+	        android:layout_weight="1"
+	        android:background="?panelBackground"
+	        android:orientation="vertical"
+	        android:padding="10dp" >
+	
+	        <ProgressBar
+	            android:id="@+id/progressBar"
+	            style="?android:attr/progressBarStyle"
+	            android:layout_width="match_parent"
+	            android:layout_height="wrap_content" />
+	
+	        <include layout="@layout/vseparator" />
+	
+	        <TextView
+	            android:id="@+id/no_new_version"
+	            android:layout_width="match_parent"
+	            android:layout_height="wrap_content"
+	            android:gravity="center_horizontal"
+	            android:text="@string/no_new_rom_found"
+	            android:textAppearance="?android:attr/textAppearanceMedium"
+	            android:textColor="?normalColor"
+	            android:visibility="gone" />
+	
+	        <TextView
+	            android:id="@+id/remoteversion_header"
+	            android:layout_width="match_parent"
+	            android:layout_height="wrap_content"
+	            android:textAppearance="?android:attr/textAppearanceMedium"
+	            android:textColor="?normalColor" />
+	
+	        <include layout="@layout/vseparator" />
+	
+	        <TextView
+	            android:id="@+id/remoteversion_body"
+	            android:layout_width="match_parent"
+	            android:layout_height="wrap_content"
+	            android:layout_weight="1" />
+	
+	    </LinearLayout>
+	
+	    <include layout="@layout/vseparator" />
+	
+	    <LinearLayout
+	        android:layout_width="match_parent"
+	        android:layout_height="wrap_content" >
+	
+	        <Button
+	            android:id="@+id/button_checkupdates"
+	            android:layout_width="wrap_content"
+	            android:layout_height="wrap_content"
+	            android:layout_weight="1"
+	            android:background="?buttonBackground"
+	            android:enabled="false"
+	            android:paddingBottom="5dp"
+	            android:paddingTop="5dp"
+	            android:text="@string/check_rom_updates"
+	            android:textColor="?buttonColor" />
+	
+	        <Button
+	            android:id="@+id/button_checkupdatesgapps"
+	            android:layout_width="wrap_content"
+	            android:layout_height="wrap_content"
+	            android:layout_marginLeft="10dp"
+	            android:layout_weight="1"
+	            android:background="?buttonBackground"
+	            android:enabled="false"
+	            android:paddingBottom="5dp"
+	            android:paddingTop="5dp"
+	            android:text="@string/check_gapps_updates"
+	            android:textColor="?buttonColor" />
+	
+	        <Button
+	            android:id="@+id/button_download"
+	            android:layout_width="wrap_content"
+	            android:layout_height="wrap_content"
+	            android:layout_marginLeft="10dp"
+	            android:layout_weight="1"
+	            android:background="?buttonBackground"
+	            android:paddingBottom="5dp"
+	            android:paddingTop="5dp"
+	            android:text="@string/rom_download"
+	            android:textColor="?buttonColor"
+	            android:visibility="gone" />
+	
+	        <Button
+	            android:id="@+id/button_download_delta"
+	            android:layout_width="wrap_content"
+	            android:layout_height="wrap_content"
+	            android:layout_marginLeft="10dp"
+	            android:layout_weight="1"
+	            android:background="?buttonBackground"
+	            android:paddingBottom="5dp"
+	            android:paddingTop="5dp"
+	            android:text="@string/delta_download"
+	            android:textColor="?buttonColor"
+	            android:visibility="gone" />
+    
         </LinearLayout>
-
+    
     </LinearLayout>
 
 </LinearLayout>

@@ -47,7 +47,7 @@ public class PreferencesManager extends Manager {
     private static final String DEFAULT_INTERNAL_STORAGE = "emmc";
     private static final String DEFAULT_EXTERNAL_STORAGE = "sdcard";
     private static final String DEFAULT_SHOW_OPTIONS = Constants.INSTALL_OPTIONS_DEFAULT;
-    private static final boolean DEFAULT_DARK_THEME = true;
+    private static final boolean DEFAULT_DARK_THEME = false;
 
     public static final String SEPARATOR = "#-#";
 

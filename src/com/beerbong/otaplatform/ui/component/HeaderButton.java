@@ -84,7 +84,11 @@ public class HeaderButton extends LinearLayout {
     public void select(boolean fire) {
         TypedValue typedValue = new TypedValue(); 
         ((Activity)mContext).getTheme().resolveAttribute(R.attr.headerButtonBackground, typedValue, true);
-        this.setBackgroundColor(typedValue.resourceId);
+        try {
+            setBackground(mContext.getResources().getDrawable(typedValue.resourceId));
+        } catch (Throwable t) {
+            setBackgroundColor(typedValue.resourceId);
+        }
         if (mHeaderButtonListener != null) {
             mHeaderButtonListener.onHeaderButtonSelected(getId(), fire);
         }
