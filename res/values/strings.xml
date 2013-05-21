@@ -104,9 +104,9 @@
     <string name="gapps_folder_selected">Folder set as Gapps url</string>
     <string name="last_gapps_found_title">Newer Gapps package found</string>
     <string name="last_gapps_found_summary">This is the last GApps package found. Do you want to download it now?\n\n%1$s\n%2$s\n</string>
-    <string name="flash_now">Install now</string>
-    <string name="add_zip">Add zip</string>
-    <string name="clear_queue">Clear queue</string>
+    <string name="flash_now">Install\nnow</string>
+    <string name="add_zip">Add\nzip</string>
+    <string name="clear_queue">Clear\nqueue</string>
     <string name="alert_file_title">%1$s</string>
     <string name="alert_file_summary">Path: %1$s\nSize: %2$s\nModified: %3$s</string>
     <string name="alert_file_delete">Delete from list</string>
