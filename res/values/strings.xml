@@ -67,7 +67,7 @@
     <string name="menu_login">Login into Goo.im</string>
     <string name="settings_interface">Interface</string>
     <string name="settings_theme_title">Use dark theme</string>
-    <string name="settings_theme_summary">Use dark them instead of Holo</string>
+    <string name="settings_theme_summary">Use dark them instead of Holo.Light</string>
     <string name="settings_update">Updates</string>
     <string name="download_path">Download path</string>
     <string name="time_notifications_never">Don\'t check</string>

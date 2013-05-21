@@ -1,0 +1,168 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+     Copyright (C) 2013 OTAPlatform
+
+     Licensed under the Apache License, Version 2.0 (the "License");
+     you may not use this file except in compliance with the License.
+     You may obtain a copy of the License at
+
+          http://www.apache.org/licenses/LICENSE-2.0
+
+     Unless required by applicable law or agreed to in writing, software
+     distributed under the License is distributed on an "AS IS" BASIS,
+     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+     See the License for the specific language governing permissions and
+     limitations under the License.
+
+-->
+<resources>
+
+    <string name="app_name">OTAPlatform</string>
+    
+    <string name="update">Actualitzar</string>
+    <string name="flash">""Instal·lar"</string>
+    <string name="settings">Ajustaments</string>
+    <string name="not_available">N/A</string>
+    <string name="checking">Comprovant nova versió</string>
+    <string name="checking_twrp">Comprovant TWRP</string>
+    <string name="developer_header">Desenvolupat per %1$s</string>
+    <string name="check_rom_updates">Comprovar\nROM</string>
+    <string name="check_rom_updates_error">Error comprovant actualitzacions de la ROM</string>
+    <string name="check_rom_updates_no_new">No s\'han trobat actualitzacions de la ROM</string>
+    <string name="new_rom_found_title">Versió %1$s trobada</string>
+    <string name="no_new_rom_found">"Tens la darrera versió instal·lada"</string>
+    <string name="delta_download">Descarregar\nDelta</string>
+    <string name="rom_download">Descarregar\nROM</string>
+    <string name="new_package_name">%1$s</string>
+    <string name="check_gapps_updates">Comprovar\nGApps</string>
+    <string name="check_gapps_updates_no_new">No s\'han trobat actualitzacions de les GApps</string>
+    <string name="check_gapps_updates_error">Error comprovant actualitzacions de les GApps</string>
+    <string name="new_gapps_found_title">Trobat nou paquet de GApps</string>
+    <string name="new_gapps_found_summary">S\'ha trobat una nova versió del paquet de GApps. Vols descarregar-les ara?\n\n%1$s\n%2$s\n</string>
+    <string name="check_twrp_updates">"Instal·lar OpenRecoveryScript"</string>
+    <string name="new_twrp_found_title">"Instal·lar TWRP"</string>
+    <string name="new_twrp_found_summary">"Això baixarà i instal·larà %1$s recovery al teu dispositiu.\nVols continuar?"</string>
+    <string name="check_twrp_updates_error">Error comprovant TWRP</string>
+    <string name="check_twrp_error_md5">Error comprovant TWRP. Els MD5 no són iguals</string>
+    <string name="check_twrp_updates_no_new">No s\'ha trobat un recovery per al teu dispositiu</string>
+    <string name="downloading">Descarregant</string>
+    <string name="downloading_complete">Descàrrega completa</string>
+    <string name="downloading_error">Error descarregant arxiu</string>
+    <string name="downloading_interrupted">Descàrrega interrompuda</string>
+    <string name="downloading_nospace">Error descarregant arxiu: no hi ha espai disponible</string>
+    <string name="download_alert_title">Ruta de descàrregues</string>
+    <string name="download_alert_summary">Especifica la ruta on guardar les descàrregues</string>
+    <string name="download_alert_error">Per favor, especifica la ruta on guardar les descàrregues</string>
+    <string name="download_cancel_title">Cancelar descàrrega</string>
+    <string name="download_cancel_message">Vols cancelar la descàrrega actual?</string>
+    <string name="goo_browse">Navegar per Goo.im</string>
+    <string name="goo_browse_all_compatible">Navegar per ROMs compatibles</string>
+    <string name="goo_browse_all">Navegar per tots els arxius</string>
+    <string name="goo_browse_watchlist">Watchlist</string>
+    <string name="goo_browse_error">Error navegant per arxius</string>
+    <string name="goo_browse_searching">Cercant&#8230;</string>
+    <string name="goo_category_title">Navegant per %1$s</string>
+    <string name="goo_download_title">Descarregar</string>
+    <string name="goo_download_summary">Vols descarregar aquest arxiu ara?\n\n%1$s\n%2$s\n</string>
+    <string name="menu_login">Connectar-se a Goo.im</string>
+    <string name="settings_interface">Interfície</string>
+    <string name="settings_theme_title">Utilitzar tema obscur</string>
+    <string name="settings_theme_summary">Utilitzar tema obscur en lloc de Holo.Light</string>
+    <string name="settings_update">Actualitzacions</string>
+    <string name="download_path">Ruta de descàrregues</string>
+    <string name="time_notifications_never">No comprovar</string>
+    <string name="time_notifications_half_an_hour">Mitja hora</string>
+    <string name="time_notifications_an_hour">Una hora</string>
+    <string name="time_notifications_two_hours">Dues hores</string>
+    <string name="time_notifications_five_hours">Cinc hores</string>
+    <string name="time_notifications_twentyfour_hours">Vint-i-quatre hores</string>
+    <string name="checktime_title">Freqüència per comprovar actualitzacions</string>
+    <string name="checktime_summary">Especifica el temps entre cada comprovació</string>
+    <string name="username">Usuari</string>
+    <string name="password">Contrasenya</string>
+    <string name="login">Connectar</string>
+    <string name="logout">Desconnectar</string>
+    <string name="logging_in">Connectant a goo.im...</string>
+    <string name="logged_in">Ara estàs connectat</string>
+    <string name="logged_invalid">Usuari/contrasenya no vàlids</string>
+    <string name="logged_down">No s\'ha pogut arribar al servidor</string>
+    <string name="logged_out">T\'has desconnectat</string>
+    <string name="watchlist_added">Carpeta afegida al watchlist</string>
+    <string name="watchlist_removed">Carpeta esborrada del watchlist</string>
+    <string name="watchlist_already">Carpeta ja afegida al watchlist</string>
+    <string name="watchlist_add_confirm_title">Afegir al watchlist</string>
+    <string name="watchlist_add_confirm">Vols afegir aquesta carpeta al watchlist?</string>
+    <string name="watchlist_remove_confirm_title">Esborrar del watchlist</string>
+    <string name="watchlist_remove_confirm">Vols esborrar aquesta carpeta del watchlist?</string>
+    <string name="settings_gapps">Gapps</string>
+    <string name="gapps_folder">Especificar Gapps url</string>
+    <string name="gapps_reset_folder">Tornar a les Gapps oficials</string>
+    <string name="gapps_folder_official">Utilitzant Gapps oficials</string>
+    <string name="gapps_folder_alert_title">Ruta url de les Gapps</string>
+    <string name="gapps_folder_alert_summary">Especifica la url de la carpeta on se guarden les GApps. Deixar en blanc per utilitzar les oficials.</string>
+    <string name="gapps_folder_select">Establir com a carpeta de les GApps</string>
+    <string name="gapps_folder_selected">Carpeta establerta com a url de les GApps</string>
+    <string name="last_gapps_found_title">S\'ha trobat un paquet de GApps més nou</string>
+    <string name="last_gapps_found_summary">Aquest és el darrer paquet de GApps trobat. Vols descarregar-lo ara?\n\n%1$s\n%2$s\n</string>
+    <string name="flash_now">"Instal·lar\nara"</string>
+    <string name="add_zip">Afegir\nzip</string>
+    <string name="clear_queue">Esborrar\ncoa</string>
+    <string name="alert_file_title">%1$s</string>
+    <string name="alert_file_summary">Ruta: %1$s\nTamany: %2$s\nModificat: %3$s</string>
+    <string name="alert_file_delete">Esborrar de la llista</string>
+    <string name="install_file_manager_error">"No s'ha trobat cap aplicació per seleccionar el zip. Per favor, instal·la un administrador d'arxius."</string>
+    <string name="install_file_manager_invalid_zip">Arxiu zip no vàlid.</string>
+    <string name="install_file_manager_not_found_zip">Esborrat item no trobat.</string>
+    <string name="install_file_manager_zip_added">Zip afegit a la coa</string>
+    <string name="recovery_change_alert_title">Recovery trobat</string>
+    <string name="recovery_change_alert_message">S\'ha trobat una carpeta del recovery %1$s. Vols configurar-la per defecte?</string>
+    <string name="recovery_changed">Recovery %1$s configurat.</string>
+    <string name="recovery_cwm">CWM-based</string>
+    <string name="recovery_4ext">4EXT</string>
+    <string name="recovery_twrp">TWRP</string>
+    <string name="recovery_title">Seleccionar recovery</string>
+    <string name="recovery_summary">"Selecciona el recovery instal·lat al teu dispositiu"</string>
+    <string name="recovery_alert_title">Seleccionar recovery</string>
+    <string name="recovery_alert_summary">Especifica el recovery que estàs utilitzant</string>
+    <string name="settings_recovery">Recovery</string>
+    <string name="internalsdcard_title">Ruta a l\'emmagatzematge intern</string>
+    <string name="internalsdcard_summary">Especifica la ruta a l\'emmagatzematge intern utilitzat pel recovery</string>
+    <string name="externalsdcard_title">Ruta a l\'emmagatzematge extern</string>
+    <string name="externalsdcard_summary">Especifica la ruta a l\'emmagatzematge extern utilitzat pel recovery</string>
+    <string name="sdcard_alert_title">Ruta a l\'emmagatzematge</string>
+    <string name="sdcard_alert_summary">Especifica el nom de l\'emmagatzematge</string>
+    <string name="sdcard_alert_error">Per favor, especifica el nom de l\'emmagatzematge</string>
+    <string name="backup">Backup</string>
+    <string name="wipe_system">Wipe System</string>
+    <string name="wipe_data">Wipe Data</string>
+    <string name="wipe_caches">Wipe Cache &amp; Dalvik</string>
+    <string name="fix_permissions">Fix permissions</string>
+    <string name="alert_reboot_title">"Seleccionar accions i instal·lar"</string>
+    <string name="alert_reboot_now">"Instal·lar ara"</string>
+    <string name="alert_backup_title">Backup</string>
+    <string name="alert_backup_message">Especifica el nom del backup (els espais s\'esborraran).</string>
+    <string name="settings_showoptions_title">Opcions</string>
+    <string name="settings_showoptions_summary">"Tria les opcions que se mostraran quan se premi el botó Instal·lar ara"</string>
+    <string name="alert_backup_space_title">Espai disponible</string>
+    <string name="alert_backup_space_message">Hi ha menys de %1$sGB a l\'emmagatzematge intern. Vols continuar fent el backup?</string>
+    <string name="alert_restore_title">Restore</string>
+    <string name="alert_wipe_system_title">System wipe</string>
+    <string name="alert_wipe_system_message">Estàs a punt de fer un system wipe. Estàs segur que ho vols fer?</string>
+    <string name="alert_delete_title">Esborrar</string>
+    <string name="alert_deleting_folder">Esborrant %1$s&#8230;</string>
+    <string name="recovery_activity_title">Recovery</string>
+    <string name="recovery_activity_backup_title">Backup</string>
+    <string name="recovery_activity_backup_summary">Fer un backup de la teva rom</string>
+    <string name="recovery_activity_restore_title">Restore</string>
+    <string name="recovery_activity_restore_summary">Restaura un backup anterior</string>
+    <string name="recovery_activity_delete_title">Esborrar</string>
+    <string name="recovery_activity_delete_summary">Esborra un backup anterior</string>
+    <string name="recovery_activity_reboot_title">Reiniciar al recovery</string>
+    <string name="recovery_activity_actions">Accions del recovery</string>
+    <string name="recovery_activity_actions_summary">Wipe data, caches i/o fix permissions</string>
+    <string name="goo_package_description">%1$s\nMD5: %2$s\nCarpeta: %3$s\nDescripció: %4$s</string>
+    <string name="ouc_package_description">%1$s\nMD5: %2$s\nData: %3$s\nChangelog: %4$s</string>
+    <string name="unsupported_rom_title">ROM no soportada</string>
+    <string name="unsupported_rom_message">La teva ROM no conté la informació necessària per trobar el servei OTA.\nContacta amb el teu desenvolupador per solventar el problema.</string>
+
+</resources>

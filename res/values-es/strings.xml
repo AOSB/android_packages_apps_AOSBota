@@ -1,0 +1,168 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+     Copyright (C) 2013 OTAPlatform
+
+     Licensed under the Apache License, Version 2.0 (the "License");
+     you may not use this file except in compliance with the License.
+     You may obtain a copy of the License at
+
+          http://www.apache.org/licenses/LICENSE-2.0
+
+     Unless required by applicable law or agreed to in writing, software
+     distributed under the License is distributed on an "AS IS" BASIS,
+     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+     See the License for the specific language governing permissions and
+     limitations under the License.
+
+-->
+<resources>
+
+    <string name="app_name">OTAPlatform</string>
+    
+    <string name="update">Actualizar</string>
+    <string name="flash">""Instalar"</string>
+    <string name="settings">Ajustes</string>
+    <string name="not_available">N/A</string>
+    <string name="checking">Comprobando nueva versión</string>
+    <string name="checking_twrp">Comprobando TWRP</string>
+    <string name="developer_header">Desarrollado por %1$s</string>
+    <string name="check_rom_updates">Comprobar\nROM</string>
+    <string name="check_rom_updates_error">Error comprobando actualizaciones de la ROM</string>
+    <string name="check_rom_updates_no_new">No se han encontrado actualizaciones de la ROM</string>
+    <string name="new_rom_found_title">Versión %1$s encontrada</string>
+    <string name="no_new_rom_found">"Tienes la última versión instalada"</string>
+    <string name="delta_download">Descargar\nDelta</string>
+    <string name="rom_download">Descargar\nROM</string>
+    <string name="new_package_name">%1$s</string>
+    <string name="check_gapps_updates">Comprobar\nGApps</string>
+    <string name="check_gapps_updates_no_new">No se han encontrado actualizaciones de las GApps</string>
+    <string name="check_gapps_updates_error">Error comprobando actualizaciones de las GApps</string>
+    <string name="new_gapps_found_title">Encontrado nuevo paquete de GApps</string>
+    <string name="new_gapps_found_summary">Se ha encontrado una nueva versión del paquete de GApps. ¿Quieres descargarlas ahora?\n\n%1$s\n%2$s\n</string>
+    <string name="check_twrp_updates">"Instalar OpenRecoveryScript"</string>
+    <string name="new_twrp_found_title">"Instalar TWRP"</string>
+    <string name="new_twrp_found_summary">"Esto bajarà y instalarà %1$s recovery en tu dispositivo.\n¿Quieres continuar?"</string>
+    <string name="check_twrp_updates_error">Error comprobando TWRP</string>
+    <string name="check_twrp_error_md5">Error comprobando TWRP. Los MD5 no son iguales</string>
+    <string name="check_twrp_updates_no_new">No se ha encontrado un recovery para tu dispositivo</string>
+    <string name="downloading">Descargando</string>
+    <string name="downloading_complete">Descarga completa</string>
+    <string name="downloading_error">Error descargando archivo</string>
+    <string name="downloading_interrupted">Descarga interrumpida</string>
+    <string name="downloading_nospace">Error descargando archivo: no hay espacio disponible</string>
+    <string name="download_alert_title">Ruta de descargas</string>
+    <string name="download_alert_summary">Especifica la ruta donde guardar las descargas</string>
+    <string name="download_alert_error">Por favor, especifica la ruta donde guardar las descargas</string>
+    <string name="download_cancel_title">Cancelar descarga</string>
+    <string name="download_cancel_message">¿Quieres cancelar la descarga actual?</string>
+    <string name="goo_browse">Navegar por Goo.im</string>
+    <string name="goo_browse_all_compatible">Navegar por ROMs compatibles</string>
+    <string name="goo_browse_all">Navegar por todos los archivos</string>
+    <string name="goo_browse_watchlist">Watchlist</string>
+    <string name="goo_browse_error">Error navegando por archivos</string>
+    <string name="goo_browse_searching">Buscando&#8230;</string>
+    <string name="goo_category_title">Navegando por %1$s</string>
+    <string name="goo_download_title">Descargar</string>
+    <string name="goo_download_summary">¿Quieres descargar este archivo ahora?\n\n%1$s\n%2$s\n</string>
+    <string name="menu_login">Conectarse a Goo.im</string>
+    <string name="settings_interface">Interfaz</string>
+    <string name="settings_theme_title">Utilizar tema oscuro</string>
+    <string name="settings_theme_summary">Utilizar tema oscur en lugar de Holo.Light</string>
+    <string name="settings_update">Actualizaciones</string>
+    <string name="download_path">Ruta de descargas</string>
+    <string name="time_notifications_never">No comprobar</string>
+    <string name="time_notifications_half_an_hour">Media hora</string>
+    <string name="time_notifications_an_hour">Una hora</string>
+    <string name="time_notifications_two_hours">Dos horas</string>
+    <string name="time_notifications_five_hours">Cinco horas</string>
+    <string name="time_notifications_twentyfour_hours">Veinticuatro horas</string>
+    <string name="checktime_title">Frecuencia para comprobar actualizaciones</string>
+    <string name="checktime_summary">Especifica el tiempo entre cada comprobación</string>
+    <string name="username">Usuario</string>
+    <string name="password">Contraseña</string>
+    <string name="login">Conectar</string>
+    <string name="logout">Desconectar</string>
+    <string name="logging_in">Conectando a goo.im...</string>
+    <string name="logged_in">Ahora estás conectado</string>
+    <string name="logged_invalid">Usuario/contraseña no válidos</string>
+    <string name="logged_down">No se ha podido llegar al servidor</string>
+    <string name="logged_out">Te has desconectado</string>
+    <string name="watchlist_added">Carpeta añadida al watchlist</string>
+    <string name="watchlist_removed">Carpeta borrada del watchlist</string>
+    <string name="watchlist_already">Carpeta ya añadida al watchlist</string>
+    <string name="watchlist_add_confirm_title">Añadir al watchlist</string>
+    <string name="watchlist_add_confirm">¿Quieres añadir esta carpeta al watchlist?</string>
+    <string name="watchlist_remove_confirm_title">Borrar del watchlist</string>
+    <string name="watchlist_remove_confirm">¿Quieres borrar esta carpeta del watchlist?</string>
+    <string name="settings_gapps">Gapps</string>
+    <string name="gapps_folder">Especificar Gapps url</string>
+    <string name="gapps_reset_folder">Volver a las Gapps oficiales</string>
+    <string name="gapps_folder_official">Utilizando Gapps oficiales</string>
+    <string name="gapps_folder_alert_title">Ruta url de las Gapps</string>
+    <string name="gapps_folder_alert_summary">Especifica la url de la carpeta donde se guardan les GApps. Dejar en blanco para utilizar las oficiales.</string>
+    <string name="gapps_folder_select">Establecer como carpeta de las GApps</string>
+    <string name="gapps_folder_selected">Carpeta establecida como url de las GApps</string>
+    <string name="last_gapps_found_title">Se ha encontrado un paquete de GApps más nuevo</string>
+    <string name="last_gapps_found_summary">Este es el último paquete de GApps encontrado. ¿Quieres descargarlo ahora?\n\n%1$s\n%2$s\n</string>
+    <string name="flash_now">"Instalar\nahora"</string>
+    <string name="add_zip">Añadir\nzip</string>
+    <string name="clear_queue">Borrar\ncola</string>
+    <string name="alert_file_title">%1$s</string>
+    <string name="alert_file_summary">Ruta: %1$s\nTamaño: %2$s\nModificado: %3$s</string>
+    <string name="alert_file_delete">Borrar de la lista</string>
+    <string name="install_file_manager_error">"No se ha encontrado ninguna aplicación para seleccionar el zip. Por favor, instala un administrador de archivos."</string>
+    <string name="install_file_manager_invalid_zip">Archivo zip no válido.</string>
+    <string name="install_file_manager_not_found_zip">Borrado item no encontrado.</string>
+    <string name="install_file_manager_zip_added">Zip añadido a la cola</string>
+    <string name="recovery_change_alert_title">Recovery encontrado</string>
+    <string name="recovery_change_alert_message">Se ha encontrado una carpeta del recovery %1$s. ¿Quieres configurarla por defecto?</string>
+    <string name="recovery_changed">Recovery %1$s configurado.</string>
+    <string name="recovery_cwm">CWM-based</string>
+    <string name="recovery_4ext">4EXT</string>
+    <string name="recovery_twrp">TWRP</string>
+    <string name="recovery_title">Seleccionar recovery</string>
+    <string name="recovery_summary">"Selecciona el recovery instalat en tu dispositivo"</string>
+    <string name="recovery_alert_title">Seleccionar recovery</string>
+    <string name="recovery_alert_summary">Especifica el recovery que estás utilizando</string>
+    <string name="settings_recovery">Recovery</string>
+    <string name="internalsdcard_title">Ruta al almacenamiento interno</string>
+    <string name="internalsdcard_summary">Especifica la ruta al almacenamiento interno utilizado por el recovery</string>
+    <string name="externalsdcard_title">Ruta al almacenamiento externo</string>
+    <string name="externalsdcard_summary">Especifica la ruta al almacenamiento externo utilizado por el recovery</string>
+    <string name="sdcard_alert_title">Ruta al almacenamiento</string>
+    <string name="sdcard_alert_summary">Especifica el nombre del almacenamiento</string>
+    <string name="sdcard_alert_error">Por favor, especifica el nombre del almacenamiento</string>
+    <string name="backup">Backup</string>
+    <string name="wipe_system">Wipe System</string>
+    <string name="wipe_data">Wipe Data</string>
+    <string name="wipe_caches">Wipe Cache &amp; Dalvik</string>
+    <string name="fix_permissions">Fix permissions</string>
+    <string name="alert_reboot_title">"Seleccionar acciones y instalar"</string>
+    <string name="alert_reboot_now">"Instalar ahora"</string>
+    <string name="alert_backup_title">Backup</string>
+    <string name="alert_backup_message">Especifica el nombre del backup (los espacios se borrarán).</string>
+    <string name="settings_showoptions_title">Opciones</string>
+    <string name="settings_showoptions_summary">"Elije las opciones que se mostrarán cuando se apriete el botón Instalar ahora"</string>
+    <string name="alert_backup_space_title">Espacio disponible</string>
+    <string name="alert_backup_space_message">Hay menos de %1$sGB en el almacenamiento interno. ¿Quieres continuar haciendo el backup?</string>
+    <string name="alert_restore_title">Restore</string>
+    <string name="alert_wipe_system_title">System wipe</string>
+    <string name="alert_wipe_system_message">Estás a punto de hacer un system wipe. ¿Estás seguro que lo quieres hacer?</string>
+    <string name="alert_delete_title">Borrar</string>
+    <string name="alert_deleting_folder">Borrando %1$s&#8230;</string>
+    <string name="recovery_activity_title">Recovery</string>
+    <string name="recovery_activity_backup_title">Backup</string>
+    <string name="recovery_activity_backup_summary">Hacer un backup de tu rom</string>
+    <string name="recovery_activity_restore_title">Restore</string>
+    <string name="recovery_activity_restore_summary">Restaura un backup anterior</string>
+    <string name="recovery_activity_delete_title">Borrar</string>
+    <string name="recovery_activity_delete_summary">Borra un backup anterior</string>
+    <string name="recovery_activity_reboot_title">Reiniciar en el recovery</string>
+    <string name="recovery_activity_actions">Acciones del recovery</string>
+    <string name="recovery_activity_actions_summary">Wipe data, caches y/o fix permissions</string>
+    <string name="goo_package_description">%1$s\nMD5: %2$s\nCarpeta: %3$s\nDescripción: %4$s</string>
+    <string name="ouc_package_description">%1$s\nMD5: %2$s\nFecha: %3$s\nChangelog: %4$s</string>
+    <string name="unsupported_rom_title">ROM no soportada</string>
+    <string name="unsupported_rom_message">Tu ROM no contiene la información necesaria para encontrar el servicio OTA.\nContacta con tu desarrollador para solventar el problema.</string>
+
+</resources>
