@@ -30,9 +30,7 @@
             </intent-filter>
         </activity>
         <activity android:name="com.beerbong.otaplatform.activity.GooActivity" />
-        <activity android:name="com.beerbong.otaplatform.activity.LoginActivity" />
         <activity android:name="com.beerbong.otaplatform.activity.SettingsActivity" />
-        <activity android:name="com.beerbong.otaplatform.activity.FlashActivity" />
         <activity android:name="com.beerbong.otaplatform.activity.RecoveryActivity" />
         <activity android:name="com.beerbong.otaplatform.util.RequestFileActivity"
             android:theme="@android:style/Theme.Translucent.NoTitleBar" />
