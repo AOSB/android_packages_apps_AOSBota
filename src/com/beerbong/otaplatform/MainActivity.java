@@ -87,11 +87,9 @@ public class MainActivity extends FragmentActivity implements Header.HeaderChang
             switch (id) {
                 case R.id.button_update:
                     fragment = new UpdateFragment();
-                    mSelectedHeaderButton = 0;
                     break;
                 case R.id.button_flash:
                     fragment = new InstallFragment();
-                    mSelectedHeaderButton = 1;
                     break;
                 case R.id.button_settings:
                     startActivity(new Intent(this, SettingsActivity.class));
@@ -99,6 +97,14 @@ public class MainActivity extends FragmentActivity implements Header.HeaderChang
                     return;
             }
             mFragments.put(id, fragment);
+        }
+        switch (id) {
+            case R.id.button_update:
+                mSelectedHeaderButton = 0;
+                break;
+            case R.id.button_flash:
+                mSelectedHeaderButton = 1;
+                break;
         }
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
 
