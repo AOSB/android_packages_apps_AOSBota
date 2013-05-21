@@ -16,9 +16,12 @@
 
 package com.beerbong.otaplatform.activity;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 import java.util.List;
 
 import android.app.AlertDialog;
+import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -29,6 +32,8 @@ import android.preference.Preference;
 import android.preference.Preference.OnPreferenceChangeListener;
 import android.preference.PreferenceActivity;
 import android.preference.PreferenceScreen;
+import android.view.LayoutInflater;
+import android.view.View;
 import android.widget.EditText;
 
 import com.beerbong.otaplatform.R;
@@ -38,11 +43,15 @@ import com.beerbong.otaplatform.manager.RecoveryManager;
 import com.beerbong.otaplatform.updater.TWRPUpdater;
 import com.beerbong.otaplatform.util.Constants;
 import com.beerbong.otaplatform.util.RecoveryInfo;
+import com.beerbong.otaplatform.util.URLStringReader;
 
 public class SettingsActivity extends PreferenceActivity implements OnPreferenceChangeListener,
-        TWRPUpdater.TWRPUpdaterListener {
+        TWRPUpdater.TWRPUpdaterListener, URLStringReader.URLStringReaderListener {
+
+    private static final String LOGIN_URL = "http://goo-inside.me/salt";
 
     private ProgressDialog mProgress;
+    private AlertDialog mLoginDialog;
     // private CheckBoxPreference mDarkTheme;
     private ListPreference mCheckTime;
     private Preference mDownloadPath;
@@ -145,6 +154,8 @@ public class SettingsActivity extends PreferenceActivity implements OnPreference
             startActivity(new Intent(this, GooActivity.class));
             
         } else if ("logingoo".equals(key)) {
+
+            showLoginDialog();
 
         } else if ("recoveryactivity".equals(key)) {
             
@@ -253,5 +264,75 @@ public class SettingsActivity extends PreferenceActivity implements OnPreference
             mProgress.dismiss();
             mProgress = null;
         }
+    }
+
+    public void showLoginDialog() {
+
+        final PreferencesManager pManager = ManagerFactory.getPreferencesManager(this);
+
+        LayoutInflater inflater = getLayoutInflater();
+        View view = inflater.inflate(R.layout.login, null);
+        final EditText username = (EditText)view.findViewById(R.id.username);
+        final EditText password = (EditText)view.findViewById(R.id.password);
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(this).setTitle(R.string.menu_login)
+                .setPositiveButton(R.string.login, new DialogInterface.OnClickListener() {
+
+                    public void onClick(DialogInterface dialog, int whichButton) {
+                        String user = username.getText() == null ? "" : username.getText().toString();
+                        String pass = password.getText() == null ? "" : password.getText().toString();
+                        mProgress = ProgressDialog.show(SettingsActivity.this, null,
+                                getResources().getString(R.string.logging_in), true, true);
+                        try {
+                            new URLStringReader(SettingsActivity.this).execute(LOGIN_URL + "&username="
+                                    + URLEncoder.encode(user, "UTF-8") + "&password=" + URLEncoder.encode(pass, "UTF-8"));
+                        } catch (UnsupportedEncodingException ex) {
+                            // should never get here
+                        }
+                    }
+                })
+                .setNeutralButton(R.string.logout, new DialogInterface.OnClickListener() {
+
+                    public void onClick(DialogInterface dialog, int whichButton) {
+                        pManager.setLogin("");
+                        Constants.showToastOnUiThread(SettingsActivity.this, R.string.logged_out);
+                        dialog.dismiss();
+                    }
+                })
+                .setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
+        
+                    public void onClick(DialogInterface dialog, int whichButton) {
+                        dialog.dismiss();
+                    }
+                });
+        builder.setView(view);
+        mLoginDialog = builder.create();
+        mLoginDialog.show();
+
+        String login = pManager.getLogin();
+        boolean logged = login != null && !"".equals(login);
+        mLoginDialog.getButton(Dialog.BUTTON_POSITIVE).setEnabled(!logged);
+        mLoginDialog.getButton(Dialog.BUTTON_NEUTRAL).setEnabled(logged);
+    }
+
+    @Override
+    public void onReadEnd(String buffer) {
+        if (mProgress != null) {
+            mProgress.dismiss();
+            mProgress = null;
+        }
+        if (buffer != null && buffer.length() == 32) {
+            ManagerFactory.getPreferencesManager(this).setLogin(buffer);
+            Constants.showToastOnUiThread(this, R.string.logged_in);
+            mLoginDialog.dismiss();
+        } else if (buffer != null) {
+            Constants.showToastOnUiThread(this, R.string.logged_invalid);
+        } else {
+            Constants.showToastOnUiThread(this, R.string.logged_down);
+        }
+    }
+
+    @Override
+    public void onReadError(Exception ex) {
     }
 }
