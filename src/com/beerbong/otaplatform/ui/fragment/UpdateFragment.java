@@ -43,6 +43,7 @@ public class UpdateFragment extends Fragment implements RomUpdater.RomUpdaterLis
         GappsUpdater.GappsUpdaterListener {
 
     private static PackageInfo mNewRom = null;
+    private static boolean mStartup = true;
 
     private ProgressDialog mProgress;
     private ProgressBar mProgressBar;
@@ -56,7 +57,6 @@ public class UpdateFragment extends Fragment implements RomUpdater.RomUpdaterLis
     private TextView mRemoteVersionHeader;
     private TextView mRemoteVersionBody;
     private boolean mRomCanUpdate = true;
-    private boolean mStartup = true;
 
     public UpdateFragment() {
     }

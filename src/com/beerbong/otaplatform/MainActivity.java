@@ -20,6 +20,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import android.content.Intent;
+import android.content.res.Configuration;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
@@ -65,9 +66,10 @@ public class MainActivity extends FragmentActivity implements Header.HeaderChang
         }
 
         ManagerFactory.start(this);
-        
+
         if (!Constants.alarmExists(this)) {
-            Constants.setAlarm(this, ManagerFactory.getPreferencesManager(this).getTimeNotifications(), true);
+            Constants.setAlarm(this, ManagerFactory.getPreferencesManager(this)
+                    .getTimeNotifications(), true);
         }
     }
 
@@ -119,4 +121,14 @@ public class MainActivity extends FragmentActivity implements Header.HeaderChang
         outState.putInt(HEADER_SELECT, mSelectedHeaderButton);
     }
 
+    @Override
+    public void onConfigurationChanged(Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
+        setContentView(R.layout.activity_main);
+
+        mFragments.clear();
+        mHeader = (Header) findViewById(R.id.header);
+        mHeader.setHeaderChangeListener(this);
+        mHeader.select(mSelectedHeaderButton);
+    }
 }
