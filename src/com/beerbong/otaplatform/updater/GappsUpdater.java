@@ -46,7 +46,7 @@ public class GappsUpdater extends Updater implements Updater.UpdaterListener {
     private String mId;
     private String mName;
     private String mPlatform;
-    private int mVersion;
+    private int mVersion = -1;
     private boolean mFromAlarm;
     private boolean mCanUpdate;
     private boolean mScanning;
@@ -66,9 +66,15 @@ public class GappsUpdater extends Updater implements Updater.UpdaterListener {
                 mId = properties.getProperty("ro.addon.type");
                 mName = properties.getProperty("ro.addon.version");
                 mPlatform = properties.getProperty("ro.addon.platform");
-                String version = properties.getProperty("ro.addon.version");
-                version = version.substring(version.lastIndexOf("-") + 1);
-                mVersion = Integer.parseInt(version);
+                String[] version = properties.getProperty("ro.addon.version").split("-");
+                for (int i=0;i<version.length;i++) {
+                    try {
+                        mVersion = Integer.parseInt(version[i]);
+                        break;
+                    } catch (NumberFormatException ex) {
+                        // ignore
+                    }
+                }
             } catch (Exception ex) {
                 ex.printStackTrace();
                 mCanUpdate = false;
