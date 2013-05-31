@@ -198,6 +198,7 @@ public class SettingsActivity extends PreferenceActivity implements OnPreference
         if (folder == null || "".equals(folder)) {
             mGappsReset.setEnabled(false);
             folder = getResources().getString(R.string.gapps_folder_official);
+            folder = folder.replace(Constants.GOO_SEARCH_URL, "");
         } else {
             mGappsReset.setEnabled(true);
         }
@@ -217,6 +218,8 @@ public class SettingsActivity extends PreferenceActivity implements OnPreference
         String folder = pManager.getGappsFolder();
         if (folder == null || "".equals(folder)) {
             folder = "/devs/";
+        } else {
+            folder = folder.replace(Constants.GOO_SEARCH_URL, "");
         }
 
         final EditText input = new EditText(this);
@@ -234,6 +237,9 @@ public class SettingsActivity extends PreferenceActivity implements OnPreference
                             pManager.setGappsFolder("");
                         } else if (value.endsWith("/")) {
                             value = value.substring(0, value.length() - 1);
+                        }
+                        if (value.startsWith("/devs/")) {
+                            value = Constants.GOO_SEARCH_URL + value;
                         }
 
                         pManager.setGappsFolder(value);

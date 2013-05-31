@@ -83,7 +83,7 @@ public class GooActivity extends PreferenceActivity implements URLStringReaderLi
             preference.getExtras().putBoolean("BROWSING_ALL", false);
             preference.getExtras().putBoolean("FOLDER", true);
             preference.getExtras().putString("PATH", "/devs");
-            preference.setKey("http://goo.im/json2&path=/devs&ro_board=" + mDevice);
+            preference.setKey(Constants.GOO_SEARCH_URL + "/devs&ro_board=" + mDevice);
             preference.setTitle(R.string.goo_browse_all_compatible);
             pScreen.addPreference(preference);
 
@@ -91,7 +91,7 @@ public class GooActivity extends PreferenceActivity implements URLStringReaderLi
             preference.getExtras().putBoolean("BROWSING_ALL", true);
             preference.getExtras().putBoolean("FOLDER", true);
             preference.getExtras().putString("PATH", "/devs");
-            preference.setKey("http://goo.im/json2&path=/devs");
+            preference.setKey(Constants.GOO_SEARCH_URL + "/devs");
             preference.setTitle(R.string.goo_browse_all);
             pScreen.addPreference(preference);
 
@@ -157,10 +157,10 @@ public class GooActivity extends PreferenceActivity implements URLStringReaderLi
                             preference.getExtras().putBoolean("FOLDER", true);
                             preference.getExtras().putString("PATH", folder);
                             if (!BROWSING_ALL) {
-                                preference.setKey("http://goo.im/json2&path=" + folder + "&ro_board="
+                                preference.setKey(Constants.GOO_SEARCH_URL + folder + "&ro_board="
                                         + mDevice);
                             } else {
-                                preference.setKey("http://goo.im/json2&path=" + folder);
+                                preference.setKey(Constants.GOO_SEARCH_URL + folder);
                             }
                             preference.setTitle(folderName);
                             preference.setSummary(folder);
@@ -306,7 +306,7 @@ public class GooActivity extends PreferenceActivity implements URLStringReaderLi
                 preference.getExtras().putBoolean("BROWSING_ALL", true);
                 preference.getExtras().putBoolean("FOLDER", true);
                 preference.getExtras().putString("PATH", folder);
-                preference.setKey("http://goo.im/json2&path=" + folder);
+                preference.setKey(Constants.GOO_SEARCH_URL + folder);
                 preference.setTitle(folder);
                 preference.setSummary(folder);
                 category.addPreference(preference);

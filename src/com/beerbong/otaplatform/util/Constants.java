@@ -54,6 +54,8 @@ import com.beerbong.otaplatform.util.RequestFileActivity.RequestFileCallback;
 
 public class Constants {
 
+    public static final String GOO_SEARCH_URL = "http://goo.im/json2&path=";
+
     // install options
     public static final String INSTALL_BACKUP = "BACKUP";
     public static final String INSTALL_WIPESYSTEM = "WIPESYSTEM";

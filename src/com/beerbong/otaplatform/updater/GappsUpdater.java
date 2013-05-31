@@ -171,7 +171,7 @@ public class GappsUpdater extends Updater implements Updater.UpdaterListener {
             if (mFromAlarm) {
                 return;
             }
-            new URLStringReader(this).execute("http://goo.im/json2&path=" + folder);
+            new URLStringReader(this).execute(folder);
         }
     }
 
