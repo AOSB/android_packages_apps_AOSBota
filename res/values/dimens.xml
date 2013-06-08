@@ -22,6 +22,8 @@
     <dimen name="header_button_left_right_padding">7dp</dimen>
 
     <dimen name="auto_fit_max_size">70px</dimen>
+
+    <dimen name="padding_size">7dp</dimen>
     
     <!-- height of a normal list item in edit playlist mode -->
     <dimen name="normal_height">64dip</dimen>
