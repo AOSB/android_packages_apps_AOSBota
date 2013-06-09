@@ -16,24 +16,33 @@
 
 -->
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/main_layout"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="?backgroundColor"
-    android:orientation="vertical" >
-
-    <com.beerbong.otaplatform.ui.component.Header
-        android:id="@+id/header"
+    android:orientation="vertical"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent">
+    <TabHost
+        android:id="@android:id/tabhost"
         android:layout_width="fill_parent"
-        android:layout_height="@dimen/header_height"
-        android:layout_gravity="top" />
-
-    <FrameLayout
-        android:id="@+id/frame_layout"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_weight="1" >
-
-    </FrameLayout>
-
+        android:layout_height="fill_parent" >
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent" >
+            <TabWidget
+                android:id="@android:id/tabs"
+                android:orientation="horizontal"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="0" />
+            <FrameLayout
+                android:id="@android:id/tabcontent"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:layout_weight="0" />
+             <android.support.v4.view.ViewPager
+                android:id="@+id/viewpager"
+                android:layout_width="fill_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1" />
+        </LinearLayout>
+    </TabHost>
 </LinearLayout>

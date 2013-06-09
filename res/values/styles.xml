@@ -19,29 +19,23 @@
 
     <!-- Application light theme -->
     <style name="AppTheme" parent="android:Theme.Holo.Light">
-        <item name="backgroundColor">@color/main_background_color_light</item>
-        <item name="headerBackground">@drawable/red_header_background</item>
-        <item name="headerButtonBackground">@drawable/red_header_button_background</item>
-        <item name="headerButtonColor">@color/header_text_color_light</item>
-        <item name="titleBackground">@drawable/light_blue_background</item>
-        <item name="buttonBackground">@drawable/light_blue_background</item>
-        <item name="buttonColor">@color/light_blue_text_color</item>
-        <item name="titleColor">@color/light_blue_text_color</item>
-        <item name="normalColor">@color/black_text_color</item>
-        <item name="panelBackground">@drawable/white_background</item>
+        <item name="backgroundColor">@android:color/white</item>
+        <item name="settingsIcon">@drawable/ic_settings_light</item>
+        <item name="refreshIcon">@drawable/ic_refresh_light</item>
+        <item name="refreshGappsIcon">@drawable/ic_refresh_gapps_light</item>
+        <item name="downloadIcon">@drawable/ic_download_light</item>
+        <item name="flashIcon">@drawable/ic_flash_light</item>
+        <item name="addFileIcon">@drawable/ic_add_light</item>
     </style>
 
     <!-- Dark theme -->
     <style name="DarkTheme" parent="android:Theme.Holo">
         <item name="backgroundColor">?android:attr/windowBackground</item>
-        <item name="headerBackground">@drawable/dark_header_background</item>
-        <item name="headerButtonBackground">@drawable/dark_header_button_background</item>
-        <item name="headerButtonColor">@color/header_text_color_light</item>
-        <item name="titleBackground">@drawable/gray_background</item>
-        <item name="buttonBackground">@android:drawable/btn_default</item>
-        <item name="buttonColor">@android:color/primary_text_light</item>
-        <item name="titleColor">@color/light_blue_text_color</item>
-        <item name="normalColor">@android:color/primary_text_dark</item>
-        <item name="panelBackground">@drawable/gray_background</item>
+        <item name="settingsIcon">@drawable/ic_settings</item>
+        <item name="refreshIcon">@drawable/ic_refresh</item>
+        <item name="refreshGappsIcon">@drawable/ic_refresh_gapps</item>
+        <item name="downloadIcon">@drawable/ic_download</item>
+        <item name="flashIcon">@drawable/ic_flash</item>
+        <item name="addFileIcon">@drawable/ic_add</item>
     </style>
 </resources>

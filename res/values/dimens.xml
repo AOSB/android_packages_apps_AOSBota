@@ -17,10 +17,6 @@
 -->
 <resources>
 
-    <dimen name="header_height">90dp</dimen>
-    <dimen name="header_title_size">0dp</dimen>
-    <dimen name="header_button_left_right_padding">7dp</dimen>
-
     <dimen name="auto_fit_max_size">70px</dimen>
 
     <dimen name="padding_size">7dp</dimen>
@@ -29,4 +25,9 @@
     <dimen name="normal_height">64dip</dimen>
     <!-- height of an expanded list item in edit playlist mode -->
     <dimen name="expanded_height">128dip</dimen>
+
+    <dimen name="item_margin_top">6dip</dimen>
+    <dimen name="item_margin_bottom">6dip</dimen>
+    <dimen name="item_margin_left">15dip</dimen>
+    <dimen name="item_margin_right">6dip</dimen>
 </resources>

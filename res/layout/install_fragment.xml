@@ -16,70 +16,39 @@
 
 -->
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res/com.beerbong.otaplatform"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
     android:background="?backgroundColor"
     android:orientation="vertical"
     android:padding="@dimen/padding_size" >
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_weight="1"
-        android:background="?panelBackground"
-        android:orientation="vertical"
-        android:padding="10dp" >
-
-	    <com.beerbong.otaplatform.ui.component.TouchInterceptor
-	        android:id="@+id/file_list"
-	        android:layout_width="match_parent"
-	        android:layout_height="wrap_content"
-	        android:layout_weight="1" />
-
-    </LinearLayout>
-
-    <include layout="@layout/vseparator" />
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content" >
-
-        <Button
+        <com.beerbong.otaplatform.ui.component.Item
             android:id="@+id/button_flash_now"
-            android:layout_width="wrap_content"
+            style="@android:style/Widget.ListView"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:background="?buttonBackground"
-            android:enabled="false"
-            android:paddingBottom="5dp"
-            android:paddingTop="5dp"
-            android:text="@string/flash_now"
-            android:textColor="?buttonColor" />
+            app:item_icon="?flashIcon"
+            app:title="@string/flash_now"
+            app:summary="@string/flash_now_summary" />
+        
+        <include layout="@layout/hline"/>
 
-        <Button
+        <com.beerbong.otaplatform.ui.component.Item
             android:id="@+id/button_add_zip"
-            android:layout_width="wrap_content"
+            style="@android:style/Widget.ListView"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="10dp"
-            android:layout_weight="1"
-            android:background="?buttonBackground"
-            android:paddingBottom="5dp"
-            android:paddingTop="5dp"
-            android:text="@string/add_zip"
-            android:textColor="?buttonColor" />
+            app:item_icon="?addFileIcon"
+            app:title="@string/add_zip"
+            app:summary="@string/add_zip_summary" />
+        
+        <include layout="@layout/hline"/>
 
-        <Button
-            android:id="@+id/button_clear_queue"
-            android:layout_width="wrap_content"
+        <com.beerbong.otaplatform.ui.component.TouchInterceptor
+            android:id="@+id/file_list"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="10dp"
-            android:layout_weight="1"
-            android:background="?buttonBackground"
-            android:paddingBottom="5dp"
-            android:paddingTop="5dp"
-            android:text="@string/clear_queue"
-            android:textColor="?buttonColor" />
-
-    </LinearLayout>
+            android:layout_weight="1" />
 
 </LinearLayout>

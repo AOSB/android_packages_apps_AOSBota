@@ -16,19 +16,22 @@
 
 -->
 <resources>
+    <declare-styleable name="Item">
+        <attr name="title" format="string" />
+        <attr name="summary" format="string" />
+        <attr name="item_icon" format="integer" />
+    </declare-styleable>
+
    <declare-styleable name="HeaderButton">
        <attr name="text" format="string" />
        <attr name="icon" format="integer" />
    </declare-styleable>
 
    <attr name="backgroundColor" format="reference|color" />
-   <attr name="headerBackground" format="reference" />
-   <attr name="headerButtonBackground" format="reference|color" />
-   <attr name="headerButtonColor" format="color" />
-   <attr name="titleBackground" format="reference" />
-   <attr name="buttonBackground" format="reference" />
-   <attr name="buttonColor" format="reference|color" />
-   <attr name="titleColor" format="reference|color" />
-   <attr name="normalColor" format="reference|color" />
-   <attr name="panelBackground" format="reference" />
+   <attr name="settingsIcon" format="reference" />
+   <attr name="refreshIcon" format="reference" />
+   <attr name="refreshGappsIcon" format="reference" />
+   <attr name="downloadIcon" format="reference" />
+   <attr name="flashIcon" format="reference" />
+   <attr name="addFileIcon" format="reference" />
 </resources>

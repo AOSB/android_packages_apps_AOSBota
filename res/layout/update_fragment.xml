@@ -16,57 +16,33 @@
 
 -->
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res/com.beerbong.otaplatform"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
     android:background="?backgroundColor"
     android:orientation="vertical"
     android:padding="@dimen/padding_size" >
 
-    <com.beerbong.otaplatform.ui.component.AutoFitTextView
-        android:id="@+id/rom_header"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:background="?titleBackground"
-        android:gravity="center_horizontal"
-        android:paddingBottom="15dp"
-        android:paddingLeft="20dp"
-        android:paddingRight="20dp"
-        android:paddingTop="10dp"
-        android:textAppearance="?android:attr/textAppearanceLarge"
-        android:textColor="?titleColor" />
-
-    <include layout="@layout/vseparator"/>
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="?panelBackground"
-        android:orientation="vertical"
-        android:padding="10dp" >
-
-        <TextView
-            android:id="@+id/developer_header"
-            android:layout_width="wrap_content"
+        <com.beerbong.otaplatform.ui.component.Item
+            android:id="@+id/button_checkupdates"
+            style="@android:style/Widget.ListView"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:textAppearance="?android:attr/textAppearanceMedium"
-            android:textColor="?normalColor" />
+            app:item_icon="?refreshIcon"
+            app:summary="@string/check_rom_updates_summary"
+            app:title="@string/check_rom_updates" />
+        
+        <include layout="@layout/hline"/>
 
-        <TextView
-            android:id="@+id/version_header"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
-
-    </LinearLayout>
-
-    <include layout="@layout/vseparator"/>
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_weight="1"
-        android:background="?panelBackground"
-        android:orientation="vertical"
-        android:padding="10dp" >
+        <com.beerbong.otaplatform.ui.component.Item
+            android:id="@+id/button_checkupdatesgapps"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:item_icon="?refreshGappsIcon"
+            app:title="@string/check_gapps_updates"
+            app:summary="@string/check_gapps_updates_summary" />
+        
+        <include layout="@layout/hline"/>
 
         <ProgressBar
             android:id="@+id/progressBar"
@@ -74,92 +50,37 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
 
-        <include layout="@layout/vseparator" />
-
         <TextView
             android:id="@+id/no_new_version"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="center_horizontal"
+            android:paddingTop="@dimen/padding_size"
             android:text="@string/no_new_rom_found"
             android:textAppearance="?android:attr/textAppearanceMedium"
             android:textColor="?normalColor"
             android:visibility="gone" />
 
-        <TextView
-            android:id="@+id/remoteversion_header"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:textAppearance="?android:attr/textAppearanceMedium"
-            android:textColor="?normalColor" />
-
-        <include layout="@layout/vseparator" />
-
-        <TextView
-            android:id="@+id/remoteversion_body"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_weight="1" />
-
-    </LinearLayout>
-
-    <include layout="@layout/vseparator" />
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content" >
-
-        <Button
-            android:id="@+id/button_checkupdates"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:background="?buttonBackground"
-            android:enabled="false"
-            android:paddingBottom="5dp"
-            android:paddingTop="5dp"
-            android:text="@string/check_rom_updates"
-            android:textColor="?buttonColor" />
-
-        <Button
-            android:id="@+id/button_checkupdatesgapps"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="10dp"
-            android:layout_weight="1"
-            android:background="?buttonBackground"
-            android:enabled="false"
-            android:paddingBottom="5dp"
-            android:paddingTop="5dp"
-            android:text="@string/check_gapps_updates"
-            android:textColor="?buttonColor" />
-
-        <Button
+        <com.beerbong.otaplatform.ui.component.Item
             android:id="@+id/button_download"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="10dp"
-            android:layout_weight="1"
-            android:background="?buttonBackground"
-            android:paddingBottom="5dp"
-            android:paddingTop="5dp"
-            android:text="@string/rom_download"
-            android:textColor="?buttonColor"
-            android:visibility="gone" />
+            app:item_icon="?downloadIcon"
+            app:title="@string/rom_download"
+            app:summary="@string/rom_download_summary" />
+        
+        <include android:id="@+id/button_download_sep"
+            layout="@layout/hline"/>
 
-        <Button
+        <com.beerbong.otaplatform.ui.component.Item
             android:id="@+id/button_download_delta"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="10dp"
-            android:layout_weight="1"
-            android:background="?buttonBackground"
-            android:paddingBottom="5dp"
-            android:paddingTop="5dp"
-            android:text="@string/delta_download"
-            android:textColor="?buttonColor"
-            android:visibility="gone" />
-
-    </LinearLayout>
+            app:item_icon="?downloadIcon"
+            app:title="@string/delta_download"
+            app:summary="@string/delta_download_summary" />
+        
+        <include android:id="@+id/button_download_delta_sep"
+            layout="@layout/hline"/>
 
 </LinearLayout>

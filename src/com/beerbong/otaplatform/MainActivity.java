@@ -16,31 +16,33 @@
 
 package com.beerbong.otaplatform;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.ArrayList;
+import java.util.List;
 
 import android.content.Intent;
-import android.content.res.Configuration;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
-import android.support.v4.app.FragmentTransaction;
-import android.view.Window;
+import android.support.v4.app.FragmentPagerAdapter;
+import android.support.v4.view.ViewPager;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
+import android.view.View;
+import android.widget.TabHost;
+import android.widget.TabHost.TabContentFactory;
 
 import com.beerbong.otaplatform.activity.SettingsActivity;
 import com.beerbong.otaplatform.manager.ManagerFactory;
-import com.beerbong.otaplatform.ui.component.Header;
 import com.beerbong.otaplatform.ui.fragment.InstallFragment;
 import com.beerbong.otaplatform.ui.fragment.UpdateFragment;
-import com.beerbong.otaplatform.util.Constants;
 
-public class MainActivity extends FragmentActivity implements Header.HeaderChangeListener {
+public class MainActivity extends FragmentActivity implements TabHost.OnTabChangeListener,
+        ViewPager.OnPageChangeListener {
 
-    private static final String HEADER_SELECT = "HEADER_SELECT";
-
-    private Header mHeader;
-    private Map<Integer, Fragment> mFragments = new HashMap<Integer, Fragment>();
-    private int mSelectedHeaderButton = 0;
+    private TabHost mTabHost;
+    private ViewPager mViewPager;
+    private List<Fragment> mFragments;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,85 +52,104 @@ public class MainActivity extends FragmentActivity implements Header.HeaderChang
 
         super.onCreate(savedInstanceState);
 
-        requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.activity_main);
 
-        mHeader = (Header) findViewById(R.id.header);
+        initialiseTabHost(savedInstanceState);
 
-        if (savedInstanceState == null) {
-
-            mHeader.setHeaderChangeListener(this);
-
-            mHeader.select(0);
-        } else {
-            mSelectedHeaderButton = savedInstanceState.getInt(HEADER_SELECT);
-            mHeader.select(mSelectedHeaderButton);
+        if (savedInstanceState != null) {
+            mTabHost.setCurrentTabByTag(savedInstanceState.getString("tab"));
         }
-
-        ManagerFactory.start(this);
-
-        if (!Constants.alarmExists(this)) {
-            Constants.setAlarm(this, ManagerFactory.getPreferencesManager(this)
-                    .getTimeNotifications(), true);
-        }
-    }
-
-    @Override
-    protected void onNewIntent(Intent intent) {
-        ManagerFactory.getFileManager(this).onNewIntent(this, intent);
-    }
-
-    public void headerSelect(int index) {
-        mHeader.select(index);
-    }
-
-    @Override
-    public void onHeaderChange(int id) {
-        Fragment fragment = mFragments.get(id);
-        if (fragment == null) {
-            switch (id) {
-                case R.id.button_update:
-                    fragment = new UpdateFragment();
-                    break;
-                case R.id.button_flash:
-                    fragment = new InstallFragment();
-                    break;
-                case R.id.button_settings:
-                    startActivity(new Intent(this, SettingsActivity.class));
-                    mHeader.select(mSelectedHeaderButton, false);
-                    return;
-            }
-            mFragments.put(id, fragment);
-        }
-        switch (id) {
-            case R.id.button_update:
-                mSelectedHeaderButton = 0;
-                break;
-            case R.id.button_flash:
-                mSelectedHeaderButton = 1;
-                break;
-        }
-        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-
-        transaction.replace(R.id.frame_layout, fragment);
-
-        transaction.commit();
+        intialiseViewPager();
     }
 
     @Override
     protected void onSaveInstanceState(Bundle outState) {
+        outState.putString("tab", mTabHost.getCurrentTabTag());
         super.onSaveInstanceState(outState);
-        outState.putInt(HEADER_SELECT, mSelectedHeaderButton);
+    }
+
+    private void intialiseViewPager() {
+
+        mFragments = new ArrayList<Fragment>();
+        mFragments.add(Fragment.instantiate(this, UpdateFragment.class.getName()));
+        mFragments.add(Fragment.instantiate(this, InstallFragment.class.getName()));
+
+        mViewPager = (ViewPager) findViewById(R.id.viewpager);
+        mViewPager.setAdapter(new FragmentPagerAdapter(getSupportFragmentManager()) {
+
+            @Override
+            public Fragment getItem(int position) {
+                return mFragments.get(position);
+            }
+
+            @Override
+            public int getCount() {
+                return mFragments.size();
+            }
+        });
+        mViewPager.setOnPageChangeListener(this);
+    }
+
+    private void initialiseTabHost(Bundle args) {
+        mTabHost = (TabHost) findViewById(android.R.id.tabhost);
+        mTabHost.setup();
+
+        addTab("update", R.string.update);
+        addTab("install", R.string.flash);
+
+        mTabHost.setOnTabChangedListener(this);
+    }
+
+    private void addTab(String id, int resId) {
+        TabHost.TabSpec tabSpec = mTabHost.newTabSpec(id);
+        tabSpec.setIndicator(getResources().getString(resId));
+        tabSpec.setContent(new TabContentFactory() {
+
+            @Override
+            public View createTabContent(String tag) {
+                View v = new View(MainActivity.this);
+                v.setMinimumWidth(0);
+                v.setMinimumHeight(0);
+                return v;
+            }
+        });
+        mTabHost.addTab(tabSpec);
+    }
+
+    public void onTabChanged(String tag) {
+        int pos = mTabHost.getCurrentTab();
+        mViewPager.setCurrentItem(pos);
     }
 
     @Override
-    public void onConfigurationChanged(Configuration newConfig) {
-        super.onConfigurationChanged(newConfig);
-        setContentView(R.layout.activity_main);
+    public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+    }
 
-        mFragments.clear();
-        mHeader = (Header) findViewById(R.id.header);
-        mHeader.setHeaderChangeListener(this);
-        mHeader.select(mSelectedHeaderButton);
+    @Override
+    public void onPageSelected(int position) {
+        mTabHost.setCurrentTab(position);
+    }
+
+    @Override
+    public void onPageScrollStateChanged(int state) {
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.layout.menu, menu);
+
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.settings:
+                startActivity(new Intent(this, SettingsActivity.class));
+                break;
+        }
+        return true;
     }
 }

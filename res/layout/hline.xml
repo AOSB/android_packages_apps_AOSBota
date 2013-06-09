@@ -15,15 +15,7 @@
      limitations under the License.
 
 -->
-<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
-	<item>
-	    <shape android:shape="rectangle">
-	        <solid android:color="@color/header_border_color_red" />
-	    </shape>
-	</item>
-	<item android:bottom="5dp">
-	    <shape android:shape="rectangle">
-	        <solid android:color="@color/header_background_color_red" />
-	    </shape>
-	</item>
-</layer-list>
+<View xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="1dp"
+    android:background="@color/gray" />

@@ -29,17 +29,16 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ArrayAdapter;
-import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.beerbong.otaplatform.R;
 import com.beerbong.otaplatform.manager.ManagerFactory;
+import com.beerbong.otaplatform.ui.component.Item;
 import com.beerbong.otaplatform.ui.component.TouchInterceptor;
 import com.beerbong.otaplatform.util.Constants;
 import com.beerbong.otaplatform.util.FileItem;
@@ -79,9 +78,8 @@ public class InstallFragment extends Fragment implements OnItemClickListener {
 
     }
 
-    private Button mButtonFlash;
-    private Button mButtonAdd;
-    private Button mButtonClear;
+    private Item mButtonFlash;
+    private Item mButtonAdd;
     private TouchInterceptor mFileList;
 
     private TouchInterceptor.DropListener mDropListener = new TouchInterceptor.DropListener() {
@@ -112,34 +110,23 @@ public class InstallFragment extends Fragment implements OnItemClickListener {
             }
         });
 
-        mButtonFlash = (Button) view.findViewById(R.id.button_flash_now);
-        mButtonAdd = (Button) view.findViewById(R.id.button_add_zip);
-        mButtonClear = (Button) view.findViewById(R.id.button_clear_queue);
+        mButtonFlash = (Item) view.findViewById(R.id.button_flash_now);
+        mButtonAdd = (Item) view.findViewById(R.id.button_add_zip);
 
-        mButtonFlash.setOnClickListener(new OnClickListener() {
+        mButtonFlash.setOnItemClickListener(new Item.OnItemClickListener() {
 
             @Override
-            public void onClick(View v) {
+            public void onClick(int id) {
                 ManagerFactory.getRebootManager(getActivity()).showRebootDialog(getActivity());
             }
         });
 
-        mButtonAdd.setOnClickListener(new OnClickListener() {
+        mButtonAdd.setOnItemClickListener(new Item.OnItemClickListener() {
 
             @Override
-            public void onClick(View v) {
+            public void onClick(int id) {
                 Intent intent = new Intent(getActivity(), RequestFileActivity.class);
                 getActivity().startActivity(intent);
-            }
-        });
-
-        mButtonClear.setOnClickListener(new OnClickListener() {
-
-            @Override
-            public void onClick(View v) {
-                ManagerFactory.getFileManager(getActivity()).clearItems();
-                ManagerFactory.getPreferencesManager(getActivity()).setFlashQueue(null);
-                redrawItems();
             }
         });
 
@@ -162,7 +149,6 @@ public class InstallFragment extends Fragment implements OnItemClickListener {
         List<FileItem> items = ManagerFactory.getFileManager(getActivity()).getFileItems();
         mFileList.setAdapter(new FileItemsAdapter());
         mButtonFlash.setEnabled(items.size() > 0);
-        mButtonClear.setEnabled(items.size() > 0);
     }
 
     private void showInfoDialog(final FileItem item) {

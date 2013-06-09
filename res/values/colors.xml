@@ -16,13 +16,5 @@
 
 -->
 <resources>
-    
-    <color name="main_background_color_light">#efece3</color>
-    <color name="header_background_color_red">#da4936</color>
-    <color name="header_border_color_red">#b14636</color>
-    <color name="header_text_color_light">#ffffff</color>
-    <color name="light_blue">#99ccff</color>
-    <color name="light_blue_text_color">#ffffff</color>
-    <color name="black_text_color">#000000</color>
-    <color name="holo_blue_dark">@android:color/holo_blue_dark</color>
+    <color name="gray">#ffcccccc</color>
 </resources>

@@ -153,7 +153,7 @@ public class FileManager extends Manager {
                     Toast.makeText(context, R.string.install_file_manager_zip_added,
                             Toast.LENGTH_LONG).show();
                     if (context instanceof MainActivity) {
-                        ((MainActivity)context).headerSelect(1);
+                        ((MainActivity)context).onPageSelected(1);
                     }
                 }
 

@@ -16,22 +16,23 @@
 
 package com.beerbong.otaplatform.ui.fragment;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import android.app.ProgressDialog;
 import android.content.Intent;
-import android.content.res.Resources;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.text.method.ScrollingMovementMethod;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.View.OnClickListener;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.beerbong.otaplatform.R;
 import com.beerbong.otaplatform.manager.ManagerFactory;
+import com.beerbong.otaplatform.ui.component.Item;
+import com.beerbong.otaplatform.ui.component.Item.OnItemClickListener;
 import com.beerbong.otaplatform.updater.CancelPackage;
 import com.beerbong.otaplatform.updater.GappsUpdater;
 import com.beerbong.otaplatform.updater.RomUpdater;
@@ -49,13 +50,12 @@ public class UpdateFragment extends Fragment implements RomUpdater.RomUpdaterLis
     private ProgressBar mProgressBar;
     private RomUpdater mRomUpdater;
     private GappsUpdater mGappsUpdater;
-    private Button mButtonCheckRom;
-    private Button mButtonCheckGapps;
-    private Button mButtonDownload;
-    private Button mButtonDownloadDelta;
+    private Item mButtonCheckRom;
+    private Item mButtonCheckGapps;
+    private Item mButtonDownload;
+    private Item mButtonDownloadDelta;
     private TextView mNoNewRom;
-    private TextView mRemoteVersionHeader;
-    private TextView mRemoteVersionBody;
+    private Map<Integer, View> mSeps;
     private boolean mRomCanUpdate = true;
 
     public UpdateFragment() {
@@ -72,73 +72,59 @@ public class UpdateFragment extends Fragment implements RomUpdater.RomUpdaterLis
         mRomCanUpdate = mRomUpdater != null && mRomUpdater.canUpdate();
 
         mProgressBar = (ProgressBar) view.findViewById(R.id.progressBar);
-        mButtonCheckRom = (Button) view.findViewById(R.id.button_checkupdates);
-        mButtonCheckGapps = (Button) view.findViewById(R.id.button_checkupdatesgapps);
-        mButtonDownload = (Button) view.findViewById(R.id.button_download);
-        mButtonDownloadDelta = (Button) view.findViewById(R.id.button_download_delta);
+        mButtonCheckRom = (Item) view.findViewById(R.id.button_checkupdates);
+        mButtonCheckGapps = (Item) view.findViewById(R.id.button_checkupdatesgapps);
+        mButtonDownload = (Item) view.findViewById(R.id.button_download);
+        mButtonDownloadDelta = (Item) view.findViewById(R.id.button_download_delta);
         mNoNewRom = (TextView) view.findViewById(R.id.no_new_version);
-        mRemoteVersionHeader = (TextView) view.findViewById(R.id.remoteversion_header);
-        mRemoteVersionBody = (TextView) view.findViewById(R.id.remoteversion_body);
-        TextView romHeader = (TextView) view.findViewById(R.id.rom_header);
-        TextView devHeader = (TextView) view.findViewById(R.id.developer_header);
-        TextView versionHeader = (TextView) view.findViewById(R.id.version_header);
 
-        Resources res = getActivity().getResources();
+        mSeps = new HashMap<Integer, View>();
+        mSeps.put(R.id.button_download_sep, view.findViewById(R.id.button_download_sep));
+        mSeps.put(R.id.button_download_delta_sep, view.findViewById(R.id.button_download_delta_sep));
 
         mButtonCheckRom.setEnabled(mRomCanUpdate);
-        mButtonCheckRom.setOnClickListener(new OnClickListener() {
+        mButtonCheckRom.setOnItemClickListener(new OnItemClickListener() {
 
             @Override
-            public void onClick(View v) {
+            public void onClick(int id) {
                 checkRom();
             }
         });
 
         mButtonCheckGapps.setEnabled(mGappsUpdater.canUpdate());
-        mButtonCheckGapps.setOnClickListener(new OnClickListener() {
+        mButtonCheckGapps.setOnItemClickListener(new OnItemClickListener() {
 
             @Override
-            public void onClick(View v) {
+            public void onClick(int id) {
                 checkGapps();
             }
         });
 
-        mButtonDownload.setOnClickListener(new OnClickListener() {
+        mButtonDownload.setOnItemClickListener(new OnItemClickListener() {
 
             @Override
-            public void onClick(View v) {
-                ManagerFactory.getFileManager(getActivity()).download(getActivity(), mNewRom.getPath(),
-                        mNewRom.getFilename(), mNewRom.getMd5(), false,
+            public void onClick(int id) {
+                ManagerFactory.getFileManager(getActivity()).download(getActivity(),
+                        mNewRom.getPath(), mNewRom.getFilename(), mNewRom.getMd5(), false,
                         Constants.DOWNLOADROM_NOTIFICATION_ID);
             }
         });
 
-        mButtonDownloadDelta.setOnClickListener(new OnClickListener() {
+        mButtonDownloadDelta.setOnItemClickListener(new OnItemClickListener() {
 
             @Override
-            public void onClick(View v) {
-                ManagerFactory.getFileManager(getActivity()).download(
-                        getActivity(), mNewRom.getDeltaPath(), mNewRom.getDeltaFilename(),
-                        mNewRom.getDeltaMd5(), true,
-                        Constants.DOWNLOADROM_NOTIFICATION_ID);
+            public void onClick(int id) {
+                ManagerFactory.getFileManager(getActivity()).download(getActivity(),
+                        mNewRom.getDeltaPath(), mNewRom.getDeltaFilename(), mNewRom.getDeltaMd5(),
+                        true, Constants.DOWNLOADROM_NOTIFICATION_ID);
             }
         });
-
-        mRemoteVersionBody.setMovementMethod(new ScrollingMovementMethod());
-        
-        romHeader.setText(mRomCanUpdate ? mRomUpdater.getRomName() : res
-                .getString(R.string.not_available));
-        devHeader.setText(mRomCanUpdate ? res.getString(R.string.developer_header,
-                new Object[] { mRomUpdater.getDeveloperId() }) : res
-                .getString(R.string.not_available));
-        versionHeader.setText(mRomCanUpdate ? String.valueOf(mRomUpdater.getRomVersion()) : res
-                .getString(R.string.not_available));
 
         Intent intent = getActivity().getIntent();
         if (intent != null && intent.getExtras() != null
                 && intent.getExtras().get("NOTIFICATION_ID") != null) {
-            PackageInfo info = ManagerFactory.getFileManager(getActivity())
-                    .onNewIntent(getActivity(), intent);
+            PackageInfo info = ManagerFactory.getFileManager(getActivity()).onNewIntent(
+                    getActivity(), intent);
             if (!(info instanceof CancelPackage)) {
                 mNewRom = info;
             }
@@ -155,6 +141,10 @@ public class UpdateFragment extends Fragment implements RomUpdater.RomUpdaterLis
             if (!mRomCanUpdate) {
                 Constants.showSimpleDialog(getActivity(), R.string.unsupported_rom_title,
                         R.string.unsupported_rom_message);
+            } else {
+                getActivity().setTitle(
+                        getActivity().getResources().getString(R.string.app_name_short,
+                                new Object[] { mRomUpdater.getRomName() }));
             }
         }
 
@@ -175,36 +165,37 @@ public class UpdateFragment extends Fragment implements RomUpdater.RomUpdaterLis
         mProgressBar.setVisibility(View.GONE);
         if (info == null) {
             mNewRom = null;
-            mRemoteVersionHeader.setText("");
-            mRemoteVersionBody.setText("");
             mButtonDownload.setVisibility(View.GONE);
             mButtonDownloadDelta.setVisibility(View.GONE);
+            mSeps.get(R.id.button_download_sep).setVisibility(View.GONE);
+            mSeps.get(R.id.button_download_delta_sep).setVisibility(View.GONE);
             mNoNewRom.setVisibility(View.VISIBLE);
         } else {
             mNewRom = info;
-            mRemoteVersionHeader.setText(getActivity().getResources().getString(
-                    R.string.new_rom_found_title, new Object[] { info.getVersion() }));
-            mRemoteVersionBody.setText(info.getMessage(getActivity()));
             mNoNewRom.setVisibility(View.GONE);
             mButtonDownload.setVisibility(View.VISIBLE);
             mButtonDownloadDelta.setVisibility(info.isDelta() ? View.VISIBLE : View.GONE);
+            mSeps.get(R.id.button_download_sep).setVisibility(View.VISIBLE);
+            mSeps.get(R.id.button_download_delta_sep).setVisibility(info.isDelta() ? View.VISIBLE : View.GONE);
+            mButtonDownload.setSummary(getActivity().getResources().getString(
+                    R.string.rom_download_summary, new Object[] { info.getVersion() }));
         }
         mButtonCheckRom.setEnabled(mRomUpdater != null && mRomUpdater.canUpdate());
     }
 
     private void checkRom() {
-        mRemoteVersionHeader.setText("");
-        mRemoteVersionBody.setText("");
         mNoNewRom.setVisibility(View.GONE);
         mButtonDownload.setVisibility(View.GONE);
         mButtonDownloadDelta.setVisibility(View.GONE);
         mProgressBar.setVisibility(View.VISIBLE);
+        mSeps.get(R.id.button_download_sep).setVisibility(View.GONE);
+        mSeps.get(R.id.button_download_delta_sep).setVisibility(View.GONE);
         mRomUpdater.check();
     }
 
     private void checkGapps() {
-        mProgress = ProgressDialog.show(getActivity(), null,
-                getActivity().getResources().getString(R.string.checking), true, true);
+        mProgress = ProgressDialog.show(getActivity(), null, getActivity().getResources()
+                .getString(R.string.checking), true, true);
         mGappsUpdater.check();
     }
 
