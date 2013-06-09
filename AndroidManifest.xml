@@ -17,8 +17,8 @@
 -->
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.beerbong.otaplatform"
-    android:versionCode="210"
-    android:versionName="2.1.0" >
+    android:versionCode="220"
+    android:versionName="2.2.0" >
 
     <uses-sdk
         android:minSdkVersion="8"
