@@ -58,7 +58,6 @@
             android:paddingTop="@dimen/padding_size"
             android:text="@string/no_new_rom_found"
             android:textAppearance="?android:attr/textAppearanceMedium"
-            android:textColor="?normalColor"
             android:visibility="gone" />
 
         <com.beerbong.otaplatform.ui.component.Item
