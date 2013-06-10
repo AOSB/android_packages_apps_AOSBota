@@ -36,6 +36,9 @@ import com.beerbong.otaplatform.activity.SettingsActivity;
 import com.beerbong.otaplatform.manager.ManagerFactory;
 import com.beerbong.otaplatform.ui.fragment.InstallFragment;
 import com.beerbong.otaplatform.ui.fragment.UpdateFragment;
+import com.beerbong.otaplatform.updater.RomUpdater;
+import com.beerbong.otaplatform.updater.Updater;
+import com.beerbong.otaplatform.util.Constants;
 
 public class MainActivity extends FragmentActivity implements TabHost.OnTabChangeListener,
         ViewPager.OnPageChangeListener {
@@ -46,6 +49,12 @@ public class MainActivity extends FragmentActivity implements TabHost.OnTabChang
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
+        RomUpdater romUpdater = Updater.getRomUpdater(this, null, false);
+        if (romUpdater == null || !romUpdater.canUpdate()) {
+            Constants.showSimpleDialog(this, R.string.unsupported_rom_title,
+                    R.string.unsupported_rom_message);
+        }
 
         boolean useDarkTheme = ManagerFactory.getPreferencesManager(this).isDarkTheme();
         setTheme(useDarkTheme ? R.style.DarkTheme : R.style.AppTheme);

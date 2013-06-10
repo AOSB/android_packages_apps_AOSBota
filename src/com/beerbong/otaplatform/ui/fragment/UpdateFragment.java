@@ -138,10 +138,7 @@ public class UpdateFragment extends Fragment implements RomUpdater.RomUpdaterLis
         mStartup = false;
 
         if (savedInstanceState == null) {
-            if (!mRomCanUpdate) {
-                Constants.showSimpleDialog(getActivity(), R.string.unsupported_rom_title,
-                        R.string.unsupported_rom_message);
-            } else {
+            if (mRomCanUpdate) {
                 getActivity().setTitle(
                         getActivity().getResources().getString(R.string.app_name_short,
                                 new Object[] { mRomUpdater.getRomName() }));
