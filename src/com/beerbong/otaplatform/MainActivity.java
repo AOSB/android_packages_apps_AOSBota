@@ -50,14 +50,14 @@ public class MainActivity extends FragmentActivity implements TabHost.OnTabChang
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
+        boolean useDarkTheme = ManagerFactory.getPreferencesManager(this).isDarkTheme();
+        setTheme(useDarkTheme ? R.style.DarkTheme : R.style.AppTheme);
+
         RomUpdater romUpdater = Updater.getRomUpdater(this, null, false);
         if (romUpdater == null || !romUpdater.canUpdate()) {
             Constants.showSimpleDialog(this, R.string.unsupported_rom_title,
                     R.string.unsupported_rom_message);
         }
-
-        boolean useDarkTheme = ManagerFactory.getPreferencesManager(this).isDarkTheme();
-        setTheme(useDarkTheme ? R.style.DarkTheme : R.style.AppTheme);
 
         super.onCreate(savedInstanceState);
 
