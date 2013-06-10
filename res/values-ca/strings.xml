@@ -20,7 +20,7 @@
     <string name="app_name">OTAPlatform</string>
     
     <string name="update">Actualitzar</string>
-    <string name="flash">""Instal·lar"</string>
+    <string name="flash">"Instal·lar"</string>
     <string name="changelog">Changelog</string>
     <string name="settings">Ajustaments</string>
     <string name="checking">Comprovant nova versió</string>
@@ -145,6 +145,13 @@
     <string name="alert_reboot_now">"Instal·lar ara"</string>
     <string name="alert_backup_title">Backup</string>
     <string name="alert_backup_message">Especifica el nom del backup (els espais s\'esborraran).</string>
+    <string name="system">System</string>
+    <string name="data">Data</string>
+    <string name="cache">Cache</string>
+    <string name="recovery">Recovery</string>
+    <string name="boot">Boot</string>
+    <string name="androidsecure">Android secure</string>
+    <string name="sdext">SD-Ext</string>
     <string name="settings_showoptions_title">Opcions</string>
     <string name="settings_showoptions_summary">"Tria les opcions que se mostraran quan se premi el botó Instal·lar ara"</string>
     <string name="alert_backup_space_title">Espai disponible</string>

@@ -146,6 +146,13 @@
     <string name="alert_reboot_now">Install now</string>
     <string name="alert_backup_title">Backup</string>
     <string name="alert_backup_message">Specify the backup name (spaces will be removed).</string>
+    <string name="system">System</string>
+    <string name="data">Data</string>
+    <string name="cache">Cache</string>
+    <string name="recovery">Recovery</string>
+    <string name="boot">Boot</string>
+    <string name="androidsecure">Android secure</string>
+    <string name="sdext">SD-Ext</string>
     <string name="settings_showoptions_title">Options</string>
     <string name="settings_showoptions_summary">Chose options to show when pressing the Install Now button</string>
     <string name="alert_backup_space_title">Space left</string>
