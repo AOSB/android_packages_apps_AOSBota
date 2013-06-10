@@ -337,7 +337,19 @@ public class RecoveryManager extends Manager {
                 boolean hasSdExt = hasSdExt();
 
                 if (restore != null) {
-                    String str = "restore /" + internalStorage + "/TWRP/BACKUPS/" + restore + " ";
+                    String str = "restore /" + internalStorage + "/TWRP/BACKUPS/" + restore
+                            + " SDCR123B";
+                    if (hasAndroidSecure) {
+                        str += "A";
+                    }
+                    if (hasSdExt) {
+                        str += "E";
+                    }
+                    commands.add(str);
+                }
+
+                if (backupFolder != null) {
+                    String str = "backup SDCR123B";
                     if (backupOptions != null && backupOptions.indexOf("S") >= 0) {
                         str += "S";
                     }
@@ -354,21 +366,11 @@ public class RecoveryManager extends Manager {
                     if (backupOptions != null && backupOptions.indexOf("B") >= 0) {
                         str += "B";
                     }
-                    if (backupOptions != null && backupOptions.indexOf("A") >= 0 && hasAndroidSecure) {
+                    if (backupOptions != null && backupOptions.indexOf("A") >= 0
+                            && hasAndroidSecure) {
                         str += "A";
                     }
                     if (backupOptions != null && backupOptions.indexOf("E") >= 0 && hasSdExt) {
-                        str += "E";
-                    }
-                    commands.add(str);
-                }
-
-                if (backupFolder != null) {
-                    String str = "backup SDCR123B";
-                    if (hasAndroidSecure) {
-                        str += "A";
-                    }
-                    if (hasSdExt) {
                         str += "E";
                     }
                     commands.add(str + "O " + backupFolder);
