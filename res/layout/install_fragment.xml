@@ -31,8 +31,6 @@
             app:item_icon="?flashIcon"
             app:title="@string/flash_now"
             app:summary="@string/flash_now_summary" />
-        
-        <include layout="@layout/hline"/>
 
         <com.beerbong.otaplatform.ui.component.Item
             android:id="@+id/button_add_zip"
@@ -42,8 +40,6 @@
             app:item_icon="?addFileIcon"
             app:title="@string/add_zip"
             app:summary="@string/add_zip_summary" />
-        
-        <include layout="@layout/hline"/>
 
         <com.beerbong.otaplatform.ui.component.TouchInterceptor
             android:id="@+id/file_list"

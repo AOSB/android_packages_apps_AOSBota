@@ -31,8 +31,6 @@
             app:item_icon="?refreshIcon"
             app:summary="@string/check_rom_updates_summary"
             app:title="@string/check_rom_updates" />
-        
-        <include layout="@layout/hline"/>
 
         <com.beerbong.otaplatform.ui.component.Item
             android:id="@+id/button_checkupdatesgapps"
@@ -41,8 +39,6 @@
             app:item_icon="?refreshGappsIcon"
             app:title="@string/check_gapps_updates"
             app:summary="@string/check_gapps_updates_summary" />
-        
-        <include layout="@layout/hline"/>
 
         <ProgressBar
             android:id="@+id/progressBar"
@@ -67,9 +63,6 @@
             app:item_icon="?downloadIcon"
             app:title="@string/rom_download"
             app:summary="@string/rom_download_summary" />
-        
-        <include android:id="@+id/button_download_sep"
-            layout="@layout/hline"/>
 
         <com.beerbong.otaplatform.ui.component.Item
             android:id="@+id/button_download_delta"
@@ -78,8 +71,5 @@
             app:item_icon="?downloadIcon"
             app:title="@string/delta_download"
             app:summary="@string/delta_download_summary" />
-        
-        <include android:id="@+id/button_download_delta_sep"
-            layout="@layout/hline"/>
 
 </LinearLayout>

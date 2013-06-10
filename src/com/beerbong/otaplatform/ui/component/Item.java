@@ -16,9 +16,6 @@
 
 package com.beerbong.otaplatform.ui.component;
 
-import com.beerbong.otaplatform.R;
-import com.beerbong.otaplatform.manager.ManagerFactory;
-
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.drawable.Drawable;
@@ -28,8 +25,10 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
+
+import com.beerbong.otaplatform.R;
+import com.beerbong.otaplatform.manager.ManagerFactory;
 
 public class Item extends LinearLayout {
 
@@ -69,18 +68,15 @@ public class Item extends LinearLayout {
 
         LayoutInflater inflater = (LayoutInflater) context
                 .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        inflater.inflate(R.layout.item, this, true);
-
-        LinearLayout lLayout = (LinearLayout) this.getChildAt(0);
-        RelativeLayout rLayout = (RelativeLayout) lLayout.getChildAt(1);
-
-        mTitle = (TextView) rLayout.getChildAt(0);
-        mTitle.setText(title);
-
-        mIcon = (ImageView) lLayout.getChildAt(0);
+        View view = inflater.inflate(R.layout.item, this, true);
+        
+        mIcon = (ImageView) view.findViewById(R.id.icon);
         mIcon.setImageDrawable(icon);
 
-        mSummary = (TextView) rLayout.getChildAt(1);
+        mTitle = (TextView) view.findViewById(R.id.title);
+        mTitle.setText(title);
+
+        mSummary = (TextView) view.findViewById(R.id.summary);
         mSummary.setText(summary);
 
         setOnTouchListener(new OnTouchListener() {

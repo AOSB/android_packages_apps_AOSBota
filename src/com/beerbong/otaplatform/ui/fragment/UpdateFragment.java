@@ -16,9 +16,6 @@
 
 package com.beerbong.otaplatform.ui.fragment;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
@@ -55,7 +52,6 @@ public class UpdateFragment extends Fragment implements RomUpdater.RomUpdaterLis
     private Item mButtonDownload;
     private Item mButtonDownloadDelta;
     private TextView mNoNewRom;
-    private Map<Integer, View> mSeps;
     private boolean mRomCanUpdate = true;
 
     public UpdateFragment() {
@@ -77,10 +73,6 @@ public class UpdateFragment extends Fragment implements RomUpdater.RomUpdaterLis
         mButtonDownload = (Item) view.findViewById(R.id.button_download);
         mButtonDownloadDelta = (Item) view.findViewById(R.id.button_download_delta);
         mNoNewRom = (TextView) view.findViewById(R.id.no_new_version);
-
-        mSeps = new HashMap<Integer, View>();
-        mSeps.put(R.id.button_download_sep, view.findViewById(R.id.button_download_sep));
-        mSeps.put(R.id.button_download_delta_sep, view.findViewById(R.id.button_download_delta_sep));
 
         mButtonCheckRom.setEnabled(mRomCanUpdate);
         mButtonCheckRom.setOnItemClickListener(new OnItemClickListener() {
@@ -164,16 +156,12 @@ public class UpdateFragment extends Fragment implements RomUpdater.RomUpdaterLis
             mNewRom = null;
             mButtonDownload.setVisibility(View.GONE);
             mButtonDownloadDelta.setVisibility(View.GONE);
-            mSeps.get(R.id.button_download_sep).setVisibility(View.GONE);
-            mSeps.get(R.id.button_download_delta_sep).setVisibility(View.GONE);
             mNoNewRom.setVisibility(View.VISIBLE);
         } else {
             mNewRom = info;
             mNoNewRom.setVisibility(View.GONE);
             mButtonDownload.setVisibility(View.VISIBLE);
             mButtonDownloadDelta.setVisibility(info.isDelta() ? View.VISIBLE : View.GONE);
-            mSeps.get(R.id.button_download_sep).setVisibility(View.VISIBLE);
-            mSeps.get(R.id.button_download_delta_sep).setVisibility(info.isDelta() ? View.VISIBLE : View.GONE);
             mButtonDownload.setSummary(getActivity().getResources().getString(
                     R.string.rom_download_summary, new Object[] { info.getVersion() }));
         }
@@ -185,8 +173,6 @@ public class UpdateFragment extends Fragment implements RomUpdater.RomUpdaterLis
         mButtonDownload.setVisibility(View.GONE);
         mButtonDownloadDelta.setVisibility(View.GONE);
         mProgressBar.setVisibility(View.VISIBLE);
-        mSeps.get(R.id.button_download_sep).setVisibility(View.GONE);
-        mSeps.get(R.id.button_download_delta_sep).setVisibility(View.GONE);
         mRomUpdater.check();
     }
 
