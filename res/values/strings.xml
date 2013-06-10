@@ -22,6 +22,7 @@
     
     <string name="update">Update</string>
     <string name="flash">Install</string>
+    <string name="changelog">Changelog</string>
     <string name="settings">Settings</string>
     <string name="checking">Checking for new version</string>
     <string name="checking_twrp">Checking for TWRP</string>
@@ -168,5 +169,6 @@
     <string name="ouc_package_description">%1$s\nMD5: %2$s\nDate: %3$s\nChangelog: %4$s</string>
     <string name="unsupported_rom_title">Unsupported ROM</string>
     <string name="unsupported_rom_message">Your ROM doesn\'t contain the necessary information to locate the OTA service.\nContact your developer to solve the issue.</string>
+    <string name="no_changelog_configured">No changelog url configured</string>
 
 </resources>

@@ -21,6 +21,7 @@
     
     <string name="update">Actualitzar</string>
     <string name="flash">""Instal·lar"</string>
+    <string name="changelog">Changelog</string>
     <string name="settings">Ajustaments</string>
     <string name="checking">Comprovant nova versió</string>
     <string name="checking_twrp">Comprovant TWRP</string>
@@ -167,5 +168,6 @@
     <string name="ouc_package_description">%1$s\nMD5: %2$s\nData: %3$s\nChangelog: %4$s</string>
     <string name="unsupported_rom_title">ROM no soportada</string>
     <string name="unsupported_rom_message">La teva ROM no conté la informació necessària per trobar el servei OTA.\nContacta amb el teu desenvolupador per solventar el problema.</string>
+    <string name="no_changelog_configured">No hi ha cap url configurada pel changelog</string>
 
 </resources>

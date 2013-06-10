@@ -34,6 +34,7 @@ import android.widget.TabHost.TabContentFactory;
 
 import com.beerbong.otaplatform.activity.SettingsActivity;
 import com.beerbong.otaplatform.manager.ManagerFactory;
+import com.beerbong.otaplatform.ui.fragment.ChangelogFragment;
 import com.beerbong.otaplatform.ui.fragment.InstallFragment;
 import com.beerbong.otaplatform.ui.fragment.UpdateFragment;
 import com.beerbong.otaplatform.updater.RomUpdater;
@@ -43,6 +44,7 @@ import com.beerbong.otaplatform.util.Constants;
 public class MainActivity extends FragmentActivity implements TabHost.OnTabChangeListener,
         ViewPager.OnPageChangeListener {
 
+    private RomUpdater mRomUpdater;
     private TabHost mTabHost;
     private ViewPager mViewPager;
     private List<Fragment> mFragments;
@@ -53,8 +55,8 @@ public class MainActivity extends FragmentActivity implements TabHost.OnTabChang
         boolean useDarkTheme = ManagerFactory.getPreferencesManager(this).isDarkTheme();
         setTheme(useDarkTheme ? R.style.DarkTheme : R.style.AppTheme);
 
-        RomUpdater romUpdater = Updater.getRomUpdater(this, null, false);
-        if (romUpdater == null || !romUpdater.canUpdate()) {
+        mRomUpdater = Updater.getRomUpdater(this, null, false);
+        if (mRomUpdater == null || !mRomUpdater.canUpdate()) {
             Constants.showSimpleDialog(this, R.string.unsupported_rom_title,
                     R.string.unsupported_rom_message);
         }
@@ -63,12 +65,17 @@ public class MainActivity extends FragmentActivity implements TabHost.OnTabChang
 
         setContentView(R.layout.activity_main);
 
-        initialiseTabHost(savedInstanceState);
+        String romChangelogUrl = null;
+        if (mRomUpdater != null && mRomUpdater.canUpdate()) {
+            romChangelogUrl = Constants.getRomChangelogUrl(this, mRomUpdater.getRomName());
+        }
+
+        initialiseTabHost(savedInstanceState, romChangelogUrl);
 
         if (savedInstanceState != null) {
             mTabHost.setCurrentTabByTag(savedInstanceState.getString("tab"));
         }
-        intialiseViewPager();
+        intialiseViewPager(romChangelogUrl);
     }
 
     @Override
@@ -77,11 +84,14 @@ public class MainActivity extends FragmentActivity implements TabHost.OnTabChang
         super.onSaveInstanceState(outState);
     }
 
-    private void intialiseViewPager() {
+    private void intialiseViewPager(String romChangelogUrl) {
 
         mFragments = new ArrayList<Fragment>();
         mFragments.add(Fragment.instantiate(this, UpdateFragment.class.getName()));
         mFragments.add(Fragment.instantiate(this, InstallFragment.class.getName()));
+        if (romChangelogUrl != null) {
+            mFragments.add(Fragment.instantiate(this, ChangelogFragment.class.getName()));
+        }
 
         mViewPager = (ViewPager) findViewById(R.id.viewpager);
         mViewPager.setAdapter(new FragmentPagerAdapter(getSupportFragmentManager()) {
@@ -99,12 +109,15 @@ public class MainActivity extends FragmentActivity implements TabHost.OnTabChang
         mViewPager.setOnPageChangeListener(this);
     }
 
-    private void initialiseTabHost(Bundle args) {
+    private void initialiseTabHost(Bundle args, String romChangelogUrl) {
         mTabHost = (TabHost) findViewById(android.R.id.tabhost);
         mTabHost.setup();
 
         addTab("update", R.string.update);
         addTab("install", R.string.flash);
+        if (romChangelogUrl != null) {
+            addTab("changelog", R.string.changelog);
+        }
 
         mTabHost.setOnTabChangedListener(this);
     }

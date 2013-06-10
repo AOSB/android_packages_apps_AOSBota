@@ -20,7 +20,8 @@
     <string name="app_name">OTAPlatform</string>
     
     <string name="update">Actualizar</string>
-    <string name="flash">""Instalar"</string>
+    <string name="flash">Instalar</string>
+    <string name="changelog">Changelog</string>
     <string name="settings">Ajustes</string>
     <string name="checking">Comprobando nueva versión</string>
     <string name="checking_twrp">Comprobando TWRP</string>
@@ -167,5 +168,6 @@
     <string name="ouc_package_description">%1$s\nMD5: %2$s\nFecha: %3$s\nChangelog: %4$s</string>
     <string name="unsupported_rom_title">ROM no soportada</string>
     <string name="unsupported_rom_message">Tu ROM no contiene la información necesaria para encontrar el servicio OTA.\nContacta con tu desarrollador para solventar el problema.</string>
+    <string name="no_changelog_configured">No hay ninguna url configurada para el changelog</string>
 
 </resources>

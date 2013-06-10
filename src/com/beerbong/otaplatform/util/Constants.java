@@ -27,6 +27,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Properties;
 
 import android.app.Activity;
 import android.app.AlarmManager;
@@ -101,7 +102,8 @@ public class Constants {
     private static final long T = G * K;
 
     private static List<RequestFileCallback> mRequestFileCallbacks = new ArrayList<RequestFileCallback>();
-    
+    private static Properties mRomChangelogUrls;
+
     private static int isSystemApp = -1;
 
     private static final SimpleDateFormat SDF = new SimpleDateFormat("yyyy-MM-dd.HH.mm.ss");
@@ -115,7 +117,7 @@ public class Constants {
             observer.fileRequested(filePath);
         }
     }
-    
+
     public static String getDateAndTime() {
         return SDF.format(new Date(System.currentTimeMillis()));
     }
@@ -152,8 +154,8 @@ public class Constants {
         });
     }
 
-    public static void showNotification(Context context, Updater.PackageInfo info, int notificationId,
-            int resourceTitle, int resourceText) {
+    public static void showNotification(Context context, Updater.PackageInfo info,
+            int notificationId, int resourceTitle, int resourceText) {
         Resources resources = context.getResources();
 
         Intent intent = new Intent(context, MainActivity.class);
@@ -163,8 +165,10 @@ public class Constants {
                 PendingIntent.FLAG_UPDATE_CURRENT);
 
         Notification noti = new Notification.Builder(context)
-                .setContentTitle(resources.getString(resourceTitle, new Object[] { info.getVersion() }))
-                .setContentText(resources.getString(resourceText, new Object[] { info.getFilename() }))
+                .setContentTitle(
+                        resources.getString(resourceTitle, new Object[] { info.getVersion() }))
+                .setContentText(
+                        resources.getString(resourceText, new Object[] { info.getFilename() }))
                 .setSmallIcon(R.drawable.ic_launcher).setContentIntent(pIntent).build();
 
         NotificationManager notificationManager = (NotificationManager) context
@@ -201,20 +205,21 @@ public class Constants {
             }
         }
     }
-    
+
     public static boolean isNetworkAvailable(Context context) {
-        ConnectivityManager connectivityManager = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+        ConnectivityManager connectivityManager = (ConnectivityManager) context
+                .getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
         return activeNetworkInfo != null && activeNetworkInfo.isConnected();
     }
-    
+
     public static void setAlarm(Context context, long time, boolean trigger) {
 
         Intent i = new Intent(context, NotificationAlarm.class);
         i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 
-        PendingIntent pi = PendingIntent
-                .getBroadcast(context, ALARM_ID, i, PendingIntent.FLAG_UPDATE_CURRENT);
+        PendingIntent pi = PendingIntent.getBroadcast(context, ALARM_ID, i,
+                PendingIntent.FLAG_UPDATE_CURRENT);
 
         AlarmManager am = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
         am.cancel(pi);
@@ -254,7 +259,8 @@ public class Constants {
             return isSystemApp == 1;
         }
         PackageManager pm = context.getPackageManager();
-        PackageInfo info = pm.getPackageInfo("com.beerbong.otaplatform", PackageManager.GET_ACTIVITIES);
+        PackageInfo info = pm.getPackageInfo("com.beerbong.otaplatform",
+                PackageManager.GET_ACTIVITIES);
         ApplicationInfo aInfo = info.applicationInfo;
         String path = aInfo.sourceDir.substring(0, aInfo.sourceDir.lastIndexOf("/"));
         isSystemApp = path.contains("system/app") ? 1 : 0;
@@ -262,15 +268,25 @@ public class Constants {
     }
 
     public static void showSimpleDialog(Context context, int titleId, int messageId) {
-        new AlertDialog.Builder(context)
-        .setTitle(titleId)
-        .setMessage(messageId)
-        .setPositiveButton(android.R.string.ok,
-                new DialogInterface.OnClickListener() {
+        new AlertDialog.Builder(context).setTitle(titleId).setMessage(messageId)
+                .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
 
                     public void onClick(DialogInterface dialog, int whichButton) {
                         dialog.dismiss();
                     }
                 }).show();
+    }
+
+    public static String getRomChangelogUrl(Context context, String romName) {
+        try {
+            if (mRomChangelogUrls == null) {
+                mRomChangelogUrls = new Properties();
+                mRomChangelogUrls.load(context.getAssets().open("changelogs.prop"));
+            }
+            return mRomChangelogUrls.getProperty(romName);
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            return null;
+        }
     }
 }
