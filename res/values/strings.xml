@@ -170,5 +170,7 @@
     <string name="unsupported_rom_title">Unsupported ROM</string>
     <string name="unsupported_rom_message">Your ROM doesn\'t contain the necessary information to locate the OTA service.\nContact your developer to solve the issue.</string>
     <string name="no_changelog_configured">No changelog url configured</string>
+    <string name="restart_needed">Restart needed</string>
+    <string name="restart_needed_theme_message">A restart is needed to apply changes in theme. Do you want to restart the application now?</string>
 
 </resources>

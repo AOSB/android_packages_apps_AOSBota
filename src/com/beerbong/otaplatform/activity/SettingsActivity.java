@@ -36,6 +36,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.EditText;
 
+import com.beerbong.otaplatform.MainActivity;
 import com.beerbong.otaplatform.R;
 import com.beerbong.otaplatform.manager.ManagerFactory;
 import com.beerbong.otaplatform.manager.PreferencesManager;
@@ -73,7 +74,7 @@ public class SettingsActivity extends PreferenceActivity implements OnPreference
 
         addPreferencesFromResource(R.layout.settings);
 
-        mDarkTheme = (CheckBoxPreference)findPreference(Constants.PREFERENCE_SETTINGS_DARK_THEME);
+        mDarkTheme = (CheckBoxPreference) findPreference(Constants.PREFERENCE_SETTINGS_DARK_THEME);
         mDownloadPath = findPreference(Constants.PREFERENCE_SETTINGS_DOWNLOAD_PATH);
         mCheckTime = (ListPreference) findPreference(Constants.PREFERENCE_SETTINGS_CHECK_TIME);
         mGappsFolder = findPreference(Constants.PREFERENCE_SETTINGS_GAPPS_FOLDER);
@@ -112,6 +113,8 @@ public class SettingsActivity extends PreferenceActivity implements OnPreference
             boolean darkTheme = ((CheckBoxPreference) preference).isChecked();
             pManager.setDarkTheme(darkTheme);
 
+            showRestartDialog();
+
         } else if (Constants.PREFERENCE_SETTINGS_DOWNLOAD_PATH.equals(key)) {
 
             ManagerFactory.getFileManager(this).selectDownloadPath(this);
@@ -143,22 +146,22 @@ public class SettingsActivity extends PreferenceActivity implements OnPreference
             updateSummaries();
 
         } else if ("installtwrp".equals(key)) {
-            
+
             checkTwrp();
 
         } else if ("browsegoo".equals(key)) {
 
             GooActivity.CURRENT_NAVIGATION = null;
             startActivity(new Intent(this, GooActivity.class));
-            
+
         } else if ("logingoo".equals(key)) {
 
             showLoginDialog();
 
         } else if ("recoveryactivity".equals(key)) {
-            
+
             startActivity(new Intent(this, RecoveryActivity.class));
-            
+
         }
 
         return true;
@@ -256,8 +259,8 @@ public class SettingsActivity extends PreferenceActivity implements OnPreference
     }
 
     public void checkTwrp() {
-        mProgress = ProgressDialog.show(this, null,
-                getResources().getString(R.string.checking_twrp), true, true);
+        mProgress = ProgressDialog.show(this, null, getResources()
+                .getString(R.string.checking_twrp), true, true);
         TWRPUpdater twrpUpdater = new TWRPUpdater(this, this);
         twrpUpdater.check();
     }
@@ -276,26 +279,29 @@ public class SettingsActivity extends PreferenceActivity implements OnPreference
 
         LayoutInflater inflater = getLayoutInflater();
         View view = inflater.inflate(R.layout.login, null);
-        final EditText username = (EditText)view.findViewById(R.id.username);
-        final EditText password = (EditText)view.findViewById(R.id.password);
+        final EditText username = (EditText) view.findViewById(R.id.username);
+        final EditText password = (EditText) view.findViewById(R.id.password);
 
-        AlertDialog.Builder builder = new AlertDialog.Builder(this).setTitle(R.string.menu_login)
+        AlertDialog.Builder builder = new AlertDialog.Builder(this)
+                .setTitle(R.string.menu_login)
                 .setPositiveButton(R.string.login, new DialogInterface.OnClickListener() {
 
                     public void onClick(DialogInterface dialog, int whichButton) {
-                        String user = username.getText() == null ? "" : username.getText().toString();
-                        String pass = password.getText() == null ? "" : password.getText().toString();
-                        mProgress = ProgressDialog.show(SettingsActivity.this, null,
-                                getResources().getString(R.string.logging_in), true, true);
+                        String user = username.getText() == null ? "" : username.getText()
+                                .toString();
+                        String pass = password.getText() == null ? "" : password.getText()
+                                .toString();
+                        mProgress = ProgressDialog.show(SettingsActivity.this, null, getResources()
+                                .getString(R.string.logging_in), true, true);
                         try {
-                            new URLStringReader(SettingsActivity.this).execute(LOGIN_URL + "&username="
-                                    + URLEncoder.encode(user, "UTF-8") + "&password=" + URLEncoder.encode(pass, "UTF-8"));
+                            new URLStringReader(SettingsActivity.this).execute(LOGIN_URL
+                                    + "&username=" + URLEncoder.encode(user, "UTF-8")
+                                    + "&password=" + URLEncoder.encode(pass, "UTF-8"));
                         } catch (UnsupportedEncodingException ex) {
                             // should never get here
                         }
                     }
-                })
-                .setNeutralButton(R.string.logout, new DialogInterface.OnClickListener() {
+                }).setNeutralButton(R.string.logout, new DialogInterface.OnClickListener() {
 
                     public void onClick(DialogInterface dialog, int whichButton) {
                         pManager.setLogin("");
@@ -304,7 +310,7 @@ public class SettingsActivity extends PreferenceActivity implements OnPreference
                     }
                 })
                 .setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
-        
+
                     public void onClick(DialogInterface dialog, int whichButton) {
                         dialog.dismiss();
                     }
@@ -338,5 +344,31 @@ public class SettingsActivity extends PreferenceActivity implements OnPreference
 
     @Override
     public void onReadError(Exception ex) {
+    }
+
+    private void showRestartDialog() {
+        AlertDialog.Builder alert = new AlertDialog.Builder(this);
+        alert.setTitle(R.string.restart_needed);
+        alert.setMessage(R.string.restart_needed_theme_message);
+        alert.setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+
+            public void onClick(DialogInterface dialog, int whichButton) {
+
+                dialog.dismiss();
+
+                Intent intent = new Intent(SettingsActivity.this, MainActivity.class);
+                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                SettingsActivity.this.startActivity(intent);
+
+                SettingsActivity.this.finish();
+            }
+        });
+        alert.setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
+
+            public void onClick(DialogInterface dialog, int whichButton) {
+                dialog.dismiss();
+            }
+        });
+        alert.show();
     }
 }

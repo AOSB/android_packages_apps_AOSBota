@@ -169,5 +169,7 @@
     <string name="unsupported_rom_title">ROM no soportada</string>
     <string name="unsupported_rom_message">Tu ROM no contiene la información necesaria para encontrar el servicio OTA.\nContacta con tu desarrollador para solventar el problema.</string>
     <string name="no_changelog_configured">No hay ninguna url configurada para el changelog</string>
+    <string name="restart_needed">Se necesita reiniciar</string>
+    <string name="restart_needed_theme_message">Se necesita reiniciar para aplicar los cambios en el tema. ¿Quieres reiniciar la aplicación ahora?</string>
 
 </resources>
