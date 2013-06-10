@@ -44,7 +44,6 @@ import com.beerbong.otaplatform.util.Constants;
 public class MainActivity extends FragmentActivity implements TabHost.OnTabChangeListener,
         ViewPager.OnPageChangeListener {
 
-    private RomUpdater mRomUpdater;
     private TabHost mTabHost;
     private ViewPager mViewPager;
     private List<Fragment> mFragments;
@@ -55,8 +54,8 @@ public class MainActivity extends FragmentActivity implements TabHost.OnTabChang
         boolean useDarkTheme = ManagerFactory.getPreferencesManager(this).isDarkTheme();
         setTheme(useDarkTheme ? R.style.DarkTheme : R.style.AppTheme);
 
-        mRomUpdater = Updater.getRomUpdater(this, null, false);
-        if (mRomUpdater == null || !mRomUpdater.canUpdate()) {
+        RomUpdater romUpdater = Updater.getRomUpdater(this, null, false);
+        if (romUpdater == null || !romUpdater.canUpdate()) {
             Constants.showSimpleDialog(this, R.string.unsupported_rom_title,
                     R.string.unsupported_rom_message);
         }
@@ -66,8 +65,8 @@ public class MainActivity extends FragmentActivity implements TabHost.OnTabChang
         setContentView(R.layout.activity_main);
 
         String romChangelogUrl = null;
-        if (mRomUpdater != null && mRomUpdater.canUpdate()) {
-            romChangelogUrl = Constants.getRomChangelogUrl(this, mRomUpdater.getRomName());
+        if (romUpdater != null && romUpdater.canUpdate()) {
+            romChangelogUrl = Constants.getRomChangelogUrl(this, romUpdater.getRomName());
         }
 
         initialiseTabHost(savedInstanceState, romChangelogUrl);
