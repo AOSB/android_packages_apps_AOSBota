@@ -349,7 +349,7 @@ public class RecoveryManager extends Manager {
                 }
 
                 if (backupFolder != null) {
-                    String str = "backup SDCR123B";
+                    String str = "backup ";
                     if (backupOptions != null && backupOptions.indexOf("S") >= 0) {
                         str += "S";
                     }
