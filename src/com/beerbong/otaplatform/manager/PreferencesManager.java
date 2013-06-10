@@ -41,7 +41,7 @@ public class PreferencesManager extends Manager {
     private static final String PROPERTY_RECOVERY = "recovery";
     private static final String PROPERTY_SHOW_OPTIONS = "show-option";
 
-    private static final String DEFAULT_TIME_NOTIFICATIONS = "3600000"; // an hour
+    private static final String DEFAULT_TIME_NOTIFICATIONS = "18000000"; // five hours
     private static final String DEFAULT_DOWNLOAD_PATH = "/" + SDCARD + "/download/";
     private static final String DEFAULT_RECOVERY = "cwmbased";
     private static final String DEFAULT_INTERNAL_STORAGE = "emmc";
