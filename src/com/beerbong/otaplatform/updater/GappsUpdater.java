@@ -102,8 +102,12 @@ public class GappsUpdater extends Updater implements Updater.UpdaterListener {
                     info = new GooPackage(null, -1);
                     if (!object.isNull("list")) {
                         JSONArray list = object.getJSONArray("list");
-                        if (list.length() > 0) {
-                            info = new GooPackage(list.getJSONObject(0), -1);
+                        for (int i=0;i<list.length();i++) {
+                            object = list.getJSONObject(i);
+                            if (!object.isNull("path")) {
+                                info = new GooPackage(object, -1);
+                                break;
+                            }
                         }
                     }
                 }
@@ -171,6 +175,9 @@ public class GappsUpdater extends Updater implements Updater.UpdaterListener {
             if (mFromAlarm) {
                 return;
             }
+            if (folder.startsWith("http://goo.im/")) {
+                folder = Constants.GOO_SEARCH_URL + folder.substring(folder.indexOf("/devs"));
+            }
             new URLStringReader(this).execute(folder);
         }
     }
@@ -183,21 +190,21 @@ public class GappsUpdater extends Updater implements Updater.UpdaterListener {
     @Override
     public void versionFound(final PackageInfo info) {
         mScanning = false;
-        if (mCustomGapps) {
-            showLastGappsFound(info);
-        } else {
-            if (info != null && info.getVersion() > mVersion) {
-                if (!mFromAlarm) {
-                    showNewGappsFound(info);
+        if (info != null && info.getVersion() > mVersion) {
+            if (!mFromAlarm) {
+                if (mCustomGapps) {
+                    showLastGappsFound(info);
                 } else {
-                    Constants.showNotification(mContext, info,
-                            Constants.NEWGAPPSVERSION_NOTIFICATION_ID,
-                            R.string.new_gapps_found_title, R.string.new_package_name);
+                    showNewGappsFound(info);
                 }
             } else {
-                if (!mFromAlarm) {
-                    Constants.showToastOnUiThread(mContext, R.string.check_gapps_updates_no_new);
-                }
+                Constants.showNotification(mContext, info,
+                        Constants.NEWGAPPSVERSION_NOTIFICATION_ID,
+                        R.string.new_gapps_found_title, R.string.new_package_name);
+            }
+        } else {
+            if (!mFromAlarm) {
+                Constants.showToastOnUiThread(mContext, R.string.check_gapps_updates_no_new);
             }
         }
         if (mListener != null) {
@@ -289,7 +296,7 @@ public class GappsUpdater extends Updater implements Updater.UpdaterListener {
                             .setMessage(
                                     mContext.getResources().getString(
                                             R.string.last_gapps_found_summary,
-                                            new Object[] { info.getFilename(), info.getFolder() }))
+                                            new Object[] { info.getFilename(), mVersion }))
                             .setPositiveButton(android.R.string.ok,
                                     new DialogInterface.OnClickListener() {
 

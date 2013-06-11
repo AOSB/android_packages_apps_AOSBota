@@ -59,7 +59,12 @@ public class GooPackage implements PackageInfo, Serializable {
             version = -1;
         } else {
             try {
-                JSONObject update = result.getJSONObject("update_info");
+                JSONObject update = null;
+                try {
+                    update = result.getJSONObject("update_info");
+                } catch (JSONException ex) {
+                    update = result;
+                }
                 developerid = update.optString("ro_developerid");
                 board = update.optString("ro_board");
                 rom = update.optString("ro_rom");
@@ -88,6 +93,17 @@ public class GooPackage implements PackageInfo, Serializable {
                         incremental_filename = incremental.optString("filename");
                         incremental_path = "http://goo.im/incremental/" + incremental_filename;
                         incremental_md5 = incremental.getString("md5");
+                    }
+                }
+                if (version == 0) {
+                    String[] split = filename.split("-");
+                    for (int i=split.length-1;i>0;i--) {
+                        try {
+                            version = Integer.parseInt(split[i]);
+                            break;
+                        } catch (NumberFormatException ex) {
+                            // ignore
+                        }
                     }
                 }
             } catch (JSONException ex) {

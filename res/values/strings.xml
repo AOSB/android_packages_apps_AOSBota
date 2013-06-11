@@ -107,7 +107,7 @@
     <string name="gapps_folder_select">Set as Gapps folder</string>
     <string name="gapps_folder_selected">Folder set as Gapps url</string>
     <string name="last_gapps_found_title">Newer Gapps package found</string>
-    <string name="last_gapps_found_summary">This is the last GApps package found. Do you want to download it now?\n\n%1$s\n%2$s\n</string>
+    <string name="last_gapps_found_summary">This is the last GApps package found. Do you want to download it now?\n\n%1$s\n\nYou\'ve got version %2$s installed.\n</string>
     <string name="flash_now">Install now</string>
     <string name="flash_now_summary">Reboot into recovery and install selected zips</string>
     <string name="add_zip">Add zip</string>

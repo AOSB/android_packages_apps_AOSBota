@@ -106,7 +106,7 @@
     <string name="gapps_folder_select">Establir com a carpeta de les GApps</string>
     <string name="gapps_folder_selected">Carpeta establerta com a url de les GApps</string>
     <string name="last_gapps_found_title">S\'ha trobat un paquet de GApps més nou</string>
-    <string name="last_gapps_found_summary">Aquest és el darrer paquet de GApps trobat. Vols descarregar-lo ara?\n\n%1$s\n%2$s\n</string>
+    <string name="last_gapps_found_summary">"Aquest és el darrer paquet de GApps trobat. Vols descarregar-lo ara?\n\n%1$s\n\nTu tens la versió %2$s instal·lada.\n"</string>
     <string name="flash_now">"Instal·lar ara"</string>
     <string name="flash_now_summary">"Reiniciar al recovery i instal·lar els zips seleccionats"</string>
     <string name="add_zip">Afegir zip</string>
