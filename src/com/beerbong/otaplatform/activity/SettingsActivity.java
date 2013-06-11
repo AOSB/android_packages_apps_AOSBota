@@ -89,7 +89,7 @@ public class SettingsActivity extends PreferenceActivity implements OnPreference
         mCheckTime.setValue(String.valueOf(pManager.getTimeNotifications()));
         mCheckTime.setOnPreferenceChangeListener(this);
 
-        mDarkTheme.setChecked(pManager.isDarkTheme());
+        mDarkTheme.setChecked(useDarkTheme);
 
         mOptions.setValue(pManager.getShowOptions());
         mOptions.setOnPreferenceChangeListener(this);

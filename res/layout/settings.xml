@@ -65,7 +65,12 @@
 
     <PreferenceCategory
         android:key="settings_gapps"
-        android:title="@string/settings_gapps" > 
+        android:title="@string/settings_gapps" >
+
+        <CheckBoxPreference
+            android:key="checkgapps"
+            android:summary="@string/checkgapps_summary"
+            android:title="@string/checkgapps_title" />
 
         <Preference
             android:key="gapps"

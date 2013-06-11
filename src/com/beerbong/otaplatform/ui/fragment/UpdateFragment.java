@@ -53,6 +53,7 @@ public class UpdateFragment extends Fragment implements RomUpdater.RomUpdaterLis
     private Item mButtonDownloadDelta;
     private TextView mNoNewRom;
     private boolean mRomCanUpdate = true;
+    private boolean mShouldCheckGapps = true;
 
     public UpdateFragment() {
     }
@@ -79,6 +80,7 @@ public class UpdateFragment extends Fragment implements RomUpdater.RomUpdaterLis
 
             @Override
             public void onClick(int id) {
+                mShouldCheckGapps = true;
                 checkRom();
             }
         });
@@ -166,6 +168,10 @@ public class UpdateFragment extends Fragment implements RomUpdater.RomUpdaterLis
                     R.string.rom_download_summary, new Object[] { info.getVersion() }));
         }
         mButtonCheckRom.setEnabled(mRomUpdater != null && mRomUpdater.canUpdate());
+        if (mShouldCheckGapps && ManagerFactory.getPreferencesManager(getActivity()).getGappsCheck()) {
+            checkGapps();
+        }
+        mShouldCheckGapps = false;
     }
 
     private void checkRom() {
@@ -178,7 +184,7 @@ public class UpdateFragment extends Fragment implements RomUpdater.RomUpdaterLis
 
     private void checkGapps() {
         mProgress = ProgressDialog.show(getActivity(), null, getActivity().getResources()
-                .getString(R.string.checking), true, true);
+                .getString(R.string.checking_gapps), true, true);
         mGappsUpdater.check();
     }
 

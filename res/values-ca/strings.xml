@@ -24,6 +24,7 @@
     <string name="changelog">Changelog</string>
     <string name="settings">Ajustaments</string>
     <string name="checking">Comprovant nova versió</string>
+    <string name="checking_gapps">Comprovant nova versió de les GApps</string>
     <string name="checking_twrp">Comprovant TWRP</string>
     <string name="check_rom_updates">Comprovar ROM</string>
     <string name="check_rom_updates_summary">Comprovar si hi ha actualitzacions de la ROM</string>
@@ -98,6 +99,8 @@
     <string name="watchlist_remove_confirm_title">Esborrar del watchlist</string>
     <string name="watchlist_remove_confirm">Vols esborrar aquesta carpeta del watchlist?</string>
     <string name="settings_gapps">Gapps</string>
+    <string name="checkgapps_title">Comprovar Gapps automàticament</string>
+    <string name="checkgapps_summary">Comprovar Gapps automàticament després de comprovar la ROM</string>
     <string name="gapps_folder">Especificar Gapps url</string>
     <string name="gapps_reset_folder">Tornar a les Gapps oficials</string>
     <string name="gapps_folder_official">Utilitzant Gapps oficials</string>

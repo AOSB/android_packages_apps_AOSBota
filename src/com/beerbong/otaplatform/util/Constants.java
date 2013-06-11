@@ -82,6 +82,7 @@ public class Constants {
     public static final String PREFERENCE_SETTINGS_DARK_THEME = "darktheme";
     public static final String PREFERENCE_SETTINGS_DOWNLOAD_PATH = "downloadpath";
     public static final String PREFERENCE_SETTINGS_CHECK_TIME = "checktime";
+    public static final String PREFERENCE_SETTINGS_GAPPS_CHECK = "checkgapps";
     public static final String PREFERENCE_SETTINGS_GAPPS_FOLDER = "gapps";
     public static final String PREFERENCE_SETTINGS_GAPPS_RESET = "gapps_reset";
     public static final String PREFERENCE_SETTINGS_RECOVERY = "recovery";

@@ -34,6 +34,7 @@ public class PreferencesManager extends Manager {
     private static final String PROPERTY_TIME_NOTIFICATIONS = "time_notifications";
     private static final String PROPERTY_LOGIN = "login";
     private static final String PROPERTY_WATCHLIST = "watchlist";
+    private static final String PROPERTY_GAPPS_CHECK = "checkgapps";
     private static final String PROPERTY_GAPPS = "gapps";
     private static final String PROPERTY_QUEUE = "queue";
     private static final String PROPERTY_INTERNAL_STORAGE = "internal-storage";
@@ -99,6 +100,14 @@ public class PreferencesManager extends Manager {
 
     public void setWatchlist(String value) {
         savePreference(PROPERTY_WATCHLIST, value);
+    }
+
+    public boolean getGappsCheck() {
+        return settings.getBoolean(PROPERTY_GAPPS_CHECK, false);
+    }
+
+    public void setGappsCheck(boolean value) {
+        savePreference(PROPERTY_GAPPS_CHECK, value);
     }
 
     public String getGappsFolder() {
