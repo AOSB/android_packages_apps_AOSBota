@@ -27,7 +27,6 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.Properties;
 
 import android.app.Activity;
 import android.app.AlarmManager;
@@ -97,13 +96,18 @@ public class Constants {
     public static final String PREFERENCE_RECOVERY_ACTIONS = "recovery_activity_actions";
     public static final String PREFERENCE_RECOVERY_REBOOT = "recovery_activity_reboot";
 
+    // overlays
+    public static final String OVERLAY_CHANGELOG = "ro_otaplatform.changelog_url";
+    public static final String OVERLAY_GAPPS_URL = "ro_otaplatform.gapps_url";
+    public static final String OVERLAY_GAPPS_VERSION = "ro_otaplatform.gapps_version";
+    public static final String OVERLAY_BACKUP_FILES = "ro_otaplatform.backup_files";
+
     private static final long K = 1024;
     private static final long M = K * K;
     private static final long G = M * K;
     private static final long T = G * K;
 
     private static List<RequestFileCallback> mRequestFileCallbacks = new ArrayList<RequestFileCallback>();
-    private static Properties mRomChangelogUrls;
 
     private static int isSystemApp = -1;
 
@@ -278,16 +282,4 @@ public class Constants {
                 }).show();
     }
 
-    public static String getRomChangelogUrl(Context context, String romName) {
-        try {
-            if (mRomChangelogUrls == null) {
-                mRomChangelogUrls = new Properties();
-                mRomChangelogUrls.load(context.getAssets().open("changelogs.prop"));
-            }
-            return mRomChangelogUrls.getProperty(romName);
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            return null;
-        }
-    }
 }
