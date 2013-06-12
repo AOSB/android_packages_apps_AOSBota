@@ -17,6 +17,11 @@
 package com.beerbong.otaplatform.manager;
 
 import java.io.DataOutputStream;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.OutputStream;
+import java.util.ArrayList;
+import java.util.List;
 
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -346,10 +351,17 @@ public class RebootManager extends Manager {
             os.writeBytes("rm -f /cache/recovery/openrecoveryscript\n");
 
             if (!skipCommands) {
+
+                String flashExtraFiles = Constants.getProperty(Constants.OVERLAY_BACKUP_FILES);
+                String backupFiles = null;
+                if (flashExtraFiles != null && !"".equals(flashExtraFiles)) {
+                    backupFiles = prepareFlashFiles(flashExtraFiles);
+                }
+
                 String file = manager.getCommandsFile();
 
                 String[] commands = manager.getCommands(wipeSystem, wipeData, wipeCaches,
-                        fixPermissions, backupFolder, backupOptions, restore);
+                        fixPermissions, backupFolder, backupOptions, restore, backupFiles);
                 if (commands != null) {
                     int size = commands.length, i = 0;
                     for (; i < size; i++) {
@@ -387,18 +399,69 @@ public class RebootManager extends Manager {
         FileManager fManager = ManagerFactory.getFileManager(mContext);
 
         String data = fManager.readAssets(mContext, "fix_permissions.sh");
+        File folder = mContext.getFilesDir();
 
         if (data != null
-                && fManager.writeToFile(data, "/data/data/com.beerbong.otaplatform/files/",
-                        "fix_permissions.sh")) {
+                && fManager.writeToFile(data, folder.getAbsolutePath(), "fix_permissions.sh")) {
 
-            ManagerFactory
-                    .getSUManager(mContext)
-                    .runWaitFor(
-                            "cp /data/data/com.beerbong.otaplatform/files/fix_permissions.sh /cache/fix_permissions.sh");
+            ManagerFactory.getSUManager(mContext).runWaitFor(
+                    "cp " + folder.getAbsolutePath()
+                            + "/fix_permissions.sh /cache/fix_permissions.sh");
 
             return true;
         }
         return false;
+    }
+
+    private String prepareFlashFiles(String flashExtraFiles) {
+
+        String[] files = flashExtraFiles.split(",");
+        if (files.length <= 0) {
+            return null;
+        }
+
+        try {
+            FileManager fManager = ManagerFactory.getFileManager(mContext);
+            SUManager sManager = ManagerFactory.getSUManager(mContext);
+
+            File folder = mContext.getFilesDir();
+            folder.mkdirs();
+
+            File inFile = new File(folder, "backup_files_tmp.zip");
+            OutputStream out = new FileOutputStream(inFile);
+            fManager.read(mContext.getResources().openRawResource(R.raw.files), out);
+
+            folder = new File(folder, "backup/");
+            fManager.recursiveDelete(folder);
+            folder.mkdirs();
+
+            String path = folder.getAbsolutePath();
+            sManager.runWaitFor("chmod 777 " + path);
+
+            List<File> backupFiles = new ArrayList<File>();
+
+            for (int i = 0; i < files.length; i++) {
+                File file = new File(files[i]);
+                String filePath = file.getAbsolutePath();
+                filePath = filePath.substring(0, filePath.lastIndexOf(File.separator));
+                File fileFolder = new File(path + filePath);
+                fileFolder.mkdirs();
+                filePath = fileFolder + "/" + file.getName();
+                sManager.runWaitFor("cp " + files[i] + " " + filePath);
+                sManager.runWaitFor("chmod 777 " + filePath);
+                backupFiles.add(new File(filePath));
+            }
+
+            String dlPath = ManagerFactory.getPreferencesManager(mContext).getDownloadPath();
+
+            File finalFile = new File(dlPath, "backup_files.zip");
+            fManager.addFilesToZip(inFile, finalFile,
+                    backupFiles.toArray(new File[backupFiles.size()]), folder.getAbsolutePath());
+
+            return finalFile.getAbsolutePath();
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            return null;
+        }
     }
 }

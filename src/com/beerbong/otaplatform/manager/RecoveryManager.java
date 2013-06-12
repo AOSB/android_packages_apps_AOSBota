@@ -255,8 +255,8 @@ public class RecoveryManager extends Manager {
     }
 
     public String[] getCommands(boolean wipeSystem, boolean wipeData, boolean wipeCaches,
-            boolean fixPermissions, String backupFolder, String backupOptions, String restore)
-            throws Exception {
+            boolean fixPermissions, String backupFolder, String backupOptions, String restore,
+            String backupFiles) throws Exception {
         List<String> commands = new ArrayList<String>();
 
         List<FileItem> items = ManagerFactory.getFileManager(mContext).getFileItems();
@@ -318,6 +318,11 @@ public class RecoveryManager extends Manager {
                         commands.add("ui_print(\" Installing zip\");");
                         commands.add("assert(install_zip(\"" + item.getKey() + "\"));");
                     }
+                }
+
+                if (backupFiles != null) {
+                    commands.add("ui_print(\" Restoring files\");");
+                    commands.add("assert(install_zip(\"" + backupFiles + "\"));");
                 }
 
                 if (fixPermissions) {
@@ -393,6 +398,10 @@ public class RecoveryManager extends Manager {
                 for (; i < size; i++) {
                     FileItem item = items.get(i);
                     commands.add("install " + item.getKey());
+                }
+
+                if (backupFiles != null) {
+                    commands.add("install " + backupFiles);
                 }
 
                 if (fixPermissions) {

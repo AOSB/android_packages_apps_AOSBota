@@ -18,12 +18,18 @@ package com.beerbong.otaplatform.manager;
 
 import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipInputStream;
+import java.util.zip.ZipOutputStream;
 
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -575,6 +581,84 @@ public class FileManager extends Manager {
 
         if (mInternalStoragePath == null) {
             mInternalStoragePath = "/sdcard";
+        }
+    }
+
+    public void addFilesToZip(File inFile, File outFile, File[] files, String folder) throws IOException {
+        byte[] buf = new byte[1024];
+
+        ZipOutputStream out = null;
+        try {
+            out = new ZipOutputStream(new FileOutputStream(outFile));
+            ZipInputStream in = null;
+            try {
+                in = new ZipInputStream(new FileInputStream(inFile));
+
+                ZipEntry entry = in.getNextEntry();
+                while (entry != null) {
+                    String name = entry.getName();
+                    boolean alreadyAdded = false;
+                    for (File f : files) {
+                        if (f.getName().equals(name)) {
+                            alreadyAdded = true;
+                            break;
+                        }
+                    }
+                    if (!alreadyAdded) {
+
+                        out.putNextEntry(new ZipEntry(name));
+
+                        int len;
+                        while ((len = in.read(buf)) > 0) {
+                            out.write(buf, 0, len);
+                        }
+                    }
+                    entry = in.getNextEntry();
+                }
+            } finally {
+                if (in != null) {
+                    in.close();
+                }
+            }
+
+            for (int i = 0; i < files.length; i++) {
+                InputStream fin = null;
+                try {
+                    fin = new FileInputStream(files[i]);
+                    String file = files[i].getAbsolutePath();
+                    file = file.replace(folder, "");
+                    out.putNextEntry(new ZipEntry(file));
+
+                    int len;
+                    while ((len = fin.read(buf)) > 0) {
+                        out.write(buf, 0, len);
+                    }
+                    out.closeEntry();
+                } finally {
+                    if (fin != null) {
+                        fin.close();
+                    }
+                }
+            }
+        } finally {
+            if (out != null) {
+                out.close();
+            }
+            inFile.delete();
+        }
+    }
+
+    public void read(InputStream in, OutputStream out) throws IOException {
+        try {
+            byte[] buf = new byte[1024];
+            int len;
+            while ((len = in.read(buf, 0, buf.length)) != -1) {
+                out.write(buf, 0, len);
+            }
+
+        } finally {
+            in.close();
+            out.close();
         }
     }
 }
