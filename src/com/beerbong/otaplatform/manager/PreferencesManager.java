@@ -111,7 +111,8 @@ public class PreferencesManager extends Manager {
     }
 
     public String getGappsFolder() {
-        return settings.getString(PROPERTY_GAPPS, "");
+        return settings.getString(PROPERTY_GAPPS,
+                Constants.getProperty(Constants.OVERLAY_GAPPS_URL));
     }
 
     public void setGappsFolder(String value) {
