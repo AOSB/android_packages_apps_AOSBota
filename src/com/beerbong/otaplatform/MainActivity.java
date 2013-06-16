@@ -78,6 +78,11 @@ public class MainActivity extends FragmentActivity implements TabHost.OnTabChang
     }
 
     @Override
+    public void onNewIntent(Intent intent) {
+        ManagerFactory.getFileManager(this).onNewIntent(this, intent);
+    }
+
+    @Override
     protected void onSaveInstanceState(Bundle outState) {
         outState.putString("tab", mTabHost.getCurrentTabTag());
         super.onSaveInstanceState(outState);
