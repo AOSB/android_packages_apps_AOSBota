@@ -51,7 +51,7 @@ public class ChangelogFragment extends Fragment {
 
         TextView textView = (TextView) view.findViewById(R.id.no_changelog);
 
-        if (romChangelogUrl == null) {
+        if (romChangelogUrl == null || "".equals(romChangelogUrl)) {
             webView.setVisibility(View.GONE);
             bar.setVisibility(View.GONE);
             textView.setVisibility(View.VISIBLE);

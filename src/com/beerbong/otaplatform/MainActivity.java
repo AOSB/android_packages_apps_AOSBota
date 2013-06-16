@@ -88,7 +88,7 @@ public class MainActivity extends FragmentActivity implements TabHost.OnTabChang
         mFragments = new ArrayList<Fragment>();
         mFragments.add(Fragment.instantiate(this, UpdateFragment.class.getName()));
         mFragments.add(Fragment.instantiate(this, InstallFragment.class.getName()));
-        if (romChangelogUrl != null) {
+        if (romChangelogUrl != null && !"".equals(romChangelogUrl)) {
             mFragments.add(Fragment.instantiate(this, ChangelogFragment.class.getName()));
         }
 
@@ -114,7 +114,7 @@ public class MainActivity extends FragmentActivity implements TabHost.OnTabChang
 
         addTab("update", R.string.update);
         addTab("install", R.string.flash);
-        if (romChangelogUrl != null) {
+        if (romChangelogUrl != null && !"".equals(romChangelogUrl)) {
             addTab("changelog", R.string.changelog);
         }
 
