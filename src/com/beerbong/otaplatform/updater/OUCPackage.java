@@ -117,4 +117,9 @@ public class OUCPackage implements PackageInfo, Serializable {
         return changelog;
     }
 
+    @Override
+    public boolean isGapps() {
+        return false;
+    }
+
 }

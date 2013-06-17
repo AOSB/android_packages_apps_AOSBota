@@ -115,23 +115,37 @@ public class UpdateFragment extends Fragment implements RomUpdater.RomUpdaterLis
         });
 
         Intent intent = getActivity().getIntent();
+        checkIntent(intent);
+        mStartup = false;
+
+        return view;
+    }
+
+    public void checkIntent(Intent intent) {
         if (intent != null && intent.getExtras() != null
                 && intent.getExtras().get("NOTIFICATION_ID") != null) {
             PackageInfo info = ManagerFactory.getFileManager(getActivity()).onNewIntent(
                     getActivity(), intent);
             if (!(info instanceof CancelPackage)) {
                 mNewRom = info;
+                if (mNewRom.isGapps()) {
+                    if (mGappsUpdater == null) {
+                        mGappsUpdater = new GappsUpdater(getActivity(), this, false);
+                    }
+                    mGappsUpdater.versionFound(mNewRom);
+                }
             }
         }
 
         if (mNewRom != null || !mStartup) {
-            checkRomCompleted(mNewRom);
+            if (mNewRom != null && !mNewRom.isGapps()) {
+                checkRomCompleted(mNewRom);
+            } else if (mRomCanUpdate) {
+                checkRom();
+            }
         } else if (mRomCanUpdate) {
             checkRom();
         }
-        mStartup = false;
-
-        return view;
     }
 
     @Override

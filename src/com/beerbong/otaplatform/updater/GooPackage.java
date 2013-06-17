@@ -225,4 +225,9 @@ public class GooPackage implements PackageInfo, Serializable {
     public int getIncremental_file() {
         return incremental_file;
     }
+
+    @Override
+    public boolean isGapps() {
+        return filename != null && filename.indexOf("gapps") >= 0;
+    }
 }

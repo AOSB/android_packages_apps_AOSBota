@@ -84,7 +84,7 @@ public class MainActivity extends FragmentActivity implements TabHost.OnTabChang
 
     @Override
     public void onNewIntent(Intent intent) {
-        ManagerFactory.getFileManager(this).onNewIntent(this, intent);
+        ((UpdateFragment)mFragments.get(0)).checkIntent(intent);
     }
 
     @Override

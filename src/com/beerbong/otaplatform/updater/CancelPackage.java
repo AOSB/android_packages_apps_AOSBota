@@ -72,4 +72,9 @@ public class CancelPackage implements PackageInfo {
         return 0;
     }
 
+    @Override
+    public boolean isGapps() {
+        return false;
+    }
+
 }

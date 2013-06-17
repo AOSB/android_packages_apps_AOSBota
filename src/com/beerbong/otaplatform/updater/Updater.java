@@ -41,6 +41,7 @@ public abstract class Updater implements URLStringReaderListener, HttpStringRead
         public String getDeltaFilename();
         public String getDeltaPath();
         public String getDeltaMd5();
+        public boolean isGapps();
     }
 
     public static final String PROPERTY_DEVICE = "ro.product.device";
