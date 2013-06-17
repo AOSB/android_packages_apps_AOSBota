@@ -159,6 +159,11 @@ public class MainActivity extends FragmentActivity implements TabHost.OnTabChang
     @Override
     public void onPageSelected(int position) {
         mTabHost.setCurrentTab(position);
+        switch (position) {
+            case 1:
+                ((InstallFragment)mFragments.get(position)).notifyDataChanged();
+                break;
+        }
     }
 
     @Override

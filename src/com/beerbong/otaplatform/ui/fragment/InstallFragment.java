@@ -151,6 +151,10 @@ public class InstallFragment extends Fragment implements OnItemClickListener {
         mButtonFlash.setEnabled(items.size() > 0);
     }
 
+    public void notifyDataChanged() {
+        ((FileItemsAdapter)mFileList.getAdapter()).notifyDataSetChanged();
+    }
+
     private void showInfoDialog(final FileItem item) {
         AlertDialog.Builder alert = new AlertDialog.Builder(getActivity());
         alert.setTitle(getResources().getString(R.string.alert_file_title,
