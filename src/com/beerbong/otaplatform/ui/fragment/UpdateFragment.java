@@ -131,14 +131,6 @@ public class UpdateFragment extends Fragment implements RomUpdater.RomUpdaterLis
         }
         mStartup = false;
 
-        if (savedInstanceState == null) {
-            if (mRomCanUpdate) {
-                getActivity().setTitle(
-                        getActivity().getResources().getString(R.string.app_name_short,
-                                new Object[] { mRomUpdater.getRomName() }));
-            }
-        }
-
         return view;
     }
 
