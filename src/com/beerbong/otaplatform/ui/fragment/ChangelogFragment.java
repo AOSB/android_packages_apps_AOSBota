@@ -18,6 +18,9 @@ import android.widget.TextView;
 
 public class ChangelogFragment extends Fragment {
 
+    private WebView mWebView;
+    private Bundle mWebViewBundle;
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.changelog_fragment, container, false);
@@ -32,9 +35,9 @@ public class ChangelogFragment extends Fragment {
 
         final ProgressBar bar = (ProgressBar) view.findViewById(R.id.progress_bar);
 
-        final WebView webView = (WebView) view.findViewById(R.id.web_view);
-        webView.getSettings().setJavaScriptEnabled(true);
-        webView.setWebViewClient(new WebViewClient() {
+        mWebView = (WebView) view.findViewById(R.id.web_view);
+        mWebView.getSettings().setJavaScriptEnabled(true);
+        mWebView.setWebViewClient(new WebViewClient() {
 
             @Override
             public boolean shouldOverrideUrlLoading(WebView view, String url) {
@@ -44,7 +47,7 @@ public class ChangelogFragment extends Fragment {
             @Override
             public void onPageFinished(WebView view, String url) {
                 bar.setVisibility(View.GONE);
-                webView.setVisibility(View.VISIBLE);
+                mWebView.setVisibility(View.VISIBLE);
             }
 
         });
@@ -52,14 +55,28 @@ public class ChangelogFragment extends Fragment {
         TextView textView = (TextView) view.findViewById(R.id.no_changelog);
 
         if (romChangelogUrl == null || "".equals(romChangelogUrl)) {
-            webView.setVisibility(View.GONE);
+            mWebView.setVisibility(View.GONE);
             bar.setVisibility(View.GONE);
             textView.setVisibility(View.VISIBLE);
         } else {
             bar.setVisibility(View.VISIBLE);
-            webView.loadUrl(romChangelogUrl);
+            if (mWebViewBundle == null) {
+                mWebView.loadUrl(romChangelogUrl);
+            } else {
+                bar.setVisibility(View.GONE);
+                mWebView.setVisibility(View.VISIBLE);
+                mWebView.restoreState(mWebViewBundle);
+            }
         }
 
         return view;
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+
+        mWebViewBundle = new Bundle();
+        mWebView.saveState(mWebViewBundle);
     }
 }

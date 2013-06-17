@@ -143,7 +143,11 @@ public class UpdateFragment extends Fragment implements RomUpdater.RomUpdaterLis
             if (mNewRom != null && !mNewRom.isGapps()) {
                 checkRomCompleted(mNewRom);
             } else if (mRomCanUpdate) {
-                checkRom();
+                if (mStartup) {
+                    checkRom();
+                } else {
+                    checkRomCompleted(mNewRom);
+                }
             }
         } else if (mRomCanUpdate) {
             checkRom();
