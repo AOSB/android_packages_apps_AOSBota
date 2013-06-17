@@ -128,7 +128,7 @@ public class UpdateFragment extends Fragment implements RomUpdater.RomUpdaterLis
                     getActivity(), intent);
             if (!(info instanceof CancelPackage)) {
                 mNewRom = info;
-                if (mNewRom.isGapps()) {
+                if (mNewRom != null && mNewRom.isGapps()) {
                     if (mGappsUpdater == null) {
                         mGappsUpdater = new GappsUpdater(getActivity(), this, false);
                     }
