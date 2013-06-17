@@ -176,9 +176,6 @@ public class GappsUpdater extends Updater implements Updater.UpdaterListener {
                     + getPlatform() + "&gapps_addon_version=" + getVersion());
         } else {
             mCustomGapps = true;
-            if (mFromAlarm) {
-                return;
-            }
             if (folder.startsWith("http://goo.im/")) {
                 folder = Constants.GOO_SEARCH_URL + folder.substring(folder.indexOf("/devs"));
             }
