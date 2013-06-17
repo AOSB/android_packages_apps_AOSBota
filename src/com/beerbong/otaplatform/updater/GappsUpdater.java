@@ -64,19 +64,26 @@ public class GappsUpdater extends Updater implements Updater.UpdaterListener {
             try {
                 properties.load(new FileInputStream(file));
                 String versionProperty = Constants.getProperty(Constants.OVERLAY_GAPPS_VERSION);
-                if (versionProperty == null || "".equals(versionProperty)) {
+                String versionString = properties.getProperty(versionProperty);
+                if (versionString == null || "".equals(versionString) || versionProperty == null
+                        || "".equals(versionProperty)) {
                     versionProperty = "ro.addon.version";
+                    versionString = properties.getProperty(versionProperty);
                 }
                 mId = properties.getProperty("ro.addon.type");
                 mName = properties.getProperty("ro.addon.version");
                 mPlatform = properties.getProperty("ro.addon.platform");
-                String[] version = properties.getProperty(versionProperty).split("-");
-                for (int i=0;i<version.length;i++) {
-                    try {
-                        mVersion = Integer.parseInt(version[i]);
-                        break;
-                    } catch (NumberFormatException ex) {
-                        // ignore
+                if (versionString == null || "".equals(versionString)) {
+                    mCanUpdate = false;
+                } else {
+                    String[] version = versionString.split("-");
+                    for (int i=0;i<version.length;i++) {
+                        try {
+                            mVersion = Integer.parseInt(version[i]);
+                            break;
+                        } catch (NumberFormatException ex) {
+                            // ignore
+                        }
                     }
                 }
             } catch (Exception ex) {
