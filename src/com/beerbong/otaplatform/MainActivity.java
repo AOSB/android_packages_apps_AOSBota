@@ -75,6 +75,11 @@ public class MainActivity extends FragmentActivity implements TabHost.OnTabChang
             mTabHost.setCurrentTabByTag(savedInstanceState.getString("tab"));
         }
         intialiseViewPager(romChangelogUrl);
+
+        if (!Constants.alarmExists(this)) {
+            Constants.setAlarm(this, ManagerFactory.getPreferencesManager(this)
+                    .getTimeNotifications(), true);
+        }
     }
 
     @Override
