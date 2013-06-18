@@ -52,6 +52,8 @@
         <activity android:name="com.beerbong.otaplatform.util.RequestFileActivity"
             android:theme="@android:style/Theme.Translucent.NoTitleBar" />
 
+        <service android:name="com.beerbong.otaplatform.DownloadService" />
+
         <receiver android:name="com.beerbong.otaplatform.NotificationAlarm" />
         <receiver
             android:name="com.beerbong.otaplatform.Receiver"

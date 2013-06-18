@@ -48,6 +48,7 @@
     <string name="new_twrp_found_summary">"Això baixarà i instal·larà %1$s recovery al teu dispositiu.\nVols continuar?"</string>
     <string name="check_twrp_updates_error">Error comprovant TWRP</string>
     <string name="check_twrp_error_md5">Error comprovant TWRP. Els MD5 no són iguals</string>
+    <string name="twrp_installed">"TWRP recovery instal·lat al teu dispositiu"</string>
     <string name="check_twrp_updates_no_new">No s\'ha trobat un recovery per al teu dispositiu</string>
     <string name="downloading">Descarregant</string>
     <string name="downloading_complete">Descàrrega completa</string>

@@ -33,30 +33,26 @@ import java.util.zip.ZipOutputStream;
 
 import android.app.Activity;
 import android.app.AlertDialog;
-import android.app.Notification;
 import android.app.NotificationManager;
-import android.app.PendingIntent;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.res.Resources;
 import android.os.AsyncTask.Status;
-import android.os.Bundle;
 import android.os.Environment;
 import android.os.StatFs;
 import android.text.TextUtils;
 import android.widget.EditText;
 import android.widget.Toast;
 
-import com.beerbong.otaplatform.MainActivity;
+import com.beerbong.otaplatform.DownloadService;
 import com.beerbong.otaplatform.R;
 import com.beerbong.otaplatform.updater.CancelPackage;
+import com.beerbong.otaplatform.updater.TWRPUpdater;
 import com.beerbong.otaplatform.updater.Updater;
 import com.beerbong.otaplatform.updater.Updater.PackageInfo;
 import com.beerbong.otaplatform.util.Constants;
-import com.beerbong.otaplatform.util.DownloadTask;
-import com.beerbong.otaplatform.util.DownloadTask.DownloadTaskListener;
+import com.beerbong.otaplatform.util.DownloadTask.DownloadStatus;
 import com.beerbong.otaplatform.util.FileItem;
 
 public class FileManager extends Manager {
@@ -64,9 +60,6 @@ public class FileManager extends Manager {
     private List<FileItem> mItems;
     private String mInternalStoragePath;
     private String mExternalStoragePath;
-    private static DownloadTask mDownloadRom;
-    private static DownloadTask mDownloadGapps;
-    private static DownloadTask mDownloadTWRP;
     private int mSelectedBackup = -1;
 
     protected FileManager(Context context) {
@@ -120,12 +113,12 @@ public class FileManager extends Manager {
     }
 
     public Updater.PackageInfo onNewIntent(Context context, Intent intent) {
-        int notificationId = intent.getExtras() != null
-                && intent.getExtras().get("NOTIFICATION_ID") != null ? Integer.parseInt(intent
-                .getExtras().get("NOTIFICATION_ID").toString()) : -1;
+        DownloadService.FileInfo fileInfo = (DownloadService.FileInfo) (intent.getExtras() == null ? null
+                : intent.getExtras().get(Constants.FILE_INFO));
+        int notificationId = fileInfo.notificationId;
         if (notificationId == Constants.NEWROMVERSION_NOTIFICATION_ID
                 || notificationId == Constants.NEWGAPPSVERSION_NOTIFICATION_ID) {
-            PackageInfo info = (PackageInfo) intent.getExtras().get("PACKAGE");
+            PackageInfo info = fileInfo.packageInfo;
 
             NotificationManager nMgr = (NotificationManager) context
                     .getSystemService(Context.NOTIFICATION_SERVICE);
@@ -140,37 +133,30 @@ public class FileManager extends Manager {
         } else if (notificationId == Constants.DOWNLOADROM_NOTIFICATION_ID
                 || notificationId == Constants.DOWNLOADGAPPS_NOTIFICATION_ID
                 || notificationId == Constants.DOWNLOADTWRP_NOTIFICATION_ID) {
-            DownloadTask task = null;
             switch (notificationId) {
                 case Constants.DOWNLOADROM_NOTIFICATION_ID:
-                    if (mDownloadRom != null && mDownloadRom.getStatus() == Status.FINISHED) {
-                        task = mDownloadRom;
-                    }
-                    break;
                 case Constants.DOWNLOADGAPPS_NOTIFICATION_ID:
-                    if (mDownloadGapps != null && mDownloadGapps.getStatus() == Status.FINISHED) {
-                        task = mDownloadGapps;
+                    if (fileInfo.status == Status.FINISHED && fileInfo.downloadStatus == DownloadStatus.FINISHED) {
+                        if (addItem(fileInfo.path)) {
+                            Toast.makeText(context, R.string.install_file_manager_zip_added,
+                                    Toast.LENGTH_LONG).show();
+                        }
+                        NotificationManager nMgr = (NotificationManager) context
+                                .getSystemService(Context.NOTIFICATION_SERVICE);
+                        nMgr.cancel(notificationId);
+                        return null;
+                    }
+                    break;
+                case Constants.DOWNLOADTWRP_NOTIFICATION_ID:
+                    if (fileInfo.status == Status.FINISHED && fileInfo.downloadStatus == DownloadStatus.FINISHED) {
+                        new TWRPUpdater(context, null).installTWRP(fileInfo.file, fileInfo.md5);
                     }
                     break;
             }
-            if (task != null) {
-
-                if (addItem(task.getDestinationFile().getAbsolutePath())) {
-                    Toast.makeText(context, R.string.install_file_manager_zip_added,
-                            Toast.LENGTH_LONG).show();
-                    if (context instanceof MainActivity) {
-                        ((MainActivity)context).onPageSelected(1);
-                    }
-                }
-
-                NotificationManager nMgr = (NotificationManager) context
-                        .getSystemService(Context.NOTIFICATION_SERVICE);
-                nMgr.cancel(notificationId);
-
-                return null;
+            if (fileInfo.status != Status.FINISHED && fileInfo.downloadStatus != DownloadStatus.FINISHED) {
+                cancelDownload(context, notificationId, fileInfo);
+                return new CancelPackage();
             }
-            cancelDownload(notificationId, intent.getExtras());
-            return new CancelPackage();
         }
         return null;
     }
@@ -324,100 +310,41 @@ public class FileManager extends Manager {
 
     public void download(Context context, String url, String fileName, String md5, boolean isDelta,
             int notificationId) {
-        download(context, url, fileName, md5, isDelta, notificationId, null);
+        Intent intent = new Intent(context, DownloadService.class);
+        DownloadService.FileInfo info = new DownloadService.FileInfo();
+        info.notificationId = notificationId;
+        info.url = url;
+        info.fileName = fileName;
+        info.md5 = md5;
+        info.isDelta = isDelta;
+        intent.putExtra(Constants.FILE_INFO, info);
+        context.startService(intent);
     }
 
-    public void download(Context context, String url, String fileName, String md5, boolean isDelta,
-            int notificationId, DownloadTaskListener listener) {
-
-        Resources resources = context.getResources();
-
-        Intent intent = new Intent(context, MainActivity.class);
-        intent.putExtra("NOTIFICATION_ID", notificationId);
-        intent.putExtra("MD5", md5);
-        if (notificationId == Constants.DOWNLOADTWRP_NOTIFICATION_ID) {
-            mDownloadTWRP = new DownloadTask(null, notificationId, context, url, fileName, md5,
-                    false);
-            mDownloadTWRP.setDownloadTaskListener(listener);
-            intent.putExtra("DESTINATION_FILE", mDownloadTWRP.getDestinationFile());
-        }
-        final PendingIntent pendingIntent = PendingIntent.getActivity(context, notificationId,
-                intent, PendingIntent.FLAG_UPDATE_CURRENT);
-
-        Notification.Builder notification = new Notification.Builder(context)
-                .setContentTitle(resources.getString(R.string.downloading))
-                .setContentText(
-                        resources.getString(R.string.new_package_name, new Object[] { fileName }))
-                .setSmallIcon(R.drawable.ic_launcher).setContentIntent(pendingIntent)
-                .setProgress(100, 0, true);
-
+    public void cancelDownload(final Context context, final int notificationId,
+            DownloadService.FileInfo fileInfo) {
+        
         switch (notificationId) {
             case Constants.DOWNLOADROM_NOTIFICATION_ID:
-                mDownloadRom = new DownloadTask(notification, notificationId, context, url,
-                        fileName, md5, isDelta);
-                mDownloadRom.execute();
-                break;
             case Constants.DOWNLOADGAPPS_NOTIFICATION_ID:
-                mDownloadGapps = new DownloadTask(notification, notificationId, context, url,
-                        fileName, md5, false);
-                mDownloadGapps.execute();
-                break;
             case Constants.DOWNLOADTWRP_NOTIFICATION_ID:
-                notification.setAutoCancel(true);
-                mDownloadTWRP.attach(notification, notificationId, context);
-                mDownloadTWRP.execute();
-                break;
-        }
-    }
-
-    public void cancelDownload(final int notificationId, final Bundle extras) {
-        switch (notificationId) {
-            case Constants.DOWNLOADROM_NOTIFICATION_ID:
-                if (mDownloadRom != null && mDownloadRom.getStatus() == Status.FINISHED) {
-                    return;
-                }
-                break;
-            case Constants.DOWNLOADGAPPS_NOTIFICATION_ID:
-                if (mDownloadGapps != null && mDownloadGapps.getStatus() == Status.FINISHED) {
-                    return;
-                }
-                break;
-            case Constants.DOWNLOADTWRP_NOTIFICATION_ID:
-                if (mDownloadTWRP != null && mDownloadTWRP.getStatus() == Status.FINISHED) {
+                if (fileInfo.status == Status.FINISHED) {
                     return;
                 }
                 break;
         }
-        new AlertDialog.Builder(mContext)
+        new AlertDialog.Builder(context)
                 .setTitle(R.string.download_cancel_title)
                 .setMessage(R.string.download_cancel_message)
                 .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
 
                     public void onClick(DialogInterface dialog, int whichButton) {
                         dialog.dismiss();
-                        NotificationManager nMgr = (NotificationManager) mContext
+                        NotificationManager nMgr = (NotificationManager) context
                                 .getSystemService(Context.NOTIFICATION_SERVICE);
                         nMgr.cancel(notificationId);
-                        switch (notificationId) {
-                            case Constants.DOWNLOADROM_NOTIFICATION_ID:
-                                if (mDownloadRom != null
-                                        && mDownloadRom.getStatus() != Status.FINISHED) {
-                                    mDownloadRom.cancel(true);
-                                }
-                                break;
-                            case Constants.DOWNLOADGAPPS_NOTIFICATION_ID:
-                                if (mDownloadGapps != null
-                                        && mDownloadGapps.getStatus() != Status.FINISHED) {
-                                    mDownloadGapps.cancel(true);
-                                }
-                                break;
-                            case Constants.DOWNLOADTWRP_NOTIFICATION_ID:
-                                if (mDownloadTWRP != null
-                                        && mDownloadTWRP.getStatus() != Status.FINISHED) {
-                                    mDownloadTWRP.cancel(true);
-                                }
-                                break;
-                        }
+                        Intent intent = new Intent(context, DownloadService.class);
+                        context.stopService(intent);
                     }
                 })
                 .setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {

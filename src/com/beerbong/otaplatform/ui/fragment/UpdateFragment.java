@@ -43,6 +43,7 @@ public class UpdateFragment extends Fragment implements RomUpdater.RomUpdaterLis
     private static PackageInfo mNewRom = null;
     private static boolean mStartup = true;
 
+    private Intent mIntent;
     private ProgressDialog mProgress;
     private ProgressBar mProgressBar;
     private RomUpdater mRomUpdater;
@@ -114,19 +115,23 @@ public class UpdateFragment extends Fragment implements RomUpdater.RomUpdaterLis
             }
         });
 
-        Intent intent = getActivity().getIntent();
-        checkIntent(intent);
+        mIntent = mStartup ? getActivity().getIntent() : null;
+        checkIntent(null);
+        mIntent = null;
         mStartup = false;
 
         return view;
     }
 
     public void checkIntent(Intent intent) {
-        if (intent != null && intent.getExtras() != null
-                && intent.getExtras().get("NOTIFICATION_ID") != null) {
-            if ((intent.getFlags() & Intent.FLAG_ACTIVITY_LAUNCHED_FROM_HISTORY) == 0) {
+        if (intent != null) {
+            mIntent = intent;
+        }
+        if (mIntent != null && mIntent.getExtras() != null
+                && mIntent.getExtras().get(Constants.FILE_INFO) != null) {
+            if ((mIntent.getFlags() & Intent.FLAG_ACTIVITY_LAUNCHED_FROM_HISTORY) == 0) {
                 PackageInfo info = ManagerFactory.getFileManager(getActivity()).onNewIntent(
-                        getActivity(), intent);
+                        getActivity(), mIntent);
                 if (!(info instanceof CancelPackage)) {
                     mNewRom = info;
                     if (mNewRom != null && mNewRom.isGapps()) {
@@ -165,25 +170,29 @@ public class UpdateFragment extends Fragment implements RomUpdater.RomUpdaterLis
 
     @Override
     public void checkRomCompleted(PackageInfo info) {
-        mProgressBar.setVisibility(View.GONE);
-        if (info == null) {
-            mNewRom = null;
-            mButtonDownload.setVisibility(View.GONE);
-            mButtonDownloadDelta.setVisibility(View.GONE);
-            mNoNewRom.setVisibility(View.VISIBLE);
-        } else {
-            mNewRom = info;
-            mNoNewRom.setVisibility(View.GONE);
-            mButtonDownload.setVisibility(View.VISIBLE);
-            mButtonDownloadDelta.setVisibility(info.isDelta() ? View.VISIBLE : View.GONE);
-            mButtonDownload.setSummary(getActivity().getResources().getString(
-                    R.string.rom_download_summary, new Object[] { info.getVersion() }));
+        try {
+            mProgressBar.setVisibility(View.GONE);
+            if (info == null) {
+                mNewRom = null;
+                mButtonDownload.setVisibility(View.GONE);
+                mButtonDownloadDelta.setVisibility(View.GONE);
+                mNoNewRom.setVisibility(View.VISIBLE);
+            } else {
+                mNewRom = info;
+                mNoNewRom.setVisibility(View.GONE);
+                mButtonDownload.setVisibility(View.VISIBLE);
+                mButtonDownloadDelta.setVisibility(info.isDelta() ? View.VISIBLE : View.GONE);
+                mButtonDownload.setSummary(getActivity().getResources().getString(
+                        R.string.rom_download_summary, new Object[] { info.getVersion() }));
+            }
+            mButtonCheckRom.setEnabled(mRomUpdater != null && mRomUpdater.canUpdate());
+            if (mShouldCheckGapps && ManagerFactory.getPreferencesManager(getActivity()).getGappsCheck()) {
+                checkGapps();
+            }
+            mShouldCheckGapps = false;
+        } catch (Exception ex) {
+            // app closed?
         }
-        mButtonCheckRom.setEnabled(mRomUpdater != null && mRomUpdater.canUpdate());
-        if (mShouldCheckGapps && ManagerFactory.getPreferencesManager(getActivity()).getGappsCheck()) {
-            checkGapps();
-        }
-        mShouldCheckGapps = false;
     }
 
     private void checkRom() {

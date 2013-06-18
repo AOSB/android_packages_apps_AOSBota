@@ -30,7 +30,6 @@ import com.beerbong.otaplatform.R;
 import com.beerbong.otaplatform.manager.ManagerFactory;
 import com.beerbong.otaplatform.util.Constants;
 import com.beerbong.otaplatform.util.HttpStringReader;
-import com.beerbong.otaplatform.util.DownloadTask.DownloadTaskListener;
 import com.beerbong.otaplatform.util.HttpStringReader.HttpStringReaderListener;
 import com.beerbong.otaplatform.util.URLStringReader;
 
@@ -107,7 +106,12 @@ public class TWRPUpdater extends Updater implements Updater.UpdaterListener {
         searchVersion();
     }
 
-    public void installTWRP(final File file) {
+    public void installTWRP(final File file, String md5) {
+        String fileMd5 = Constants.md5(file);
+        if (!fileMd5.equals(md5)) {
+            Constants.showToastOnUiThread(mContext, R.string.check_twrp_error_md5);
+            return;
+        }
         if (mInstallCommand == null) {
             new HttpStringReader(new HttpStringReaderListener() {
 
@@ -139,6 +143,7 @@ public class TWRPUpdater extends Updater implements Updater.UpdaterListener {
             if (mInstallCommand != null) {
                 String command = mInstallCommand.replace("#FILE#", path);
                 ManagerFactory.getSUManager(mContext).execute(command);
+                Constants.showToastOnUiThread(mContext, R.string.twrp_installed);
             } else {
                 // TODO flash image throug recovery
             }
@@ -219,22 +224,7 @@ public class TWRPUpdater extends Updater implements Updater.UpdaterListener {
                                                     ManagerFactory.getFileManager(mContext).download(
                                                             mContext, info.getPath(), info.getFilename(),
                                                             info.getMd5(), false, 
-                                                            Constants.DOWNLOADTWRP_NOTIFICATION_ID, new DownloadTaskListener() {
-
-                                                                @Override
-                                                                public void downloadComplete(int status, File file) {
-
-                                                                    if (status == 0) {
-                                                                        String fileMd5 = Constants.md5(file);
-                                                                        if (!fileMd5.equals(info.getMd5())) {
-                                                                            Constants.showToastOnUiThread(mContext, R.string.check_twrp_error_md5);
-                                                                            return;
-                                                                        }
-                                                                        installTWRP(file);
-                                                                    }
-                                                                }
-                                                                
-                                                            });
+                                                            Constants.DOWNLOADTWRP_NOTIFICATION_ID);
                                                 }
                                             });
                                         }

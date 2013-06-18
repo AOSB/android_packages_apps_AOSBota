@@ -46,6 +46,7 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.widget.Toast;
 
+import com.beerbong.otaplatform.DownloadService;
 import com.beerbong.otaplatform.MainActivity;
 import com.beerbong.otaplatform.NotificationAlarm;
 import com.beerbong.otaplatform.R;
@@ -77,6 +78,7 @@ public class Constants {
     public static final int NEWGAPPSVERSION_NOTIFICATION_ID = 122303224;
     public static final int DOWNLOADGAPPS_NOTIFICATION_ID = 122303225;
     public static final int DOWNLOADTWRP_NOTIFICATION_ID = 122303226;
+    public static final String FILE_INFO = "OTAPLATFORM.FILE_INFO";
 
     public static final String PREFERENCE_SETTINGS_DARK_THEME = "darktheme";
     public static final String PREFERENCE_SETTINGS_DOWNLOAD_PATH = "downloadpath";
@@ -164,9 +166,11 @@ public class Constants {
         Resources resources = context.getResources();
 
         Intent intent = new Intent(context, MainActivity.class);
-        intent.putExtra("NOTIFICATION_ID", notificationId);
-        intent.putExtra("PACKAGE", info);
-        PendingIntent pIntent = PendingIntent.getActivity(context, 0, intent,
+        DownloadService.FileInfo fileInfo = new DownloadService.FileInfo();
+        fileInfo.notificationId = notificationId;
+        fileInfo.packageInfo = info;
+        intent.putExtra(FILE_INFO, fileInfo);
+        PendingIntent pIntent = PendingIntent.getActivity(context, notificationId, intent,
                 PendingIntent.FLAG_UPDATE_CURRENT);
 
         Notification noti = new Notification.Builder(context)

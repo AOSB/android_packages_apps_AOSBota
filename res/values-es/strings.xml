@@ -48,6 +48,7 @@
     <string name="new_twrp_found_summary">"Esto bajarà y instalarà %1$s recovery en tu dispositivo.\n¿Quieres continuar?"</string>
     <string name="check_twrp_updates_error">Error comprobando TWRP</string>
     <string name="check_twrp_error_md5">Error comprobando TWRP. Los MD5 no son iguales</string>
+    <string name="twrp_installed">TWRP recovery instalado en tu dispositivo</string>
     <string name="check_twrp_updates_no_new">No se ha encontrado un recovery para tu dispositivo</string>
     <string name="downloading">Descargando</string>
     <string name="downloading_complete">Descarga completa</string>

@@ -37,10 +37,17 @@ import com.beerbong.otaplatform.R;
 import com.beerbong.otaplatform.manager.ManagerFactory;
 import com.beerbong.otaplatform.manager.PreferencesManager;
 
-public class DownloadTask extends AsyncTask<Void, Integer, Integer> implements FilePatcher.FilePatcherListener {
+public class DownloadTask extends AsyncTask<Void, Integer, DownloadTask.DownloadStatus> implements FilePatcher.FilePatcherListener {
 
     public interface DownloadTaskListener {
-        public void downloadComplete(int status, File file);
+        public void downloadComplete(DownloadStatus status, File file);
+    }
+
+    public enum DownloadStatus {
+        NOSPACE,
+        FINISHED,
+        CANCELLED,
+        ERROR
     }
 
     private int mScale = 1048576;
@@ -130,7 +137,7 @@ public class DownloadTask extends AsyncTask<Void, Integer, Integer> implements F
      * https://github.com/OTAUpdateCenter/ota-update-centre/blob/master/src/com/otaupdater/OTAUpdaterActivity.java
      */
     @Override
-    protected Integer doInBackground(Void... params) {
+    protected DownloadTask.DownloadStatus doInBackground(Void... params) {
         PreferencesManager pManager = ManagerFactory.getPreferencesManager(mContext);
 
         String login = pManager.getLogin();
@@ -185,9 +192,9 @@ public class DownloadTask extends AsyncTask<Void, Integer, Integer> implements F
             if (mLengthOfFile >= availSpace) {
                 mDestFile.delete();
                 if (mListener != null) {
-                    mListener.downloadComplete(3, null);
+                    mListener.downloadComplete(DownloadStatus.NOSPACE, null);
                 }
-                return 3;
+                return DownloadStatus.NOSPACE;
             }
             if (mLengthOfFile < 10000000)
                 mScale = 1024;
@@ -214,15 +221,15 @@ public class DownloadTask extends AsyncTask<Void, Integer, Integer> implements F
             if (isCancelled()) {
                 mDestFile.delete();
                 if (mListener != null) {
-                    mListener.downloadComplete(2, null);
+                    mListener.downloadComplete(DownloadStatus.CANCELLED, null);
                 }
-                return 2;
+                return DownloadStatus.CANCELLED;
             }
 
             if (mListener != null) {
-                mListener.downloadComplete(0, mDestFile);
+                mListener.downloadComplete(DownloadStatus.FINISHED, mDestFile);
             }
-            return 0;
+            return DownloadStatus.FINISHED;
         } catch (Exception e) {
             e.printStackTrace();
             mDestFile.delete();
@@ -242,13 +249,13 @@ public class DownloadTask extends AsyncTask<Void, Integer, Integer> implements F
             }
         }
         if (mListener != null) {
-            mListener.downloadComplete(-1, null);
+            mListener.downloadComplete(DownloadStatus.ERROR, null);
         }
-        return -1;
+        return DownloadStatus.ERROR;
     }
 
     @Override
-    protected void onCancelled(Integer result) {
+    protected void onCancelled(DownloadStatus result) {
         mDone = true;
         mWakeLock.release();
         mWakeLock.acquire(30000);
@@ -257,13 +264,13 @@ public class DownloadTask extends AsyncTask<Void, Integer, Integer> implements F
             resource = R.string.downloading_error;
         } else {
             switch (result) {
-                case 0:
+                case FINISHED:
                     resource = R.string.downloading_complete;
                     break;
-                case 2:
+                case CANCELLED:
                     resource = R.string.downloading_interrupted;
                     break;
-                case 3:
+                case NOSPACE:
                     resource = R.string.downloading_nospace;
                     break;
                 default:
@@ -276,7 +283,7 @@ public class DownloadTask extends AsyncTask<Void, Integer, Integer> implements F
     }
 
     @Override
-    protected void onPostExecute(Integer result) {
+    protected void onPostExecute(DownloadStatus result) {
         mDone = true;
         mWakeLock.release();
         mWakeLock.acquire(30000);
@@ -286,13 +293,13 @@ public class DownloadTask extends AsyncTask<Void, Integer, Integer> implements F
             resource = R.string.downloading_error;
         } else {
             switch (result) {
-                case 0:
+                case FINISHED:
                     resource = R.string.downloading_complete;
                     break;
-                case 2:
+                case CANCELLED:
                     resource = R.string.downloading_interrupted;
                     break;
-                case 3:
+                case NOSPACE:
                     resource = R.string.downloading_nospace;
                     break;
                 default:
