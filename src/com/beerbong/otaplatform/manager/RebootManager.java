@@ -442,6 +442,9 @@ public class RebootManager extends Manager {
 
             for (int i = 0; i < files.length; i++) {
                 File file = new File(files[i]);
+                if (!file.exists()) {
+                    continue;
+                }
                 String filePath = file.getAbsolutePath();
                 filePath = filePath.substring(0, filePath.lastIndexOf(File.separator));
                 File fileFolder = new File(path + filePath);
@@ -450,6 +453,10 @@ public class RebootManager extends Manager {
                 sManager.runWaitFor("cp " + files[i] + " " + filePath);
                 sManager.runWaitFor("chmod 777 " + filePath);
                 backupFiles.add(new File(filePath));
+            }
+
+            if (backupFiles.size() == 0) {
+                return null;
             }
 
             String dlPath = ManagerFactory.getPreferencesManager(mContext).getDownloadPath();
