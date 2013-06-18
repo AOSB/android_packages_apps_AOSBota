@@ -21,6 +21,7 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -50,7 +51,7 @@ public class InstallFragment extends Fragment implements OnItemClickListener {
     private class FileItemsAdapter extends ArrayAdapter<FileItem> {
 
         public FileItemsAdapter() {
-            super(getActivity(), R.layout.order_item, ManagerFactory.getFileManager(getActivity())
+            super(mContext, R.layout.order_item, ManagerFactory.getFileManager(mContext)
                     .getFileItems());
         }
 
@@ -78,6 +79,7 @@ public class InstallFragment extends Fragment implements OnItemClickListener {
 
     }
 
+    private Context mContext;
     private Item mButtonFlash;
     private Item mButtonAdd;
     private TouchInterceptor mFileList;
@@ -87,19 +89,30 @@ public class InstallFragment extends Fragment implements OnItemClickListener {
         public void drop(int from, int to) {
             if (from == to)
                 return;
-            List<FileItem> items = ManagerFactory.getFileManager(getActivity()).getFileItems();
+            List<FileItem> items = ManagerFactory.getFileManager(mContext).getFileItems();
             FileItem toMove = items.get(from);
             while (items.indexOf(toMove) != to) {
                 int i = items.indexOf(toMove);
                 Collections.swap(items, i, to < from ? i - 1 : i + 1);
             }
-            ManagerFactory.getPreferencesManager(getActivity()).setFlashQueue(items);
+            ManagerFactory.getPreferencesManager(mContext).setFlashQueue(items);
             redrawItems();
         }
     };
 
     @Override
+    public void onAttach(Activity activity) {
+        super.onAttach(activity);
+        mContext = activity;
+    }
+
+    @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+
+        if (mContext == null) {
+            mContext = getActivity();
+        }
+
         View view = inflater.inflate(R.layout.install_fragment, container, false);
 
         Constants.addRequestFileCallback(new RequestFileCallback() {
@@ -117,7 +130,7 @@ public class InstallFragment extends Fragment implements OnItemClickListener {
 
             @Override
             public void onClick(int id) {
-                ManagerFactory.getRebootManager(getActivity()).showRebootDialog(getActivity());
+                ManagerFactory.getRebootManager(mContext).showRebootDialog(mContext);
             }
         });
 
@@ -125,8 +138,8 @@ public class InstallFragment extends Fragment implements OnItemClickListener {
 
             @Override
             public void onClick(int id) {
-                Intent intent = new Intent(getActivity(), RequestFileActivity.class);
-                getActivity().startActivity(intent);
+                Intent intent = new Intent(mContext, RequestFileActivity.class);
+                mContext.startActivity(intent);
             }
         });
 
@@ -140,13 +153,13 @@ public class InstallFragment extends Fragment implements OnItemClickListener {
 
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-        List<FileItem> items = ManagerFactory.getFileManager(getActivity()).getFileItems();
+        List<FileItem> items = ManagerFactory.getFileManager(mContext).getFileItems();
         FileItem item = items.get(position);
         showInfoDialog(item);
     }
 
     private void redrawItems() {
-        List<FileItem> items = ManagerFactory.getFileManager(getActivity()).getFileItems();
+        List<FileItem> items = ManagerFactory.getFileManager(mContext).getFileItems();
         mFileList.setAdapter(new FileItemsAdapter());
         mButtonFlash.setEnabled(items.size() > 0);
     }
@@ -156,7 +169,7 @@ public class InstallFragment extends Fragment implements OnItemClickListener {
     }
 
     private void showInfoDialog(final FileItem item) {
-        AlertDialog.Builder alert = new AlertDialog.Builder(getActivity());
+        AlertDialog.Builder alert = new AlertDialog.Builder(mContext);
         alert.setTitle(getResources().getString(R.string.alert_file_title,
                 new Object[] { item.getName() }));
 
@@ -182,7 +195,7 @@ public class InstallFragment extends Fragment implements OnItemClickListener {
             @Override
             public void onClick(DialogInterface dialog, int whichButton) {
                 dialog.dismiss();
-                ManagerFactory.getFileManager(getActivity()).removeItem(item);
+                ManagerFactory.getFileManager(mContext).removeItem(item);
                 redrawItems();
             }
         });
@@ -192,7 +205,7 @@ public class InstallFragment extends Fragment implements OnItemClickListener {
 
     private void addItem(String filePath) {
 
-        if (ManagerFactory.getFileManager(getActivity()).addItem(filePath)) {
+        if (ManagerFactory.getFileManager(mContext).addItem(filePath)) {
 
             redrawItems();
         }
