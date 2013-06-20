@@ -28,11 +28,8 @@ import android.app.Notification;
 import android.app.NotificationManager;
 import android.content.Context;
 import android.os.AsyncTask;
-import android.os.PowerManager;
-import android.os.PowerManager.WakeLock;
 import android.os.StatFs;
 
-import com.beerbong.otaplatform.MainActivity;
 import com.beerbong.otaplatform.R;
 import com.beerbong.otaplatform.manager.ManagerFactory;
 import com.beerbong.otaplatform.manager.PreferencesManager;
@@ -61,13 +58,11 @@ public class DownloadTask extends AsyncTask<Void, Integer, DownloadTask.Download
     private String mFileName;
     private String mMd5;
 //    private boolean mIsDelta;
-    private final WakeLock mWakeLock;
     private int mNotificationId;
     private int mLengthOfFile;
 
     private boolean mDone = false;
 
-    @SuppressWarnings("deprecation")
     public DownloadTask(Notification.Builder notification, int notificationId, Context context,
             String url, String fileName, String md5, boolean isDelta) {
         this.attach(notification, notificationId, context);
@@ -91,9 +86,6 @@ public class DownloadTask extends AsyncTask<Void, Integer, DownloadTask.Download
             mFileName = name + "(" + i + ")" + extension;
             mDestFile = new File(pManager.getDownloadPath(), mFileName);
         }
-
-        PowerManager pm = (PowerManager) mContext.getSystemService(Context.POWER_SERVICE);
-        mWakeLock = pm.newWakeLock(PowerManager.SCREEN_DIM_WAKE_LOCK, MainActivity.class.getName());
     }
 
     public void attach(Notification.Builder notification, int notificationId, Context context) {
@@ -129,7 +121,6 @@ public class DownloadTask extends AsyncTask<Void, Integer, DownloadTask.Download
         mNotificationManager = (NotificationManager) mContext
                 .getSystemService(Context.NOTIFICATION_SERVICE);
         mNotificationManager.notify(mNotificationId, mNotification.build());
-        mWakeLock.acquire();
     }
 
     /**
@@ -257,8 +248,6 @@ public class DownloadTask extends AsyncTask<Void, Integer, DownloadTask.Download
     @Override
     protected void onCancelled(DownloadStatus result) {
         mDone = true;
-        mWakeLock.release();
-        mWakeLock.acquire(30000);
         int resource = -1;
         if (result == null) {
             resource = R.string.downloading_error;
@@ -285,8 +274,6 @@ public class DownloadTask extends AsyncTask<Void, Integer, DownloadTask.Download
     @Override
     protected void onPostExecute(DownloadStatus result) {
         mDone = true;
-        mWakeLock.release();
-        mWakeLock.acquire(30000);
 
         int resource = -1;
         if (result == null) {
