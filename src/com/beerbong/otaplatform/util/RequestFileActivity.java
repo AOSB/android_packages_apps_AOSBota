@@ -65,6 +65,7 @@ public class RequestFileActivity extends Activity {
             if (data == null) {
                 // Nothing returned by user, probably pressed back button in
                 // file manager
+                finish();
                 return;
             }
 
