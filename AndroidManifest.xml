@@ -16,7 +16,7 @@
 
 -->
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.beerbong.otaplatform"
+    package="com.probam.updater"
     android:versionCode="223"
     android:versionName="2.2.3" >
 
@@ -37,26 +37,27 @@
         android:icon="@drawable/ic_launcher"
         android:label="@string/app_name"
         android:theme="@style/AppTheme" >
-        <activity android:name="com.beerbong.otaplatform.MainActivity"
+        <activity android:name="com.probam.updater.MainActivity"
             android:label="@string/app_name"
             android:configChanges="orientation|screenSize"
             android:launchMode="singleInstance" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-                <category android:name="android.intent.category.LAUNCHER" />
+                <category android:name="android.intent.category.DEFAULT"/>
+                <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
         </activity>
-        <activity android:name="com.beerbong.otaplatform.activity.GooActivity" />
-        <activity android:name="com.beerbong.otaplatform.activity.SettingsActivity" />
-        <activity android:name="com.beerbong.otaplatform.activity.RecoveryActivity" />
-        <activity android:name="com.beerbong.otaplatform.util.RequestFileActivity"
+        <activity android:name="com.probam.updater.activity.GooActivity" />
+        <activity android:name="com.probam.updater.activity.SettingsActivity" />
+        <activity android:name="com.probam.updater.activity.RecoveryActivity" />
+        <activity android:name="com.probam.updater.util.RequestFileActivity"
             android:theme="@android:style/Theme.Translucent.NoTitleBar" />
 
-        <service android:name="com.beerbong.otaplatform.DownloadService" />
+        <service android:name="com.probam.updater.DownloadService" />
 
-        <receiver android:name="com.beerbong.otaplatform.NotificationAlarm" />
+        <receiver android:name="com.probam.updater.NotificationAlarm" />
         <receiver
-            android:name="com.beerbong.otaplatform.Receiver"
+            android:name="com.probam.updater.Receiver"
             android:enabled="true"
             android:exported="false"
             android:label="Receiver" >

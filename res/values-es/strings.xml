@@ -17,7 +17,7 @@
 -->
 <resources>
 
-    <string name="app_name">OTAPlatform</string>
+    <string name="app_name">ProBAM Updater</string>
     
     <string name="update">Actualizar</string>
     <string name="flash">Instalar</string>

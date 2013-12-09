@@ -98,7 +98,7 @@
             android:summary="@string/externalsdcard_summary"
             android:title="@string/externalsdcard_title" />
 
-        <com.beerbong.otaplatform.ui.component.ListPreferenceMultiSelect
+        <com.probam.updater.ui.component.ListPreferenceMultiSelect
             android:defaultValue="BACKUP|WIPESYSTEM|WIPEDATA|WIPECACHES|FIXPERM"
             android:entries="@array/wipe_options"
             android:entryValues="@array/wipe_options_values"

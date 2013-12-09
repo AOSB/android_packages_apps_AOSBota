@@ -16,14 +16,14 @@
 
 -->
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res/com.beerbong.otaplatform"
+    xmlns:app="http://schemas.android.com/apk/res/com.probam.updater"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
     android:background="?backgroundColor"
     android:orientation="vertical"
     android:padding="@dimen/padding_size" >
 
-        <com.beerbong.otaplatform.ui.component.Item
+        <com.probam.updater.ui.component.Item
             android:id="@+id/button_checkupdates"
             style="@android:style/Widget.ListView"
             android:layout_width="match_parent"
@@ -32,7 +32,7 @@
             app:summary="@string/check_rom_updates_summary"
             app:title="@string/check_rom_updates" />
 
-        <com.beerbong.otaplatform.ui.component.Item
+        <com.probam.updater.ui.component.Item
             android:id="@+id/button_checkupdatesgapps"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -56,7 +56,7 @@
             android:textAppearance="?android:attr/textAppearanceMedium"
             android:visibility="gone" />
 
-        <com.beerbong.otaplatform.ui.component.Item
+        <com.probam.updater.ui.component.Item
             android:id="@+id/button_download"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -64,7 +64,7 @@
             app:title="@string/rom_download"
             app:summary="@string/rom_download_summary" />
 
-        <com.beerbong.otaplatform.ui.component.Item
+        <com.probam.updater.ui.component.Item
             android:id="@+id/button_download_delta"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

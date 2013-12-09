@@ -16,14 +16,14 @@
 
 -->
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res/com.beerbong.otaplatform"
+    xmlns:app="http://schemas.android.com/apk/res/com.probam.updater"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
     android:background="?backgroundColor"
     android:orientation="vertical"
     android:padding="@dimen/padding_size" >
 
-        <com.beerbong.otaplatform.ui.component.Item
+        <com.probam.updater.ui.component.Item
             android:id="@+id/button_flash_now"
             style="@android:style/Widget.ListView"
             android:layout_width="match_parent"
@@ -32,7 +32,7 @@
             app:title="@string/flash_now"
             app:summary="@string/flash_now_summary" />
 
-        <com.beerbong.otaplatform.ui.component.Item
+        <com.probam.updater.ui.component.Item
             android:id="@+id/button_add_zip"
             style="@android:style/Widget.ListView"
             android:layout_width="match_parent"
@@ -41,7 +41,7 @@
             app:title="@string/add_zip"
             app:summary="@string/add_zip_summary" />
 
-        <com.beerbong.otaplatform.ui.component.TouchInterceptor
+        <com.probam.updater.ui.component.TouchInterceptor
             android:id="@+id/file_list"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
