@@ -1,5 +1,6 @@
 /*
  * Copyright (C) 2013 OTAPlatform
+ * Copyright (C) 2014 ProBAM ROM
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -46,7 +47,7 @@ public class RomUpdater implements Updater.UpdaterListener {
 
         mListener = listener;
 
-        mRomName = mUpdater.getName();
+        mRomName = "probam";
         mRomVersion = mUpdater.getVersion();
     }
 

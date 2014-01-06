@@ -1,5 +1,6 @@
 /*
  * Copyright (C) 2013 OTAPlatform
+ * Copyright (C) 2014 ProBAM ROM
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -44,7 +45,7 @@ public abstract class Updater implements URLStringReaderListener, HttpStringRead
         public boolean isGapps();
     }
 
-    public static final String PROPERTY_DEVICE = "ro.product.device";
+    public static final String PROPERTY_DEVICE = "ro.cm.device";
 
     public static final int UPDATER_GOO = 0;
     public static final int UPDATER_OUC = 1;

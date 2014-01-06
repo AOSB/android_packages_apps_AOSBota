@@ -1,5 +1,6 @@
 /*
  * Copyright (C) 2013 OTAPlatform
+ * Copyright (C) 2014 ProBAM ROM
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -58,13 +59,15 @@ public class GooPackage implements PackageInfo, Serializable {
         if (result == null) {
             version = -1;
         } else {
-            try {
+
                 JSONObject update = null;
                 try {
-                    update = result.getJSONObject("update_info");
+                	// Getting JSON Array node
+                	update = result.getJSONArray("list").getJSONObject(0);
                 } catch (JSONException ex) {
                     update = result;
                 }
+
                 developerid = update.optString("ro_developerid");
                 board = update.optString("ro_board");
                 rom = update.optString("ro_rom");
@@ -85,32 +88,13 @@ public class GooPackage implements PackageInfo, Serializable {
                 developer_id = update.optInt("developer_id");
                 gapps_package = update.optInt("gapps_package");
                 incremental_file = update.optInt("incremental_file");
-                if (incremental_file > 0) {
-                    JSONObject incremental = result.getJSONObject("incremental_package");
-                    int previous = incremental.getInt("previous_ro_version");
-                    isDelta = previousVersion == previous;
-                    if (isDelta) {
-                        incremental_filename = incremental.optString("filename");
-                        incremental_path = "http://goo.im/incremental/" + incremental_filename;
-                        incremental_md5 = incremental.getString("md5");
-                    }
-                }
+
                 if (version == 0) {
-                    String[] split = filename.split("-");
-                    for (int i=split.length-1;i>0;i--) {
-                        try {
-                            version = Integer.parseInt(split[i]);
-                            break;
-                        } catch (NumberFormatException ex) {
-                            // ignore
-                        }
-                    }
+                    String[] split = filename.split("_");        
+	                String getVer = split[2].replaceAll("\\D", "");
+	                version = Integer.parseInt(getVer);
                 }
-            } catch (JSONException ex) {
-                // ignore
-                ex.printStackTrace();
-                version = -1;
-            }
+	  
         }
     }
 

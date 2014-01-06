@@ -1,5 +1,6 @@
 /*
  * Copyright (C) 2013 OTAPlatform
+ * Copyright (C) 2014 ProBAM ROM
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,12 +19,16 @@ package com.probam.updater.updater.impl;
 
 import org.json.JSONObject;
 
+import android.util.Log;
+
 import com.probam.updater.updater.GooPackage;
 import com.probam.updater.updater.Updater;
 import com.probam.updater.util.Constants;
 import com.probam.updater.util.URLStringReader;
 
 public class GooUpdater extends Updater {
+
+    private static final String DEBUG_TAG= "MySimpleAppLogging";  
 
     public static final String PROPERTY_GOO_DEVELOPER = "ro.goo.developerid";
     public static final String PROPERTY_GOO_ROM = "ro.goo.rom";
@@ -71,9 +76,8 @@ public class GooUpdater extends Updater {
 
     private void searchGoo(String path) {
         mScanning = true;
-        new URLStringReader(this).execute("http://goo.im/json2&action=update&ro_developerid="
-                + getDeveloperId() + "&ro_board=" + getDevice() + "&ro_rom=" + getName()
-                + "&ro_version=" + getVersion());
+        new URLStringReader(this).execute("http://goo.im/json2&path=/devs/probam/" + getDevice());
+	    //Log.i(DEBUG_TAG, "http://goo.im/json2&path=/devs/probam/" + getDevice());
     }
 
     private String getDevice() {
