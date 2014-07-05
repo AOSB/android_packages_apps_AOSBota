@@ -17,7 +17,7 @@
 -->
 <resources>
 
-    <string name="app_name">ProBAM Updater</string>
+    <string name="app_name">AOSB OTA</string>
     
     <string name="update">Update</string>
     <string name="flash">Install</string>
