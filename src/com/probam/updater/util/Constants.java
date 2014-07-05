@@ -99,9 +99,9 @@ public class Constants {
     public static final String PREFERENCE_RECOVERY_REBOOT = "recovery_activity_reboot";
 
     // overlays
-    public static final String OVERLAY_CHANGELOG = "ro_otaplatform.changelog_url";
-    public static final String OVERLAY_GAPPS_URL = "ro_otaplatform.gapps_url";
-    public static final String OVERLAY_GAPPS_VERSION = "ro_otaplatform.gapps_version";
+    public static final String OVERLAY_CHANGELOG = "https://raw.githubusercontent.com/AOSB/android_vendor_cm/vendor/CHANGELOG.mkdn";
+    public static final String OVERLAY_GAPPS_URL = "ro.probam.gapps_url";
+    public static final String OVERLAY_GAPPS_VERSION = "ro.probam.gapps_version";
     public static final String OVERLAY_BACKUP_FILES = "ro_otaplatform.backup_files";
 
     private static final long K = 1024;

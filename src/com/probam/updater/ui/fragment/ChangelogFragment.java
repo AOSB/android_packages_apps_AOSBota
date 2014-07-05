@@ -30,7 +30,7 @@ public class ChangelogFragment extends Fragment {
 
         String romChangelogUrl = null;
         if (romUpdater != null && romUpdater.canUpdate()) {
-            romChangelogUrl = Constants.getProperty(Constants.OVERLAY_CHANGELOG);
+            romChangelogUrl = Constants.OVERLAY_CHANGELOG;
         }
 
         final ProgressBar bar = (ProgressBar) view.findViewById(R.id.progress_bar);

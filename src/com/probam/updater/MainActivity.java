@@ -66,7 +66,7 @@ public class MainActivity extends FragmentActivity implements TabHost.OnTabChang
 
         String romChangelogUrl = null;
         if (romUpdater != null && romUpdater.canUpdate()) {
-            romChangelogUrl = Constants.getProperty(Constants.OVERLAY_CHANGELOG);
+            romChangelogUrl = Constants.OVERLAY_CHANGELOG;
         }
 
         initialiseTabHost(savedInstanceState, romChangelogUrl);
