@@ -66,7 +66,7 @@ public class GooUpdater extends Updater {
     @Override
     public void searchVersion() {
         mScanning = false;
-        searchGoo("/devs/" + getDeveloperId());
+        searchGoo();
     }
 
     @Override
@@ -74,10 +74,10 @@ public class GooUpdater extends Updater {
         return mScanning;
     }
 
-    private void searchGoo(String path) {
+    private void searchGoo() {
         mScanning = true;
-        new URLStringReader(this).execute("http://goo.im/json2&path=/devs/probam/" + getDevice());
-	    //Log.i(DEBUG_TAG, "http://goo.im/json2&path=/devs/probam/" + getDevice());
+        new URLStringReader(this).execute("http://probam.net/api/?device=" + getDevice());
+	    //Log.i(DEBUG_TAG, "http://probam.net/api/?device=" + getDevice());
     }
 
     private String getDevice() {

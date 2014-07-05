@@ -62,8 +62,8 @@ public class GooPackage implements PackageInfo, Serializable {
 
                 JSONObject update = null;
                 try {
-                	// Getting JSON Array node
-                	update = result.getJSONArray("list").getJSONObject(0);
+                    // Getting JSON Array node
+                    update = result.getJSONArray("list").getJSONObject(0);
                 } catch (JSONException ex) {
                     update = result;
                 }
@@ -74,7 +74,7 @@ public class GooPackage implements PackageInfo, Serializable {
                 version = update.optInt("ro_version");
                 id = update.optInt("id");
                 filename = update.optString("filename");
-                path = "http://goo.im" + update.optString("path");
+                path = "http://garr.dl.sourceforge.net/" + update.optString("path");
                 folder = update.optString("folder");
                 md5 = update.optString("md5");
                 type = update.optString("type");
