@@ -8,6 +8,6 @@ LOCAL_MODULE_TAGS := optional
 LOCAL_STATIC_JAVA_LIBRARIES := \
     android-support-v4
 
-LOCAL_PACKAGE_NAME := ProBamUpdater
+LOCAL_PACKAGE_NAME := AOSBota
 
 include $(BUILD_PACKAGE)
