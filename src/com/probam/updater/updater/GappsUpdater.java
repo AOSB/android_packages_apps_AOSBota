@@ -16,10 +16,6 @@
 
 package com.probam.updater.updater;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.util.Properties;
-
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.json.JSONTokener;
@@ -33,6 +29,7 @@ import com.probam.updater.R;
 import com.probam.updater.manager.ManagerFactory;
 import com.probam.updater.util.Constants;
 import com.probam.updater.util.URLStringReader;
+import android.util.Log;
 
 public class GappsUpdater extends Updater implements Updater.UpdaterListener {
 
@@ -56,41 +53,15 @@ public class GappsUpdater extends Updater implements Updater.UpdaterListener {
         mContext = context;
         mListener = listener;
         mFromAlarm = fromAlarm;
-
-        File file = new File("/system/etc/g.prop");
-        mCanUpdate = file.exists();
-        if (mCanUpdate) {
-            Properties properties = new Properties();
-            try {
-                properties.load(new FileInputStream(file));
-                String versionProperty = Constants.getProperty(Constants.OVERLAY_GAPPS_VERSION);
-                String versionString = properties.getProperty(versionProperty);
-                if (versionString == null || "".equals(versionString) || versionProperty == null
-                        || "".equals(versionProperty)) {
-                    versionProperty = "ro.addon.version";
-                    versionString = properties.getProperty(versionProperty);
-                }
-                mId = properties.getProperty("ro.addon.type");
-                mName = properties.getProperty("ro.addon.version");
-                mPlatform = properties.getProperty("ro.addon.platform");
-                if (versionString == null || "".equals(versionString)) {
-                    mCanUpdate = false;
-                } else {
-                    String[] version = versionString.split("-");
-                    for (int i=0;i<version.length;i++) {
-                        try {
-                            mVersion = Integer.parseInt(version[i]);
-                            break;
-                        } catch (NumberFormatException ex) {
-                            // ignore
-                        }
-                    }
-                }
-            } catch (Exception ex) {
-                ex.printStackTrace();
-                mCanUpdate = false;
-            }
+        mCanUpdate = true;        
+        try {
+            String versionProperty = Constants.getProperty(Constants.OVERLAY_GAPPS_VERSION);
+            mVersion = Integer.parseInt(versionProperty.replaceAll("\\D", ""));   
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            mCanUpdate = false;
         }
+        
     }
 
     public boolean canUpdate() {
@@ -108,9 +79,11 @@ public class GappsUpdater extends Updater implements Updater.UpdaterListener {
                 if (!mCustomGapps) {
                     JSONObject result = (JSONObject) new JSONTokener(buffer).nextValue();
                     info = new GooPackage(result, -1);
+                    //Log.i("GappsUpdater", "we not run CustomGapps");
                 } else {
                     JSONObject object = (JSONObject) new JSONTokener(buffer).nextValue();
                     info = new GooPackage(null, -1);
+                    
                     if (!object.isNull("list")) {
                         JSONArray list = object.getJSONArray("list");
                         for (int i=0;i<list.length();i++) {
@@ -123,6 +96,7 @@ public class GappsUpdater extends Updater implements Updater.UpdaterListener {
                     }
                 }
             }
+            ///Log.i("GappsUpdater", "path:"+info.getPath());
 
             versionFound(info);
         } catch (Exception ex) {
@@ -176,18 +150,9 @@ public class GappsUpdater extends Updater implements Updater.UpdaterListener {
     @Override
     public void searchVersion() {
         mScanning = true;
-        String folder = ManagerFactory.getPreferencesManager(mContext).getGappsFolder();
-        if (folder == null || "".equals(folder)) {
-            mCustomGapps = false;
-            new URLStringReader(this).execute("http://goo.im/json2&action=gapps_update&gapps_platform="
-                    + getPlatform() + "&gapps_addon_version=" + getVersion());
-        } else {
-            mCustomGapps = true;
-            if (folder.startsWith("http://goo.im/")) {
-                folder = Constants.GOO_SEARCH_URL + folder.substring(folder.indexOf("/devs"));
-            }
-            new URLStringReader(this).execute(folder);
-        }
+        mCustomGapps = false;
+		String folder = Constants.getProperty(Constants.OVERLAY_GAPPS_URL);
+        new URLStringReader(this).execute(folder);
     }
 
     @Override
@@ -248,6 +213,9 @@ public class GappsUpdater extends Updater implements Updater.UpdaterListener {
     }
 
     private void showNewGappsFound(final PackageInfo info) {
+    	
+    	Log.i("showGapps", "path:"+info.getPath());
+    	
         ((Activity) mContext).runOnUiThread(new Runnable() {
 
             public void run() {
@@ -257,7 +225,7 @@ public class GappsUpdater extends Updater implements Updater.UpdaterListener {
                             .setMessage(
                                     mContext.getResources().getString(
                                             R.string.new_gapps_found_summary,
-                                            new Object[] { info.getFilename(), info.getFolder() }))
+                                            new Object[] { info.getFilename(), info.getMd5() }))
                             .setPositiveButton(android.R.string.ok,
                                     new DialogInterface.OnClickListener() {
 

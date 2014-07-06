@@ -74,7 +74,12 @@ public class GooPackage implements PackageInfo, Serializable {
                 version = update.optInt("ro_version");
                 id = update.optInt("id");
                 filename = update.optString("filename");
-                path = "http://garr.dl.sourceforge.net/" + update.optString("path");
+                if(isGapps()){
+                	path = "http://garr.dl.sourceforge.net/project/probam/gapps/" + filename;
+                }else{
+                	path = "http://garr.dl.sourceforge.net/" + update.optString("path");
+                }
+                
                 folder = update.optString("folder");
                 md5 = update.optString("md5");
                 type = update.optString("type");
